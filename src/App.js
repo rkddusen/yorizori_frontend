@@ -4,6 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './Pages/MainPage';
+import CategoryPage from './Pages/CategoryPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -19,6 +20,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainPage user={user} />} />
+          <Route path="/category" element={<CategoryPage user={user} />} />
         </Routes>
       </BrowserRouter>
     </div>
