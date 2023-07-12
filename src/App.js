@@ -5,6 +5,7 @@ import reset from 'styled-reset';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './Pages/MainPage';
 import CategoryPage from './Pages/CategoryPage';
+import RankingPage from './Pages/RankingPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage user={user} />} />
           <Route path="/category" element={<CategoryPage user={user} />} />
+          <Route path="/ranking" element={<RankingPage user={user} />} />
         </Routes>
       </BrowserRouter>
     </div>
