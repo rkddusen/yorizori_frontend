@@ -7,6 +7,8 @@ import MainPage from './Pages/MainPage';
 import CategoryPage from './Pages/CategoryPage';
 import RankingPage from './Pages/RankingPage';
 import TipPage from './Pages/TipPage';
+import RecommendPage from './Pages/RecommendPage';
+import NeedLoginPage from './Pages/NeedLoginPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -25,6 +27,10 @@ function App() {
           <Route path="/category" element={<CategoryPage user={user} />} />
           <Route path="/ranking" element={<RankingPage user={user} />} />
           <Route path="/tip" element={<TipPage user={user} />} />
+          <Route path="/recommend" element={
+            user.id?
+            <><RecommendPage user={user} /></>:
+            <><NeedLoginPage user={user} /></>} />
         </Routes>
       </BrowserRouter>
     </div>
