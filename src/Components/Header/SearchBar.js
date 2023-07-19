@@ -43,7 +43,7 @@ const SearchArea = styled.div`
   @media screen and (max-width: 767px) {
     max-width: 400px;
     width: 90vw;
-    margin-top: 15px;
+    margin-top: 10px;
   }
 `;
 const SearchInput = styled.input`
