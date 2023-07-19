@@ -6,10 +6,6 @@ function ShortMenus(props) {
   const { shortMenusOpen, setShortMenusOpen } = props;
   const navigate = useNavigate();
 
-
-  const moveLoginPage = () => {
-    navigate(`/login`);
-  }
   const moveRecommendPage = () => {
     navigate(`/recommend?mode=TR`);
   }
@@ -48,7 +44,6 @@ function ShortMenus(props) {
         <StyledList onClick={moveCategoryPage}>카테고리</StyledList>
         <StyledList onClick={moveRankingPage}>랭킹</StyledList>
         <StyledList onClick={moveTipPage}>쿠킹팁</StyledList>
-        <StyledList onClick={moveLoginPage}>로그인</StyledList>
       </Content>
     </StyledShortMenus>
   );
@@ -92,9 +87,13 @@ const StyledShortMenus = styled.div`
 `;
 const Close = styled.div`
   width: 100%;
+  height: 32px;
   text-align: end;
   margin-bottom: 50px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 `;
 const Content = styled.ul`
   width: 90%;
