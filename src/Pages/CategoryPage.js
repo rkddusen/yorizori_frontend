@@ -10,7 +10,7 @@ import PageExplain from '../Components/PageExplain';
 
 function CategoryPage(props) {
   const { user } = props;
-  const [clicked, setClicked] = useState(null);
+  const [checked, setChecked] = useState(null);
   const [recipe, setRecipe] = useState([
     { id: 1, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
     { id: 2, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
@@ -29,8 +29,8 @@ function CategoryPage(props) {
   const location = useLocation();
 
   useEffect(() => {
-    const _clicked = new URLSearchParams(location.search);
-    setClicked(_clicked.get('category'));
+    const _checked = new URLSearchParams(location.search);
+    setChecked(_checked.get('category'));
   }, [location]);
 
 
@@ -41,8 +41,8 @@ function CategoryPage(props) {
       <StyledBody>
         <Contents>
           <PageExplain title="RECIPE CATEGORY" explain="원하는 레시피를 카테고리 내에서 찾아보세요!" />
-          <CategoryList clicked={clicked} />
-          <CategoryTitle><CategoryName>"{clicked}"</CategoryName> 레시피</CategoryTitle>
+          <CategoryList checked={checked} />
+          <CategoryTitle><CategoryName>"{checked}"</CategoryName> 레시피</CategoryTitle>
           <RecipeView recipe={recipe} />
           <Paging pagingCount={Math.ceil(totalRecipeCount/12)} />
         </Contents>

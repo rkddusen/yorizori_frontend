@@ -10,15 +10,15 @@ function Ranking(props){
   
   useEffect(() => {
     let recipeData = rankRecipe.map(data => ( // rank가 3이하면 다른 스타일 적용
-      <RecipeData key={data.id} isInThree={data.rank <= 3 ? true : false}>
+      <RecipeData key={data.id} $isInThree={data.rank <= 3 ? true : false}>
         <ImgContent>
-          <Rank isInThree={data.rank <= 3 ? true : false}>
-            <RankNum isInThree={data.rank <= 3 ? true : false}>{data.rank}</RankNum>
+          <Rank $isInThree={data.rank <= 3 ? true : false}>
+            <RankNum $isInThree={data.rank <= 3 ? true : false}>{data.rank}</RankNum>
           </Rank>
           <Img src={data.img}/>
         </ImgContent>
         <TitleContent>{data.title}</TitleContent>
-        <EvaluationContent isInThree={data.rank <= 3 ? true : false}>
+        <EvaluationContent $isInThree={data.rank <= 3 ? true : false}>
           <Star />
           <StarRate>{data.starRate}</StarRate>
           <StarCount>({data.starCount})</StarCount>
@@ -78,7 +78,7 @@ const RecipeRankingList = styled.div`
   justify-content: space-between;
 `;
 const RecipeData = styled.div`
-  width: ${props => props.isInThree ? "31%" : "23%"};
+  width: ${props => props.$isInThree ? "31%" : "23%"};
   box-sizing: border-box;
   margin-bottom: 50px;
   cursor: pointer;
@@ -90,8 +90,8 @@ const RecipeData = styled.div`
   }
 
   @media screen and (max-width: 767px){
-    width: ${props => props.isInThree ? "100%" : "48%"};
-    min-width: ${props => props.isInThree ? "100%" : "48%"};
+    width: ${props => props.$isInThree ? "100%" : "48%"};
+    min-width: ${props => props.$isInThree ? "100%" : "48%"};
   }
 `;
 
@@ -108,24 +108,24 @@ const Rank = styled.div`
   position: absolute;
   z-index: 1;
   top: 0;
-  left: ${props => props.isInThree ? "4%" : "5%"};
-  width: ${props => props.isInThree ? "50px" : "35px"};
-  height: ${props => props.isInThree ? "50px" : "35px"};
+  left: ${props => props.$isInThree ? "4%" : "5%"};
+  width: ${props => props.$isInThree ? "50px" : "35px"};
+  height: ${props => props.$isInThree ? "50px" : "35px"};
   background-color: #FFA800;
   display: flex;
   flex-direction: column;
   justify-content: center;
   @media screen and (max-width: 767px){
-    width: ${props => props.isInThree ? "40px" : "30px"};
-    height: ${props => props.isInThree ? "40px" : "30px"};
+    width: ${props => props.$isInThree ? "40px" : "30px"};
+    height: ${props => props.$isInThree ? "40px" : "30px"};
   }
 `;
 const RankNum = styled.p`
-  font-size: ${props => props.isInThree ? "28px" : "20px"};
+  font-size: ${props => props.$isInThree ? "28px" : "20px"};
   color: white;
   text-align: center;
   @media screen and (max-width: 767px){
-    font-size: ${props => props.isInThree ? "18px" : "16px"};
+    font-size: ${props => props.$isInThree ? "18px" : "16px"};
   }
 `;
 const Img = styled.img`

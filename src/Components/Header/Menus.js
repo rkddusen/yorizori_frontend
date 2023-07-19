@@ -26,10 +26,10 @@ function Menus(props){
   return(
     <>
       <StyledMenus>
-        <StyledList clicked={nowPath === "/recommend" ? true : false} onClick={moveRecommendPage}>추천</StyledList>
-        <StyledList clicked={nowPath === "/category" ? true : false} onClick={moveCategoryPage}>카테고리</StyledList>
-        <StyledList clicked={nowPath === "/ranking" ? true : false} onClick={moveRankingPage}>랭킹</StyledList>
-        <StyledList clicked={nowPath === "/tip" ? true : false} onClick={moveTipPage}>쿠킹팁</StyledList>
+        <StyledList checked={nowPath === "/recommend" ? true : false} onClick={moveRecommendPage}>추천</StyledList>
+        <StyledList checked={nowPath === "/category" ? true : false} onClick={moveCategoryPage}>카테고리</StyledList>
+        <StyledList checked={nowPath === "/ranking" ? true : false} onClick={moveRankingPage}>랭킹</StyledList>
+        <StyledList checked={nowPath === "/tip" ? true : false} onClick={moveTipPage}>쿠킹팁</StyledList>
         {user.id ?
           <StyledList onClick={moveLoginPage}>
             <ProfileImg src='./images/profiles/basic.png' />
@@ -53,7 +53,7 @@ const StyledList = styled.li`
   margin-left: 36px;
   font-size: 16px;
   line-height: normal;
-  color: ${props => props.clicked ? "#FFA800" : "reset"};
+  color: ${props => props.checked ? "#FFA800" : "reset"};
   &:hover{
     cursor: pointer;
     color: #FFA800;

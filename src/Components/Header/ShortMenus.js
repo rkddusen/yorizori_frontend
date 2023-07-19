@@ -23,7 +23,7 @@ function ShortMenus(props) {
     navigate(`/tip`);
   }
   return (
-    <StyledShortMenus shortMenusOpen={shortMenusOpen}>
+    <StyledShortMenus $shortMenusOpen={shortMenusOpen}>
       <Content>
         <Close>
           <svg
@@ -76,7 +76,7 @@ const slideOut = keyframes`
 `;
 
 const animationStyles = css`
-  animation: ${props => props.shortMenusOpen ? slideIn : slideOut} 0.5s ease-in-out forwards;
+  animation: ${props => props.$shortMenusOpen ? slideIn : slideOut} 0.5s ease-in-out forwards;
 `;
 
 const StyledShortMenus = styled.div`
@@ -88,7 +88,7 @@ const StyledShortMenus = styled.div`
   z-index: 99;
   overflow-x: hidden;
   background-color: rgb(256, 256, 256, 0.95);
-  ${props => props.shortMenusOpen && animationStyles}
+  ${props => props.$shortMenusOpen && animationStyles}
 `;
 const Close = styled.div`
   width: 100%;
