@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Category from "./Category"
 
 function CategoryList(props) {
-  const { clicked } = props;
+  const { checked } = props;
   const [category, setCategory] = useState([
     '전체', '한식', '중식', '일식', '양식', '아시안', '분식', '안주', '퓨전', '카페', '편의점', '기타'
   ]);
@@ -13,29 +13,29 @@ function CategoryList(props) {
       <CategoryContent>
         <Categories>
           {category.slice(0,6).map((title, index) => (
-            <Category key={index} title={title} clicked={clicked === title ? 1 : 0} />
+            <Category key={index} title={title} checked={checked === title ? 1 : 0} />
           ))}
         </Categories>
         <Categories>
         {category.slice(6,12).map((title, index) => (
-            <Category key={index} title={title} clicked={clicked === title ? 1 : 0} />
+            <Category key={index} title={title} checked={checked === title ? 1 : 0} />
           ))}
         </Categories>
       </CategoryContent>
       <CategoryContentMoblie>
         <Categories>
         {category.slice(0,4).map((title, index) => (
-            <Category key={index} title={title} clicked={clicked === title ? 1 : 0} />
+            <Category key={index} title={title} xchecked={checked === title ? 1 : 0} />
           ))}
         </Categories>
         <Categories>
         {category.slice(4,8).map((title, index) => (
-            <Category key={index} title={title} clicked={clicked === title ? 1 : 0} />
+            <Category key={index} title={title} checked={checked === title ? 1 : 0} />
           ))}
         </Categories>
         <Categories>
         {category.slice(8,12).map((title, index) => (
-            <Category key={index} title={title} clicked={clicked === title ? 1 : 0} />
+            <Category key={index} title={title} checked={checked === title ? 1 : 0} />
           ))}
         </Categories>
       </CategoryContentMoblie>

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 function Category(props) {
-  const { title, clicked } = props;
+  const { title, checked } = props;
   const navigate = useNavigate();
 
   const movePage = ({title}) => {
@@ -14,7 +14,7 @@ function Category(props) {
       <CategoryImage>
         <CategoryImg style={{borderRadius:'15px'}} src={''} />
       </CategoryImage>
-      <CategoryTitle clicked={clicked === 1 ? true : false}>{title}</CategoryTitle>
+      <CategoryTitle checked={checked === 1 ? true : false}>{title}</CategoryTitle>
     </StyledCategory>
   );
 }
@@ -55,8 +55,8 @@ const CategoryImg = styled.img`
 `;
 const CategoryTitle = styled.p`
   font-size: 16px;
-  color: ${props => props.clicked ? '#FFA800' : 'reset'};
-  font-weight: ${props => props.clicked ? 'bold' : 'regular'};
+  color: ${props => props.checked ? '#FFA800' : 'reset'};
+  font-weight: ${props => props.checked ? 'bold' : 'regular'};
   @media screen and (max-width: 767px){
     font-size: 12px;
   }
