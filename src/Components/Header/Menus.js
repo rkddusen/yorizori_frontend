@@ -23,6 +23,7 @@ function Menus(props){
   const moveTipPage = () => {
     navigate(`/tip`);
   }
+  console.log(user.profileImg);
   return(
     <>
       <StyledMenus>
@@ -32,7 +33,7 @@ function Menus(props){
         <StyledList checked={nowPath === "/tip" ? true : false} onClick={moveTipPage}>쿠킹팁</StyledList>
         {user.id ?
           <StyledList onClick={moveLoginPage}>
-            <ProfileImg src='./images/profiles/basic.png' />
+            <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} />
           </StyledList>
         :
           <StyledList onClick={moveLoginPage}>로그인</StyledList>
@@ -52,7 +53,6 @@ const StyledMenus = styled.ul`
 const StyledList = styled.li`
   margin-left: 36px;
   font-size: 16px;
-  line-height: normal;
   color: ${props => props.checked ? "#FFA800" : "reset"};
   &:hover{
     cursor: pointer;
@@ -60,8 +60,7 @@ const StyledList = styled.li`
   }
 `;
 const ProfileImg = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 40px;
 `;
 
 export default Menus;

@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -10,6 +10,7 @@ import TipPage from './Pages/TipPage';
 import RecommendPage from './Pages/RecommendPage';
 import NeedLoginPage from './Pages/NeedLoginPage';
 import LoginPage from './Pages/LoginPage';
+import axios from 'axios';
 
 function App() {
   const [user, setUser] = useState({
@@ -19,6 +20,25 @@ function App() {
     gender: null,
     profileImg: null,
   })
+
+  const getUser = async() => {
+    const res = await axios.get('http://172.30.1.32:8080/user/get/all');
+    try {
+      console.log(res.data[0]);
+      let _user = {...user};
+      _user.id = res.data[0].userTokenId;
+      _user.nickName = res.data[0].nickname;
+      _user.age = res.data[0].age;
+      _user.gender = res.data[0].gender;
+      _user.profileImg = res.data[0].imageAddress;
+      setUser(_user);
+    } catch {
+      console.log('오류');
+    }
+  }
+  useEffect(() => {
+    getUser();
+  },[])
   return (
     <div>
       <GlobalStyles />
