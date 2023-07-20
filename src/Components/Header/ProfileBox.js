@@ -1,8 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { styled } from 'styled-components';
+import { useUserContext } from '../../contexts/UserContext';
 
 const ProfileBox = (props) => {
-  const { user, profileBoxOpen } = props;
+  const { profileBoxOpen } = props;
+  const { user, setUser } = useUserContext();
+
+  const logout = () => {
+    setUser({
+      id: null,
+      nickName: null,
+      age: null,
+      gender: null,
+      profileImg: null,
+    });
+  }
 
   return (
     <StyledProfileBox $profileBoxOpen={profileBoxOpen}>
@@ -23,7 +35,7 @@ const ProfileBox = (props) => {
         </VisitArea>
       </MainArea>
       <LogoutArea>
-        <Logout>로그아웃</Logout>
+        <Logout onClick={logout}>로그아웃</Logout>
       </LogoutArea>
     </StyledProfileBox>
   );

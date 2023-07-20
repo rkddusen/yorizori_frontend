@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProfileBox from './ProfileBox';
+import { useUserContext } from '../../contexts/UserContext';
 
 function Menus(props){
-  const { user, profileBoxOpen, setProfileBoxOpen } = props;
+  const { user } = useUserContext();
+  const { profileBoxOpen, setProfileBoxOpen } = props;
   const navigate = useNavigate();
   const location = useLocation();
-  const [nowPath, setNowPate] = useState(location.pathname);
+  const [nowPath, setNowPath] = useState(location.pathname);
   const boxRef = useRef(null);
 
   const moveLoginPage = () => {
@@ -33,7 +35,7 @@ function Menus(props){
   }
 
   const onClickOutsideHandler = ({ target }) => {
-    if (profileBoxOpen === true && !boxRef.current.contains(target)) {
+    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
       if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
         setProfileBoxOpen(false);
     }

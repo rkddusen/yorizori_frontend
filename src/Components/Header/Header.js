@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
+import { useUserContext } from '../../contexts/UserContext';
 import SearchBar from "./SearchBar";
 import Menus from "./Menus";
 import ShortMenus from './ShortMenus';
 import ProfileBox from './ProfileBox';
 
-function Header(props) {
-  const { user } = props;
+function Header() {
+  const { user } = useUserContext();
   const [shortMenusOpen, setShortMenusOpen] = useState(false);
   const [profileBoxOpen, setProfileBoxOpen] = useState(false);
 
@@ -37,7 +38,7 @@ function Header(props) {
   }
 
   const onClickOutsideHandler = ({ target }) => {
-    if (profileBoxOpen === true && !boxRef.current.contains(target)) {
+    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
       if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
         setProfileBoxOpen(false);
     }
@@ -58,7 +59,7 @@ function Header(props) {
         </a>
         <DesktopNav>
           <SearchBar />
-          <Menus user={user} profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
+          <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
         </DesktopNav>
       </StyledHeaderDesktop>
       <StyledHeaderPhone>
@@ -72,7 +73,7 @@ function Header(props) {
               (
                 <StyledProfileList ref={boxRef}>
                   <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} onClick={OnBoxClickHandler} />
-                  <ProfileBox user={user} profileBoxOpen={profileBoxOpen} />
+                  <ProfileBox profileBoxOpen={profileBoxOpen} />
                 </StyledProfileList>
               ) : 
               (
@@ -98,7 +99,7 @@ function Header(props) {
           </PhoneDetail>
           <ShortMenus shortMenusOpen={shortMenusOpen} setShortMenusOpen={setShortMenusOpen} />
         </PhoneNav>
-        <SearchBar user={user} />
+        <SearchBar />
       </StyledHeaderPhone>
     </StyledHeader>
   );

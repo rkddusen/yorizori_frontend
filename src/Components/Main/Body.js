@@ -5,8 +5,7 @@ import Ranking from './Ranking';
 import Recommend from './Recommend';
 import CookingTip from './CookingTip';
 
-function Body(props){
-  const { user } = props;
+const Body = () => {
   const [rankRecipe, setRankRecipe] = useState([
     { id: 1, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 1 },
     { id: 2, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 2 },
@@ -35,7 +34,7 @@ function Body(props){
       <Contents>
         <MainCategory />
         <Ranking rankRecipe={rankRecipe} />
-        <Recommend user={user} />
+        <Recommend />
         <CookingTip tip={tip}/>
       </Contents>
     </StyledBody>
