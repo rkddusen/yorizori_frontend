@@ -4,13 +4,12 @@ import Header from '../Components/Header/Header';
 import Body from '../Components/Main/Body';
 import Footer from '../Components/Footer/Footer';
 
-function MainPage(props) {
-  const { user } = props;
+const MainPage = () => {
   return (
     <div>
       <Wrap>
-        <Header user={user} />
-        <Body user={user} />
+        <Header />
+        <Body />
       </Wrap>
       <Footer />
     </div>

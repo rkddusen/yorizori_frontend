@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../../contexts/UserContext';
 
-function Recommend(props) {
-  const { user } = props;
+function Recommend() {
+  const { user } = useUserContext();
   const navigate = useNavigate();
 
   const movePage = () => {

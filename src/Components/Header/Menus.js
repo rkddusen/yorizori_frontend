@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import ProfileBox from './ProfileBox';
+import { useUserContext } from '../../contexts/UserContext';
 
 function Menus(props){
-  const { user } = props;
+  const { user } = useUserContext();
+  const { profileBoxOpen, setProfileBoxOpen } = props;
   const navigate = useNavigate();
   const location = useLocation();
-  const [nowPath, setNowPate] = useState(location.pathname);
+  const [nowPath, setNowPath] = useState(location.pathname);
+  const boxRef = useRef(null);
 
   const moveLoginPage = () => {
     navigate(`/login`);
@@ -23,7 +27,28 @@ function Menus(props){
   const moveTipPage = () => {
     navigate(`/tip`);
   }
-  console.log(user.profileImg);
+
+
+
+  const OnBoxClickHandler = () => {
+    setProfileBoxOpen(!profileBoxOpen);
+  }
+
+  const onClickOutsideHandler = ({ target }) => {
+    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
+      if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
+        setProfileBoxOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", onClickOutsideHandler);
+    return () => {
+      window.removeEventListener("click", onClickOutsideHandler);
+    };
+  });
+
+
   return(
     <>
       <StyledMenus>
@@ -32,13 +57,16 @@ function Menus(props){
         <StyledList checked={nowPath === "/ranking" ? true : false} onClick={moveRankingPage}>랭킹</StyledList>
         <StyledList checked={nowPath === "/tip" ? true : false} onClick={moveTipPage}>쿠킹팁</StyledList>
         {user.id ?
-          <StyledList onClick={moveLoginPage}>
-            <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} />
-          </StyledList>
+          <>
+            <StyledProfileList  ref={boxRef}>
+              <ProfileImg onClick={OnBoxClickHandler} src={process.env.PUBLIC_URL + user.profileImg} />
+              <ProfileBox user={user} profileBoxOpen={profileBoxOpen} />
+            </StyledProfileList>
+            
+          </>
         :
           <StyledList onClick={moveLoginPage}>로그인</StyledList>
         }
-        
       </StyledMenus>
     </>
   );
@@ -57,6 +85,16 @@ const StyledList = styled.li`
   &:hover{
     cursor: pointer;
     color: #FFA800;
+  }
+`;
+const StyledProfileList = styled.li`
+  margin-left: 36px;
+  font-size: 16px;
+  &:hover{
+    cursor: pointer;
+  }
+  @media screen and (max-width: 767px){
+    display: none;
   }
 `;
 const ProfileImg = styled.img`

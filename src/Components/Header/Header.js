@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+import styled from "styled-components";
+import { useUserContext } from '../../contexts/UserContext';
 import SearchBar from "./SearchBar";
 import Menus from "./Menus";
-import styled from "styled-components";
 import ShortMenus from './ShortMenus';
-import { useNavigate, useLocation } from 'react-router-dom';
+import ProfileBox from './ProfileBox';
 
-function Header(props) {
-  const { user } = props;
+function Header() {
+  const { user } = useUserContext();
   const [shortMenusOpen, setShortMenusOpen] = useState(false);
+  const [profileBoxOpen, setProfileBoxOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
+  const boxRef = useRef(null);
 
   useEffect(()=>{
     setShortMenusOpen(false);
@@ -28,6 +32,25 @@ function Header(props) {
     navigate(`/login`);
   }
 
+
+  const OnBoxClickHandler = () => {
+    setProfileBoxOpen(!profileBoxOpen);
+  }
+
+  const onClickOutsideHandler = ({ target }) => {
+    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
+      if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
+        setProfileBoxOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", onClickOutsideHandler);
+    return () => {
+      window.removeEventListener("click", onClickOutsideHandler);
+    };
+  });
+
   return (
     <StyledHeader>
       <StyledHeaderDesktop>
@@ -36,7 +59,7 @@ function Header(props) {
         </a>
         <DesktopNav>
           <SearchBar />
-          <Menus user={user} />
+          <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
         </DesktopNav>
       </StyledHeaderDesktop>
       <StyledHeaderPhone>
@@ -48,7 +71,10 @@ function Header(props) {
             {
               user.id ? 
               (
-                <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} />
+                <StyledProfileList ref={boxRef}>
+                  <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} onClick={OnBoxClickHandler} />
+                  <ProfileBox profileBoxOpen={profileBoxOpen} />
+                </StyledProfileList>
               ) : 
               (
                 <LoginBtn onClick={moveLoginPage}>로그인</LoginBtn>
@@ -73,7 +99,7 @@ function Header(props) {
           </PhoneDetail>
           <ShortMenus shortMenusOpen={shortMenusOpen} setShortMenusOpen={setShortMenusOpen} />
         </PhoneNav>
-        <SearchBar user={user} />
+        <SearchBar />
       </StyledHeaderPhone>
     </StyledHeader>
   );
@@ -96,6 +122,7 @@ const StyledHeaderDesktop = styled.div`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
   @media screen and (max-width: 767px){
     display: none;
   }
@@ -115,6 +142,7 @@ const StyledHeaderPhone = styled.div`
   margin: 0 auto;
   max-width: 400px;
   width: 90%;
+  position: relative;
   @media screen and (max-width: 767px){
     padding: 10px;
     display: block;
@@ -135,6 +163,12 @@ const PhoneDetail = styled.div`
 `;
 const StyledSvg = styled.svg`
   cursor: pointer;
+`;
+const StyledProfileList = styled.div`
+  display: none;
+  @media screen and (max-width: 767px){
+    display: block;
+  }
 `;
 const ProfileImg = styled.img`
   width: 32px;
