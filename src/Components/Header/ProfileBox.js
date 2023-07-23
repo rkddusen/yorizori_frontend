@@ -1,10 +1,16 @@
 import React from 'react';
 import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../contexts/UserContext';
 
 const ProfileBox = (props) => {
   const { profileBoxOpen } = props;
   const { user, setUser } = useUserContext();
+  const navigate = useNavigate();
+
+  const moveMypage = () => {
+    navigate(`/mypage`);
+  }
 
   const logout = () => {
     setUser({
@@ -24,9 +30,9 @@ const ProfileBox = (props) => {
           <NickName>{user.nickName}</NickName>
         </InfoArea>
         <VisitArea>
-          <Visit>
+          <Visit onClick={moveMypage}>
           <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></StyledSvg>
-            프로필
+            마이페이지
           </Visit>
           <Visit>
           <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></StyledSvg>
