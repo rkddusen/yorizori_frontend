@@ -13,6 +13,7 @@ import RecommendPage from "./Pages/RecommendPage";
 import NeedLoginPage from "./Pages/NeedLoginPage";
 import LoginPage from "./Pages/LoginPage";
 import MyPage from './Pages/MyPage';
+import RecipeReadPage from './Pages/RecipeReadPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -62,6 +63,8 @@ function App() {
             />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/mypage" element={<MyPage />} />
+            <Route path="/recipe/:id" element={<RecipeReadPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>
