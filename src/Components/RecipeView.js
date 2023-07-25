@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Star, Opinion } from './Evaluation';
+import { useNavigate } from 'react-router-dom';
 
 function RecipeView(props){
   const { recipe } = props;
   const [result, setResult] = useState('');
+  const navigate = useNavigate();
+
+  const movePage = (id) => {
+    navigate(`/recipe/` + id);
+  }
+
   useEffect(() => {
     let recipeData = recipe.map(data => (
-      <RecipeData key={data.id} >
+      <RecipeData key={data.id} onClick={() => movePage(data.id)} >
         <ImgContent>
           <Img src={data.img}/>
         </ImgContent>
