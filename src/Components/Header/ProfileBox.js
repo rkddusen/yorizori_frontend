@@ -26,7 +26,7 @@ const ProfileBox = (props) => {
     <StyledProfileBox $profileBoxOpen={profileBoxOpen}>
       <MainArea>
         <InfoArea>
-          <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} />
+          <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
           <NickName>{user.nickName}</NickName>
         </InfoArea>
         <VisitArea>

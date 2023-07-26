@@ -9,7 +9,7 @@ const MyProfile = () => {
     <>
       <StyledMyProfile>
         <div>
-          <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} />
+          <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
           <NickName>{user.nickName}</NickName>
         </div>
         <div>
@@ -19,7 +19,7 @@ const MyProfile = () => {
               <BasicCol>
                 <BasicRow>
                   <div>
-                    <BasicInfoImg src={process.env.PUBLIC_URL + user.profileImg} />
+                    <BasicInfoImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
                   </div>
                   <div>
