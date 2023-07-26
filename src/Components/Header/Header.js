@@ -72,7 +72,7 @@ function Header() {
               user.id ? 
               (
                 <StyledProfileList ref={boxRef}>
-                  <ProfileImg src={process.env.PUBLIC_URL + user.profileImg} onClick={OnBoxClickHandler} />
+                  <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} onClick={OnBoxClickHandler} />
                   <ProfileBox profileBoxOpen={profileBoxOpen} />
                 </StyledProfileList>
               ) : 
