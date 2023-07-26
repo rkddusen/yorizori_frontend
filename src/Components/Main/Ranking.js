@@ -2,12 +2,44 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Star, Opinion } from '../Evaluation';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-function Ranking(props){
-  const { rankRecipe } = props;
+function Ranking(){
+  const [rankRecipe, setRankRecipe] = useState([]);
   const [result, setResult] = useState('');
   const navigate = useNavigate();
-  
+
+  const getRankRecipe = async () => {
+    const res = await axios.get("http://172.30.1.32:8080/recipe/get/all/paging");
+    try {
+      let _rankRecipe = [];
+      for(let i = 0; i < res.data.content.length; i++){
+        _rankRecipe.push(
+          {
+            id: res.data.content[i].id,
+            title: res.data.content[i].title,
+            thumbnail: res.data.content[i].thumbnail,
+            starRate: res.data.content[i].starRate,
+            starCount: res.data.content[i].starCount,
+            profileImg: res.data.content[i].profileImg,
+            nickName: res.data.content[i].nickName,
+            viewCount: res.data.content[i].viewCount,
+            opinionCount: res.data.content[i].reviewCount,
+            rank: i+1,
+          }
+        )
+      }
+      
+      setRankRecipe(_rankRecipe);
+    } catch {
+      console.log("오류");
+    }
+  };
+
+  useEffect(() => {
+    getRankRecipe();
+  },[])
+
   useEffect(() => {
     let recipeData = rankRecipe.map(data => ( // rank가 3이하면 다른 스타일 적용
       <RecipeData key={data.id} $isInThree={data.rank <= 3 ? true : false}>
@@ -15,7 +47,7 @@ function Ranking(props){
           <Rank $isInThree={data.rank <= 3 ? true : false}>
             <RankNum $isInThree={data.rank <= 3 ? true : false}>{data.rank}</RankNum>
           </Rank>
-          <Img src={data.img}/>
+          <Img src={process.env.REACT_APP_IMG_URL + "/" +  data.thumbnail}/>
         </ImgContent>
         <TitleContent>{data.title}</TitleContent>
         <EvaluationContent $isInThree={data.rank <= 3 ? true : false}>
