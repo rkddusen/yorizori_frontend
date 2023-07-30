@@ -49,7 +49,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage user={user} />} />
             <Route path="/category" element={<CategoryPage />} />
-            <Route path="/ranking" element={<RankingPage user={user} />} />
+            <Route path="/ranking" element={<RankingPage />} />
             <Route path="/tip" element={<TipPage user={user} />} />
             <Route
               path="/recommend"
