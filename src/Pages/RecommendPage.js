@@ -7,8 +7,7 @@ import RecipeView from '../Components/RecipeView';
 import PageExplain from '../Components/PageExplain';
 import RecommendNav from '../Components/Recommend/RecommendNav';
 
-function RecommendPage(props) {
-  const { user } = props;
+function RecommendPage() {
   const [mode, setMode] = useState('TR');
   const [result, setResult] = useState([]);
   const location = useLocation();
@@ -22,6 +21,7 @@ function RecommendPage(props) {
     for(let i = 0; i < 12; i++){
       _result.push(
         <RecipeView
+          key={i}
           recipe={
             {
               id: i+1,
@@ -43,7 +43,7 @@ function RecommendPage(props) {
   return (
     <div>
       <Wrap>
-      <Header user={user} />
+      <Header />
       <StyledBody>
         <Contents>
           <PageExplain title="RECOMMEND RECIPE" explain="추천되는 레시피를 살펴보세요!" />

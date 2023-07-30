@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../Components/Header/Header';
 import Footer from '../Components/Footer/Footer';
 
-function NeedLoginPage(props) {
-  const { user } = props;
+function NeedLoginPage() {
   const navigate = useNavigate();
 
   const movePage = () => {
@@ -18,15 +17,15 @@ function NeedLoginPage(props) {
   return (
     <div>
       <Wrap>
-        <Header user={user} />
+        <Header />
         <Contents>
           <NeedLoginBoxContent>
             <NeedLoginSvg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></NeedLoginSvg>
             <NeedLoginExplain>해당 서비스는 로그인이 필요한 서비스입니다.</NeedLoginExplain>
             <NeedLoginExplain>로그인하러 가시겠습니까?</NeedLoginExplain>
             <ButtonDiv>
-              <NeedLoginButton back={false} onClick={movePage}>로그인</NeedLoginButton>
-              <NeedLoginButton back={true} onClick={moveBack}>뒤로가기</NeedLoginButton>
+              <NeedLoginButton $back={false} onClick={movePage}>로그인</NeedLoginButton>
+              <NeedLoginButton $back={true} onClick={moveBack}>뒤로가기</NeedLoginButton>
             </ButtonDiv>
           </NeedLoginBoxContent>
         </Contents>
@@ -90,8 +89,8 @@ const NeedLoginButton = styled.button`
   padding: 10px 20px;
   cursor: pointer;
   color: white;
-  background-color: ${props => props.back ? 'white' : '#FFA800'};
-  color: ${props => props.back ? '#FFA800' : '#white'};
+  background-color: ${props => props.$back ? 'white' : '#FFA800'};
+  color: ${props => props.$back ? '#FFA800' : '#white'};
   &:hover{
     opacity: 70%;
   }
