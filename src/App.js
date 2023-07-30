@@ -55,9 +55,9 @@ function App() {
               path="/recommend"
               element={
                 user.id ? (
-                  <RecommendPage user={user} />
+                  <RecommendPage />
                 ) : (
-                  <NeedLoginPage user={user} />
+                  <NeedLoginPage />
                 )
               }
             />
