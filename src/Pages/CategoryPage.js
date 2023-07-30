@@ -11,26 +11,38 @@ import PageExplain from '../Components/PageExplain';
 function CategoryPage(props) {
   const { user } = props;
   const [checked, setChecked] = useState(null);
-  const [recipe, setRecipe] = useState([
-    { id: 1, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 2, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 3, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 4, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스스스스스스스스스스스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 5, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+' },
-    { id: 6, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 7, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 8, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 9, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 10, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 11, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 12, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-  ]);
-  const [totalRecipeCount, SetTotalRecipeCount] = useState(200);
+  const [result, setResult] = useState([]);
+  const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
-    const _checked = new URLSearchParams(location.search);
-    setChecked(_checked.get('category'));
+    const search = new URLSearchParams(location.search);
+    const _checked = search.get('category');
+    setChecked(_checked);
+
+    let _result = [];
+    let _count = 0;
+    for(let i = 0; i < 12; i++){
+      _result.push(
+        <RecipeView
+          recipe={
+            {
+              id: i+1,
+              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
+              nickname: "duyyaa",
+              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
+              title: "제목",
+              starRate: 4.5,
+              starCount: 100,
+              viewCount: 100,
+            }
+          }
+        />
+      )
+    }
+    _count = 200;
+    setResult(_result);
+    setTotalRecipeCount(_count);
   }, [location]);
 
 
@@ -43,7 +55,9 @@ function CategoryPage(props) {
           <PageExplain title="RECIPE CATEGORY" explain="원하는 레시피를 카테고리 내에서 찾아보세요!" />
           <CategoryList checked={checked} />
           <CategoryTitle><CategoryName>"{checked}"</CategoryName> 레시피</CategoryTitle>
-          <RecipeView recipe={recipe} />
+          <RecipeList>
+            {result}
+          </RecipeList>
           <Paging pagingCount={Math.ceil(totalRecipeCount/12)} />
         </Contents>
       </StyledBody>
@@ -80,6 +94,20 @@ const CategoryTitle = styled.p`
 const CategoryName = styled.span`
   font-size: 20px;
   color: #FFA800;
+`;
+const RecipeList = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: left;
+  flex-wrap: wrap;
+  column-gap: 2%;
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 export default CategoryPage;

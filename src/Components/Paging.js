@@ -37,7 +37,7 @@ function Paging(props){
     }
     setResult(paging);
     setNowPage(nowPage);
-  },[location]);
+  },[pagingCount, location]);
 
   return(
     <StyledPaging>

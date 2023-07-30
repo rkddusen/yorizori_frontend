@@ -7,21 +7,32 @@ import PageExplain from '../Components/PageExplain';
 
 function Ranking(props) {
   const { user } = props;
-  const [rankRecipe, setRankRecipe] = useState([
-    { id: 1, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 1 },
-    { id: 2, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 2 },
-    { id: 3, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 3 },
-    { id: 4, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스스스스스스스스스스스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 4 },
-    { id: 5, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 5 },
-    { id: 6, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 6 },
-    { id: 7, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 7 },
-    { id: 8, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 8 },
-    { id: 9, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 9 },
-    { id: 10, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 10 },
-    { id: 11, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 11 },
-    { id: 12, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+', rank: 12 },
-  ]);
-  const [recipeCount, setRecipeCount] = useState(12);
+  const [recipeCount, setRecipeCount] = useState(0);
+  const [result, setResult] = useState([]);
+
+  useEffect(() => {
+    let _result = [];
+    for(let i = 0; i < 12; i++){
+      _result.push(
+        <RecipeView
+          recipe={
+            {
+              id: i+1,
+              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
+              nickname: "duyyaa",
+              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
+              title: "제목",
+              starRate: 4.5,
+              starCount: 100,
+              viewCount: 100,
+            }
+          }
+        />
+      )
+    }
+    setResult(_result);
+    setRecipeCount(12);
+  },[])
 
   useEffect(() => {
     function handleScroll() {
@@ -42,22 +53,29 @@ function Ranking(props) {
     // 추가로 로드할 콘텐츠의 개수 (여기서는 12개씩 추가로 로드)
     let additionalCount = recipeCount === 96 ? 4 : 12;
   
-    // 추가로 로드할 콘텐츠를 가져오는 비동기 로직을 수행합니다.
-    // 예를 들어, API 호출이나 데이터베이스에서 콘텐츠를 가져오는 작업을 수행합니다.
-    // 콘텐츠를 가져오는 비동기 작업이 완료되면 allContents 상태 변수를 업데이트합니다.
-    // 이 예시에서는 간단히 새로운 콘텐츠를 생성하여 추가합니다.
-    const newContents = Array.from({ length: additionalCount }, (_, index) => ({
-      id: rankRecipe.length + index + 1,
-      img: './images/recipe_thumbnail.jpg',
-      title: `Recipe ${rankRecipe.length + index + 1}`,
-      starRate: '5.0',
-      starCount: '999+',
-      opinionCount: '499+',
-      rank: rankRecipe.length + index + 1,
-    }));
-    setRankRecipe(prevRankRecipe => [...prevRankRecipe, ...newContents]);
-
-    // 로드된 콘텐츠 개수를 업데이트합니다.
+    // 추가로 로드할 콘텐츠를 가져오는 비동기 로직을 수행.
+    // 콘텐츠를 가져오는 비동기 작업이 완료되면 allContents 상태 변수를 업데이트.
+    let _result = [];
+    for(let i = 0; i < additionalCount; i++){
+      _result.push(
+        <RecipeView
+          recipe={
+            {
+              id: recipeCount + i + 1,
+              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
+              nickname: "duyyaa",
+              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
+              title: "제목",
+              starRate: 4.5,
+              starCount: 100,
+              viewCount: 100,
+            }
+          }  
+        />
+      );
+    }
+    setResult([...result, _result]);
+    // 로드된 콘텐츠 개수를 업데이트.
     setRecipeCount(prevRecipeCount => prevRecipeCount + additionalCount);
   }
 
@@ -68,7 +86,9 @@ function Ranking(props) {
       <StyledBody>
         <Contents>
           <PageExplain title="RECIPE RANKING" explain="레시피 랭킹을 살펴보세요!"/>
-          <RecipeView recipe={rankRecipe} />
+          <RecipeList>
+            {result}
+          </RecipeList>
         </Contents>
       </StyledBody>
       </Wrap>
@@ -93,6 +113,20 @@ const Contents = styled.div`
   @media screen and (max-width: 767px) {
     max-width: 400px;
     margin-top: 130px;
+  }
+`;
+const RecipeList = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: left;
+  flex-wrap: wrap;
+  column-gap: 2%;
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(1, 1fr);
   }
 `;
 

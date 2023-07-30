@@ -10,27 +10,35 @@ import RecommendNav from '../Components/Recommend/RecommendNav';
 function RecommendPage(props) {
   const { user } = props;
   const [mode, setMode] = useState('TR');
-  const [recipe, setRecipe] = useState([
-    { id: 1, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 2, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 3, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 4, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스스스스스스스스스스스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 5, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+' },
-    { id: 6, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 7, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 8, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 9, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 10, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 11, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-    { id: 12, img: './images/recipe_thumbnail.jpg', title: '소세지 오므라이스', starRate: '5.0', starCount: '999+', opinionCount: '499+'},
-  ]);
+  const [result, setResult] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
-    const _mode = new URLSearchParams(location.search);
-    setMode(_mode.get('mode'));
-  }, [location]);
+    const search = new URLSearchParams(location.search);
+    const _mode = search.get('mode') || 'TR';
+    setMode(_mode);
 
+    let _result = [];
+    for(let i = 0; i < 12; i++){
+      _result.push(
+        <RecipeView
+          recipe={
+            {
+              id: i+1,
+              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
+              nickname: "duyyaa",
+              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
+              title: "제목",
+              starRate: 4.5,
+              starCount: 100,
+              viewCount: 100,
+            }
+          }
+        />
+      )
+    }
+    setResult(_result);
+  }, [location]);
 
   return (
     <div>
@@ -40,7 +48,9 @@ function RecommendPage(props) {
         <Contents>
           <PageExplain title="RECOMMEND RECIPE" explain="추천되는 레시피를 살펴보세요!" />
           <RecommendNav mode={mode} />
-          <RecipeView recipe={recipe} />
+          <RecipeList>
+            {result}
+          </RecipeList>
         </Contents>
       </StyledBody>
       </Wrap>
@@ -67,4 +77,19 @@ const Contents = styled.div`
     margin-top: 130px;
   }
 `;
+const RecipeList = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: left;
+  flex-wrap: wrap;
+  column-gap: 2%;
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
 export default RecommendPage;
