@@ -5,8 +5,7 @@ import Footer from "../Components/Footer/Footer";
 import RecipeView from '../Components/RecipeView';
 import PageExplain from '../Components/PageExplain';
 
-function Ranking(props) {
-  const { user } = props;
+function Ranking() {
   const [recipeCount, setRecipeCount] = useState(0);
   const [result, setResult] = useState([]);
 
@@ -15,6 +14,7 @@ function Ranking(props) {
     for(let i = 0; i < 12; i++){
       _result.push(
         <RecipeView
+          key={i}
           recipe={
             {
               id: i+1,
@@ -53,12 +53,13 @@ function Ranking(props) {
     // 추가로 로드할 콘텐츠의 개수 (여기서는 12개씩 추가로 로드)
     let additionalCount = recipeCount === 96 ? 4 : 12;
   
-    // 추가로 로드할 콘텐츠를 가져오는 비동기 로직을 수행.
-    // 콘텐츠를 가져오는 비동기 작업이 완료되면 allContents 상태 변수를 업데이트.
+    // 추가로 로드할 콘텐츠를 가져오는 비동기 로직을 수행
+    // 콘텐츠를 가져오는 비동기 작업이 완료되면 allContents 상태 변수를 업데이트
     let _result = [];
     for(let i = 0; i < additionalCount; i++){
       _result.push(
         <RecipeView
+          key={i}
           recipe={
             {
               id: recipeCount + i + 1,
@@ -75,14 +76,14 @@ function Ranking(props) {
       );
     }
     setResult([...result, _result]);
-    // 로드된 콘텐츠 개수를 업데이트.
+    // 로드된 콘텐츠 개수를 업데이트
     setRecipeCount(prevRecipeCount => prevRecipeCount + additionalCount);
   }
 
   return (
     <div>
       <Wrap>
-      <Header user={user} />
+      <Header />
       <StyledBody>
         <Contents>
           <PageExplain title="RECIPE RANKING" explain="레시피 랭킹을 살펴보세요!"/>
