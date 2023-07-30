@@ -28,7 +28,7 @@ function Paging(props){
     let pageEnd = (pageStart + 4) < pagingCount ? (pageStart + 4) : pagingCount;
     for(let i = pageStart; i <= pageEnd; i++){
       paging.push(
-        <PagingNumber>
+        <PagingNumber key={i}>
           <PagingButton checked={i === nowPage ? true : false} onClick={() => movePage(i)}>
             {i}
           </PagingButton>
@@ -41,13 +41,13 @@ function Paging(props){
 
   return(
     <StyledPaging>
-      <PagingMoveButton isGray={nowPage === 1 ? true : false} onClick={() => nowPage === 1 ? null : movePage(nowPage - 1)}>
+      <PagingMoveButton $isgray={nowPage === 1 ? true : false} onClick={() => nowPage === 1 ? null : movePage(nowPage - 1)}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </PagingMoveButton>
       <PagingList>
         {result}
       </PagingList>
-      <PagingMoveButton isGray={nowPage === pagingCount ? true : false} onClick={() => nowPage === pagingCount ? null : movePage(nowPage + 1)}>
+      <PagingMoveButton $isgray={nowPage === pagingCount ? true : false} onClick={() => nowPage === pagingCount ? null : movePage(nowPage + 1)}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       </PagingMoveButton>
     </StyledPaging>
@@ -84,7 +84,7 @@ const PagingMoveButton = styled.button`
   background: none;
   border: none;
   stroke-width: 1;
-  ${props => props.isGray ? 
+  ${props => props.$isgray ? 
   `
     stroke: #dddddd;
   `

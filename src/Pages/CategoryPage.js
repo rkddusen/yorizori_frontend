@@ -8,8 +8,7 @@ import RecipeView from '../Components/RecipeView';
 import Paging from '../Components/Paging'
 import PageExplain from '../Components/PageExplain';
 
-function CategoryPage(props) {
-  const { user } = props;
+function CategoryPage() {
   const [checked, setChecked] = useState(null);
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
@@ -25,6 +24,7 @@ function CategoryPage(props) {
     for(let i = 0; i < 12; i++){
       _result.push(
         <RecipeView
+          key={i}
           recipe={
             {
               id: i+1,
@@ -49,7 +49,7 @@ function CategoryPage(props) {
   return (
     <div>
       <Wrap>
-      <Header user={user} />
+      <Header />
       <StyledBody>
         <Contents>
           <PageExplain title="RECIPE CATEGORY" explain="원하는 레시피를 카테고리 내에서 찾아보세요!" />
