@@ -4,20 +4,7 @@ import { Star } from './Evaluation';
 import { useNavigate } from 'react-router-dom';
 
 function RecipeView(props){
-  //const { recipe } = props;
-  const { id } = props;
-  const [recipe, setRecipe] = useState({
-    id: id,
-    profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
-    nickname: "duyyaa",
-    thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-    title: "제목",
-    starRate: 4.5,
-    starCount: 100,
-    opinionCount: 100,
-    viewCount: 100,
-  })
-  const [result, setResult] = useState('');
+  const { recipe } = props;
   const navigate = useNavigate();
 
   const movePage = (id) => {
@@ -27,22 +14,22 @@ function RecipeView(props){
   return(
       <RecipeBox onClick={() => movePage(recipe.id)}>
         <Profile>
-          <ProfileImg src={recipe.profileImg} />
-          <NickName>{recipe.nickname}</NickName>
+          <ProfileImg src={recipe?.profileImg} />
+          <NickName>{recipe?.nickname}</NickName>
         </Profile>
         <Clickable>
           <Thumbnail>
-            <ThumbnailImg src={recipe.thumbnail} />
+            <ThumbnailImg src={recipe?.thumbnail} />
           </Thumbnail>
           <div>
             <div>
-              <Title>{recipe.title + recipe.id}</Title>
+              <Title>{recipe?.title + recipe?.id}</Title>
             </div>
             <Indicators>
               <Star />
-              <StarRate>{recipe.starRate}</StarRate>
-              <StarCount>({recipe.starCount})</StarCount>
-              <p>조회수 {recipe.viewCount}</p>
+              <StarRate>{recipe?.starRate}</StarRate>
+              <StarCount>({recipe?.starCount})</StarCount>
+              <p>조회수 {recipe?.viewCount}</p>
             </Indicators>
           </div>
         </Clickable>
@@ -52,7 +39,7 @@ function RecipeView(props){
 
 const RecipeBox = styled.div`
   width: 100%;
-  margin: 15px 0;
+  margin: 0 0 30px 0;
 `;
 const Profile = styled.div`
   width: 100%;
