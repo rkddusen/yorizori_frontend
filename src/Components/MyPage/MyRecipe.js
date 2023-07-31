@@ -12,6 +12,7 @@ const MyRecipe = () => {
     for(let i = 0; i < 29; i++){
       _result.push(
         <RecipeView
+          key={i}
           recipe={
             {
               id: i+1,
