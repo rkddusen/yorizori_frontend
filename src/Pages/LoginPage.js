@@ -15,9 +15,9 @@ function LoginPage() {
         <Explain>소셜 로그인으로 로그인/회원가입</Explain>
         <LoginApi>
 
-          <LoginButton sns="kakao">카카오로 시작하기</LoginButton>
-          <LoginButton sns="naver">네이버로 시작하기</LoginButton>
-          <LoginButton sns="google">구글로 시작하기</LoginButton>
+          <LoginButton $sns="kakao">카카오로 시작하기</LoginButton>
+          <LoginButton $sns="naver">네이버로 시작하기</LoginButton>
+          <LoginButton $sns="google">구글로 시작하기</LoginButton>
         </LoginApi>
         <CopyRight>Copyright KKANG KU JUNG. All rights reserved.</CopyRight>
       </Content>
@@ -68,7 +68,7 @@ const LoginButton = styled.div`
   background-repeat: no-repeat;
   text-align: center;
   ${props => {
-    switch (props.sns){
+    switch (props.$sns){
       case 'kakao':
         return `
           background-color: #FEE500;
