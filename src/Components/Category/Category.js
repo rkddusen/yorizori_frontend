@@ -12,7 +12,7 @@ function Category(props) {
   return (
     <StyledCategory onClick={() => movePage({title})}>
       <CategoryImage>
-        <CategoryImg style={{borderRadius:'15px'}} src={''} />
+        <CategoryImg style={{borderRadius:'15px'}} src={process.env.REACT_APP_PUBLIC_URL + '/images/category/' + title + '.png'} />
       </CategoryImage>
       <CategoryTitle checked={checked === 1 ? true : false}>{title}</CategoryTitle>
     </StyledCategory>
@@ -46,12 +46,10 @@ const CategoryImage = styled.div`
   }
 `;
 const CategoryImg = styled.img`
-  width: 50px;
-  height: 50px;
-  @media screen and (max-width: 767px){
-    width: 40px;
-    height: 40px;
-  }
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
 `;
 const CategoryTitle = styled.p`
   font-size: 16px;
