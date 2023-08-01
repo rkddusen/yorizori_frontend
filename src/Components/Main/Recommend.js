@@ -50,7 +50,7 @@ function Recommend() {
 }
 
 const StyledRecommend = styled.div`
-  // margin-top: 50px;
+  margin-top: 50px;
 `;
 
 const RecommendNav = styled.div`
