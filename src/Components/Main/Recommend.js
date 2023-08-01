@@ -10,15 +10,14 @@ function Recommend() {
   const movePage = () => {
     navigate(`/login`);
   }
-  const moveRecommendPage = () => {
-    navigate(`/recommend`);
+  const moveRecommendPage = (str) => {
+    navigate(`/recommend?mode=` + str);
   }
   
   return (
     <StyledRecommend>
       <RecommendNav>
-        <RecommendTitle>오늘의 <RecommendRed>추천</RecommendRed></RecommendTitle>
-        <RecommendMore onClick={moveRecommendPage}>더보기 {">"}</RecommendMore>
+        <RecommendTitle>요리조리 <RecommendRed>추천</RecommendRed></RecommendTitle>
       </RecommendNav>
       <RecommendContent>
         {user.id === null ? (
@@ -30,8 +29,20 @@ function Recommend() {
             </NeedLoginBoxContent>
           </NeedLoginBox>
         ) : (
-          <> {/* 로그인 상태라면 */}
-          </>
+          <RecommendBox> {/* 로그인 상태라면 */}
+            <MovingBoxs>
+              <MovingBox move={'tr'}>
+                <RecImg src={process.env.REACT_APP_PUBLIC_URL + '/images/recommend1.png'}/>
+                <p>오늘의 추천</p>
+                <button onClick={() => moveRecommendPage('TR')}>바로가기 {'>'}</button>
+              </MovingBox>
+              <MovingBox move={'pr'}>
+                <RecImg src={process.env.REACT_APP_PUBLIC_URL + '/images/recommend2.png'}/>
+                <p>사용자 맞춤 추천</p>
+                <button onClick={() => moveRecommendPage('PR')}>바로가기 {'>'}</button>
+              </MovingBox>
+            </MovingBoxs>
+          </RecommendBox>
         )}
       </RecommendContent>
     </StyledRecommend>
@@ -55,14 +66,14 @@ const RecommendTitle = styled.p`
 const RecommendRed = styled.span`
   color: #FFA800;
 `;
-const RecommendMore = styled.p`
-  font-size: 16px;
-  color: #FFA800;
-  &:hover{
-    opacity: 50%;
-    cursor: pointer;
-  }
-`;
+// const RecommendMore = styled.p`
+//   font-size: 16px;
+//   color: #FFA800;
+//   &:hover{
+//     opacity: 50%;
+//     cursor: pointer;
+//   }
+// `;
 const RecommendContent = styled.div`
   margin-bottom: 30px;
 `;
@@ -113,4 +124,82 @@ const NeedLoginButton = styled.button`
     padding: 8px 15px;
   }
 `;
+
+const RecommendBox = styled.div`
+  width: 100%;
+  padding-bottom: 20%;
+  position: relative;
+
+  @media screen and (max-width: 767px){
+    padding-bottom: 60%;
+  }
+`;
+const MovingBoxs = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media screen and (max-width: 767px){
+    flex-direction: column;
+  }
+`;
+const MovingBox = styled.div`
+  position: relative;
+  width: 48%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => props.move === 'tr' ? '#FFE27B' : '#FFD27A'};
+  border-radius: 15px;
+  overflow: hidden;
+
+  & > p {
+    font-size: 20px;
+    margin: 15px 0;
+    font-weight: 900;
+    z-index: 2;
+  }
+  & > button {
+    border: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background-color: black;
+    color: white;
+    z-index: 2;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 767px){
+    width: 100%;
+    height: 48%;
+    & > p {
+      font-size: 18px;
+      margin: 15px 0;
+    }
+    & > button {
+      font-size: 12px;
+      padding: 8px 15px;
+  }
+  }
+`;
+const RecImg = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 20%;
+  object-fit: cover;
+`;
+
 export default Recommend;
