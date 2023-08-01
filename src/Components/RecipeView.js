@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Star } from './Evaluation';
 import { useNavigate } from 'react-router-dom';
@@ -14,16 +14,16 @@ function RecipeView(props){
   return(
       <RecipeBox onClick={() => movePage(recipe.id)}>
         <Profile>
-          <ProfileImg src={recipe?.profileImg} />
+          <ProfileImg src={process.env.REACT_APP_IMG_URL + recipe?.profileImg} />
           <NickName>{recipe?.nickname}</NickName>
         </Profile>
         <Clickable>
           <Thumbnail>
-            <ThumbnailImg src={recipe?.thumbnail} />
+            <ThumbnailImg src={process.env.REACT_APP_IMG_URL + recipe?.thumbnail} />
           </Thumbnail>
           <div>
             <div>
-              <Title>{recipe?.title + recipe?.id}</Title>
+              <Title>{recipe?.title}</Title>
             </div>
             <Indicators>
               <Star />
@@ -96,7 +96,7 @@ const Indicators = styled.div`
   color: #808080;
   margin-top: 10px;
   margin-bottom: 8px;
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 1023px){
     font-size: 12px;
   }
 `;

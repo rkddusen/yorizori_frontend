@@ -14,16 +14,16 @@ function TipView(props){
   return(
       <TipBox onClick={() => movePage(tip?.id)}>
         <Profile>
-          <ProfileImg src={tip?.profileImg} />
+          <ProfileImg src={process.env.REACT_APP_IMG_URL + tip?.profileImg} />
           <NickName>{tip?.nickname}</NickName>
         </Profile>
         <Clickable>
           <Thumbnail>
-            <ThumbnailImg src={tip?.thumbnail} />
+            <ThumbnailImg src={process.env.REACT_APP_IMG_URL + tip?.thumbnail} />
           </Thumbnail>
           <div>
             <div>
-              <Title>{tip?.title + tip?.id}</Title>
+              <Title>{tip?.title}</Title>
             </div>
             <Indicators>
               <Heart />
@@ -95,7 +95,7 @@ const Indicators = styled.div`
   color: #808080;
   margin-top: 10px;
   margin-bottom: 8px;
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 1023px){
     font-size: 12px;
   }
 `;

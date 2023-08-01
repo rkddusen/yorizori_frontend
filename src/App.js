@@ -47,10 +47,10 @@ function App() {
         <GlobalStyles />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<MainPage user={user} />} />
+            <Route path="/" element={<MainPage />} />
             <Route path="/category" element={<CategoryPage />} />
             <Route path="/ranking" element={<RankingPage />} />
-            <Route path="/tip" element={<TipPage user={user} />} />
+            <Route path="/tip" element={<TipPage />} />
             <Route
               path="/recommend"
               element={
