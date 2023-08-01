@@ -42,8 +42,9 @@ const TipList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   text-align: left;
-  flex-wrap: wrap;
   column-gap: 2%;
+  word-wrap: normal;
+  word-break: break-all;
   @media screen and (max-width: 1023px) {
     grid-template-columns: repeat(3, 1fr);
   }
