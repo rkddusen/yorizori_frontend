@@ -1,31 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Heart, Opinion } from '../Evaluation';
 import { useNavigate } from 'react-router-dom';
+import TipView from '../TipView';
 
-function CookingTip(props){
-  const { tip } = props;
-  const [result, setResult] = useState('');
+function CookingTip(){
+  const [result, setResult] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    let tipData = tip.map(data => (
-      <CookingTipData key={data.id}>
-        <ImgContent>
-          <Img src={data.img}/>
-        </ImgContent>
-        <TitleContent>{data.title}</TitleContent>
-        <EvaluationContent>
-          <Heart />
-          <HeartCount>{data.heartCount}</HeartCount>
-          <Opinion />
-          <OpinionCount>{data.opinionCount}</OpinionCount>
-        </EvaluationContent>
-      </CookingTipData>
-    ))
+    let _result = [];
+    for(let i = 0; i < 8; i++){
+      _result.push(
+        <TipView
+          key={i}
+          tip={
+            {
+              id: i+1,
+              profileImg: "/userImage/sample.png",
+              nickname: "duyyaa",
+              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
+              title: "제목",
+              heartCount: 100,
+              viewCount: 100,
+            }
+          }
+        />
+      )
+    }
+    
+    setResult(_result);
+  }, []);
 
-    setResult(tipData);
-  },[]);
 
   const moveTipPage = () => {
     navigate(`/tip`);
@@ -37,7 +42,9 @@ function CookingTip(props){
         <CookingTipTitle>쿠킹 <CookingTipRed>팁</CookingTipRed></CookingTipTitle>
         <CookingTipMore onClick={moveTipPage}>더보기 {'>'}</CookingTipMore>
       </CookingTipNav>
-      <CookingTipList>{result}</CookingTipList>
+      <TipList>
+        {result}
+      </TipList>
     </StyledCookingTip>
   );
 }
@@ -69,70 +76,17 @@ const CookingTipMore = styled.p`
   }
 `;
 
-const CookingTipList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-const CookingTipData = styled.div`
-  width: 23%;
-  min-width: 23%;
-  box-sizing: border-box;
-  margin-bottom: 50px;
-  cursor: pointer;
-  &:hover{
-    color: lightgray;
-  }
-  &:hover Img{
-    transform: scale(1.1);
-  }
-  @media screen and (max-width: 767px){
-    width: 48%;
-    min-width: 48%;
-  }
-`;
-const ImgContent = styled.div`
-  position: relative;
+const TipList = styled.div`
   width: 100%;
-  min-width: 100%;
-  padding-bottom: 100%;
-  margin-bottom: 10px;
-  overflow: hidden;
-  border-radius: 15px;
-`;
-const Img = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition-duration: 0.2s;
-  transition-delay: 0s;
-`;
-const TitleContent = styled.div`
-  margin-bottom: 10px;
-  color: inherit;
-`;
-
-const EvaluationContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  font-size: 14px;
-  color: black;
-  @media screen and (max-width: 767px){
-    font-size: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: left;
+  column-gap: 2%;
+  word-wrap: normal;
+  word-break: break-all;
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(2, 1fr);
   }
-`;
-
-const HeartCount = styled.p`
-  margin-left: 5px;
-  margin-right: 10px;
-`;
-const OpinionCount = styled.p`
-  margin-left: 5px;
 `;
 
 
