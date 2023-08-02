@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,19 @@ function SearchBar() {
   const search = () => {
     navigate(`/search?search=`+searchRef.current.value);
   };
+
+  useEffect(() => {
+    const handleEnterKey = (event) => {
+      if(event.key === 'Enter'){
+        search();
+      }
+    }
+    
+    document.addEventListener('keydown', handleEnterKey);
+    return () => {
+      document.removeEventListener('keydown', handleEnterKey);
+    }
+  })
   return (
     <>
       <SearchArea>
