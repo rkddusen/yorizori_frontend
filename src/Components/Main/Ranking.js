@@ -9,7 +9,7 @@ function Ranking(){
   const navigate = useNavigate();
 
   const getRankRecipe = async () => {
-    const res = await axios.get("http://172.30.1.32:8080/recipe/get/all/paging");
+    const res = await axios.get("http://172.30.1.32:8080/recipe/get/rank/part");
     try {
       let _result = [];
       for(let i = 0; i < 9; i++){
@@ -18,14 +18,14 @@ function Ranking(){
               key={i}
               recipe={
                 {
-                  id: res.data.content[i].id,
-                  title: res.data.content[i].title,
-                  thumbnail: res.data.content[i].thumbnail,
-                  starRate: res.data.content[i].starRate,
-                  starCount: res.data.content[i].starCount,
-                  profileImg: res.data.content[i].profileImg,
-                  nickname: res.data.content[i].nickName,
-                  viewCount: res.data.content[i].viewCount,
+                  id: res.data[i].id,
+                  title: res.data[i].title,
+                  thumbnail: res.data[i].thumbnail,
+                  starRate: res.data[i].starRate,
+                  starCount: res.data[i].starCount,
+                  profileImg: res.data[i].profileImg,
+                  nickname: res.data[i].nickName,
+                  viewCount: res.data[i].viewCount,
                   rank: i+1,
                 }
               }
