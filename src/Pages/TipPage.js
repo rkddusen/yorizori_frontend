@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
+import axios from 'axios';
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import TipView from "../Components/TipView"
@@ -12,29 +13,39 @@ function TipPage() {
   const [totalTipCount, setTotalTipCount] = useState(0);
   const location = useLocation();
 
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+
+  const getTip = async () => {
+      const res = await axios.get(`${axiosUrl}/tip/get/all/paging`);
+      try {
+        let _result = [];
+        for (let i = 0; i < 12; i++) {
+          _result.push(
+            <TipView
+              key={i}
+              tip={
+                {
+                  id: res.data.content[i].id,
+                  title: res.data.content[i].tipTitle,
+                  viewCount: res.data.content[i].tipHits,
+                  thumbnail: res.data.content[i].tipThumbnail,
+                  heartCount: 0,
+                  profileImg: '',
+                  nickname: 'ㅇㅇ',
+                }
+              }
+            />
+          )
+        }
+        setTotalTipCount(res.data.content.length);
+        setResult(_result);
+      } catch {
+        console.log("오류");
+      }
+    };
+
   useEffect(() => {
-    let _result = [];
-    for(let i = 0; i < 12; i++){
-      _result.push(
-        <TipView
-          key={i}
-          tip={
-            {
-              id: i+1,
-              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
-              nickname: "duyyaa",
-              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-              title: "제목",
-              heartCount: 100,
-              viewCount: 100,
-            }
-          }
-        />
-      )
-    }
-    let _count = 200;
-    setResult(_result);
-    if(_count !== totalTipCount) setTotalTipCount(_count);
+    getTip();
   }, [location]);
 
   return (
