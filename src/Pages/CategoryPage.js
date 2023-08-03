@@ -19,77 +19,41 @@ function CategoryPage() {
   useEffect(() => {
     const search = new URLSearchParams(location.search);
     const _checked = search.get("category");
+    const _page = search.get("page") || 1;
     setChecked(_checked);
     
-    let english = '';
-    switch(_checked){
-      case '전체':
-        english = 'all';
-        break;
-      case '한식':
-        english = 'korean';
-        break;
-      case '중식':
-        english = 'chinese';
-        break;
-      case '일식':
-        english = 'japanese';
-        break;
-      case '양식':
-        english = 'western';
-        break;
-      case '아시안':
-        english = 'asian';
-        break;
-      case '분식':
-        english = 'snackbar';
-        break;
-      case '안주':
-        english = 'snack';
-        break;
-      case '퓨전':
-        english = 'fusion';
-        break;
-      case '카페':
-        english = 'cafe';
-        break;
-      case '편의점':
-        english = 'convenience';
-        break;
-      case '기타':
-        english = 'etc';
-        break;
-    }
+    getRecipe(_checked, _page-1);
   }, [location]);
 
-  const getRecipe = async (category) => {
+  const getRecipe = async (category, page) => {
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/category/${category}`
+      `${axiosUrl}/recipe/get/category/${category}?pageNo=${page}`
     );
     try {
       let _result = [];
-      for (let i = 0; i < res.data.length; i++) {
+      console.log(res.data);
+      for (let i = 0; i < res.data.content.length; i++) {
         _result.push(
           <RecipeView
             key={i}
             recipe={
               {
-                id: res.data[i].id,
-                title: res.data[i].title,
-                thumbnail: res.data[i].thumbnail,
-                starRate: res.data[i].starRate,
-                starCount: res.data[i].starCount,
-                profileImg: res.data[i].profileImg,
-                nickname: res.data[i].nickName,
-                viewCount: res.data[i].viewCount,
+                id: res.data.content[i].id,
+                title: res.data.content[i].title,
+                thumbnail: res.data.content[i].thumbnail,
+                starRate: res.data.content[i].starRate,
+                starCount: res.data.content[i].starCount,
+                profileImg: res.data.content[i].profileImg,
+                nickname: res.data.content[i].nickName,
+                viewCount: res.data.content[i].viewCount,
               }
             }
           />
         );
       }
-      let _count = 30;
+      
       setResult(_result);
-      setTotalRecipeCount(_count);
+      setTotalRecipeCount(res.data.totalElements);
     } catch {
       console.log("오류");
     }
