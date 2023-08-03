@@ -24,16 +24,17 @@ function App() {
     gender: null,
     profileImg: null,
   });
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getUser = async () => {
-    const res = await axios.get("http://172.30.1.32:8080/user/get/all");
+  const res = await axios.get(`${axiosUrl}/user/get/all`);
     try {
       let _user = { ...user };
-      _user.id = res.data[0].userTokenId;
-      _user.nickName = res.data[0].nickname;
-      _user.age = res.data[0].age;
-      _user.gender = res.data[0].gender;
-      _user.profileImg = res.data[0].imageAddress;
+      _user.id = res.data[3].userTokenId;
+      _user.nickName = res.data[3].nickname;
+      _user.age = res.data[3].age;
+      _user.gender = res.data[3].gender;
+      _user.profileImg = res.data[3].imageAddress;
       setUser(_user);
     } catch {
       console.log("오류");

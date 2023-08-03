@@ -11,9 +11,10 @@ const RecipeReadPage = () => {
   const [semiIngredient, setSemiIngredient] = useState([]);
   const [recipeOrder, setRecipeOrder] = useState([]);
   const params = useParams();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRecipe = async () => {
-      const res = await axios.get("http://172.30.1.32:8080/recipe/get/details/" + params.id);
+      const res = await axios.get(`${axiosUrl}/recipe/get/details/${params.id}`);
       try {
         let _recipe = {};
         _recipe.id = res.data.id;
