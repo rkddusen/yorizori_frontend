@@ -14,6 +14,7 @@ function CategoryPage() {
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const location = useLocation();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -63,7 +64,7 @@ function CategoryPage() {
 
   const getRecipe = async (category) => {
     const res = await axios.get(
-      "http://172.30.1.32:8080/recipe/get/category/" + category
+      `${axiosUrl}/recipe/get/category/${category}`
     );
     try {
       let _result = [];

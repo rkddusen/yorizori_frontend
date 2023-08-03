@@ -10,11 +10,10 @@ function Ranking() {
   const [recipeCount, setRecipeCount] = useState(0);
   const [result, setResult] = useState([]);
   const [recipe, setRecipe] = useState([]);
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRankRecipe = async () => {
-    const res = await axios.get(
-      "http://172.30.1.32:8080/recipe/get/rank/total"
-    );
+    const res = await axios.get(`${axiosUrl}/recipe/get/rank/total`);
     try {
       let _recipe = [];
       for (let i = 0; i < 100; i++) {
