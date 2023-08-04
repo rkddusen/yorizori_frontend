@@ -8,6 +8,7 @@ import CategoryList from "../Components/Category/CategoryList";
 import RecipeView from "../Components/RecipeView";
 import Paging from "../Components/Paging";
 import PageExplain from "../Components/PageExplain";
+import NoRecipe from '../Components/NoRecipe';
 
 function CategoryPage() {
   const [checked, setChecked] = useState(null);
@@ -58,6 +59,7 @@ function CategoryPage() {
       console.log("오류");
     }
   };
+  console.log(result);
 
   return (
     <div>
@@ -73,8 +75,14 @@ function CategoryPage() {
             <CategoryTitle>
               <CategoryName>"{checked}"</CategoryName> 레시피
             </CategoryTitle>
-            <RecipeList>{result}</RecipeList>
-            <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+            {result.length ? (
+              <>
+                <RecipeList>{result}</RecipeList>
+                <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+              </>
+            ) : (
+              <NoRecipe />
+            )}
           </Contents>
         </StyledBody>
       </Wrap>

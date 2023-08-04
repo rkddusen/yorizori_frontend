@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
-import RecipeView from '../RecipeView'
+import RecipeView from '../RecipeView';
+import NoRecipe from '../NoRecipe';
 
 const MyRecipe = () => {
   const { user } = useUserContext();
@@ -9,7 +10,7 @@ const MyRecipe = () => {
 
   useEffect(() => {
     let _result = [];
-    for(let i = 0; i < 29; i++){
+    for(let i = 0; i < 0; i++){
       _result.push(
         <RecipeView
           key={i}
@@ -32,9 +33,17 @@ const MyRecipe = () => {
   },[]);
 
   return (
-    <RecipeList>
-      {result}
-    </RecipeList>
+    <>
+      {result.length ? (
+        <>
+          <RecipeList>
+            {result}
+          </RecipeList>
+        </>
+      ) : (
+        <NoRecipe />
+      )}
+    </>
   );
 }
 
