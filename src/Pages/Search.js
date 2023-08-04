@@ -5,6 +5,7 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import RecipeView from '../Components/RecipeView';
 import Paging from '../Components/Paging';
+import NoRecipe from '../Components/NoRecipe';
 
 function Search() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function Search() {
   const getRecipe = (method) => {
     let _result = [];
     let _count = 0;
-    for(let i = 0; i < 12; i++){
+    for(let i = 0; i < 0; i++){
       _result.push(
         <RecipeView
           key={i}
@@ -72,10 +73,14 @@ function Search() {
             <SearchNavLi onClick={() => movePage('food')} checked={nowQuery === 'food'}>요리 검색</SearchNavLi>
             <SearchNavLi onClick={() => movePage('ingredient')} checked={nowQuery === 'ingredient'}>재료 검색</SearchNavLi>
           </SearchNavUl>
-          <RecipeList>
-            {result}
-          </RecipeList>
-          <Paging pagingCount={Math.ceil(totalRecipeCount/12)} />
+          {result.length ? (
+              <>
+                <RecipeList>{result}</RecipeList>
+                <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+              </>
+            ) : (
+              <NoRecipe />
+            )}
         </Contents>
       </StyledBody>
       </Wrap>
