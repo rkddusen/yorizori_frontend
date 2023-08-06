@@ -26,7 +26,7 @@ const ProfileBox = (props) => {
     <StyledProfileBox $profileBoxOpen={profileBoxOpen}>
       <MainArea>
         <InfoArea>
-          <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
+          <ProfileImg src={user.profileImg} />
           <NickName>{user.nickName}</NickName>
         </InfoArea>
         <VisitArea>
@@ -81,7 +81,8 @@ const InfoArea = styled.div`
   justify-content: start;
 `;
 const ProfileImg = styled.img`
-  width: 60px;
+  width: 40px;
+  border-radius: 100%;
 `;
 const NickName = styled.p`
   font-size: 16px;

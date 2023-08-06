@@ -72,7 +72,7 @@ function Header() {
               user.id ? 
               (
                 <StyledProfileList ref={boxRef}>
-                  <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} onClick={OnBoxClickHandler} />
+                  <ProfileImg src={user.profileImg} onClick={OnBoxClickHandler} />
                   <ProfileBox profileBoxOpen={profileBoxOpen} />
                 </StyledProfileList>
               ) : 
@@ -173,6 +173,7 @@ const StyledProfileList = styled.div`
 const ProfileImg = styled.img`
   width: 32px;
   margin-right: 10px;
+  border-radius: 100%;
   &:hover{
     cursor: pointer;
   }

@@ -59,7 +59,7 @@ function Menus(props){
         {user.id ?
           <>
             <StyledProfileList  ref={boxRef}>
-              <ProfileImg onClick={OnBoxClickHandler} src={process.env.REACT_APP_IMG_URL + user.profileImg} />
+              <ProfileImg onClick={OnBoxClickHandler} src={user.profileImg} />
               <ProfileBox user={user} profileBoxOpen={profileBoxOpen} />
             </StyledProfileList>
             
@@ -99,6 +99,7 @@ const StyledProfileList = styled.li`
 `;
 const ProfileImg = styled.img`
   width: 40px;
+  border-radius: 100%;
 `;
 
 export default Menus;
