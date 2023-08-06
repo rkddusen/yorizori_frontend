@@ -10,22 +10,17 @@ function SearchBar() {
     navigate(`/search?search=`+searchRef.current.value);
   };
 
-  useEffect(() => {
+
     const handleEnterKey = (event) => {
       if(event.key === 'Enter'){
         search();
       }
     }
-    
-    document.addEventListener('keydown', handleEnterKey);
-    return () => {
-      document.removeEventListener('keydown', handleEnterKey);
-    }
-  })
+
   return (
     <>
       <SearchArea>
-        <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef}></SearchInput>
+        <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef} onKeyDown={handleEnterKey}></SearchInput>
         <SearchSvg
           xmlns="http://www.w3.org/2000/svg"
           width="22"
