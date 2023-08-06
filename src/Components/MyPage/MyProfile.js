@@ -9,7 +9,7 @@ const MyProfile = () => {
     <>
       <StyledMyProfile>
         <div>
-          <ProfileImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
+          <ProfileImg src={user.profileImg} />
           <NickName>{user.nickName}</NickName>
         </div>
         <div>
@@ -19,7 +19,7 @@ const MyProfile = () => {
               <BasicCol>
                 <BasicRow>
                   <div>
-                    <BasicInfoImg src={process.env.REACT_APP_IMG_URL + user.profileImg} />
+                    <BasicInfoImg src={user.profileImg} />
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
                   </div>
                   <div>
@@ -80,6 +80,7 @@ const ProfileImg = styled.img`
   width: 250px;
   margin: 0 auto;
   text-align: center;
+  border-radius: 100%;
 `;
 const NickName = styled.p`
   font-size: 25px;
@@ -134,6 +135,7 @@ const BasicRow = styled.div`
 `;
 const BasicInfoImg = styled.img`
   width: 60px;
+  border-radius: 100%;
 `;
 const BasicInfoNickName = styled.p`
   font-weight: bold;
