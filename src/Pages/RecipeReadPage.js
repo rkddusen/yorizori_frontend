@@ -9,6 +9,7 @@ import { useUserContext } from '../contexts/UserContext';
 
 const RecipeReadPage = () => {
   const [recipe, setRecipe] = useState(null);
+  const [review, setReview] = useState(null);
   const [mainIngredient, setMainIngredient] = useState([]);
   const [semiIngredient, setSemiIngredient] = useState([]);
   const [recipeOrder, setRecipeOrder] = useState([]);
@@ -35,10 +36,7 @@ const RecipeReadPage = () => {
       _recipe.semiIngredient = res.data.semiIngredient;
       _recipe.order = res.data.order;
       _recipe.category = res.data.category;
-      _recipe.starRate = res.data.starRate;
-      _recipe.starCount = res.data.starCount;
       _recipe.viewCount = res.data.viewCount;
-      _recipe.reviewCount = res.data.reviewCount;
       setRecipe(_recipe);
     } catch {
       console.log("오류");
@@ -46,6 +44,7 @@ const RecipeReadPage = () => {
   };
   useEffect(() => {
     getRecipe();
+    getReview();
   }, []);
 
   useEffect(() => {
@@ -118,17 +117,21 @@ const RecipeReadPage = () => {
     setStar(_star);
   }
 
-  const setReview = () => {
+  const saveReview = () => {
     let content = {};
-    content['star'] = star.lastIndexOf(1) > -1;
-    content['text'] = textRef.current?.value;
-    content['user'] = user.id;
-    if(content['user']){
+    content['star'] = star.lastIndexOf(1) + 1;
+    content['text'] = textRef.current.value;
+    content['userTokenId'] = user.id;
+    if(content['userTokenId']){
       if(content['star'] > -1 && content['text'].length > 0){
-        axios.post(`${axiosUrl}/recipe/set/review/${params.id}`, content)
-        .then((res) => {console.log('서버 응답 : ', res.data);
+        axios.post(`${axiosUrl}/user/save/review/${params.id}`, content)
+        .then(() => {
+          let _star = [0,0,0,0,0];
+          setStar(_star);
+          textRef.current.value = null;
+          getReview();
         })
-        .catch((error) => {
+        .catch(() => {
           console.log('오류');
         });
       }
@@ -138,7 +141,18 @@ const RecipeReadPage = () => {
     } else {
       window.alert('로그인 필요');
     }
-    
+  }
+  const getReview = async () => {
+    const res = await axios.get(`${axiosUrl}/recipe/get/details/${params.id}`);
+    try {
+      let _review = {};
+      _review.starRate = res.data.starRate;
+      _review.starCount = res.data.starCount;
+      _review.reviewCount = res.data.reviewCount;
+      setReview(_review);
+    } catch {
+      console.log("오류");
+    }
   }
 
   return (
@@ -176,7 +190,7 @@ const RecipeReadPage = () => {
                 <SubTitle>
                   <Star />
                   <SubTitleContent>
-                    {recipe?.starRate} ({recipe?.starCount})
+                    {review?.starRate} ({review?.starCount})
                   </SubTitleContent>
                 </SubTitle>
                 <Explain>
@@ -214,14 +228,14 @@ const RecipeReadPage = () => {
                 <BoxTitle>
                   <div>
                     <p>댓글</p>
-                    <p>{recipe?.reviewCount}</p>
+                    <p>{review?.reviewCount}</p>
                   </div>
                 </BoxTitle>
                 <ReviewExplainBox>
                   <div>
                     <div>
                       <Star size={20} />
-                      <p>{recipe?.starRate}</p>
+                      <p>{review?.starRate}</p>
                     </div>
                   </div>
                   <div>
@@ -244,7 +258,7 @@ const RecipeReadPage = () => {
                     <Star size={24} color={star[4] ? '#FFA800' : '#efefef'} onClick={() => {getStar(5)}} />
                   </ReviewStar>
                   <ReviewTextArea rows={3} placeholder='댓글을 작성해주세요.' ref={textRef} />
-                  <ReviewSubmitBtn onClick={setReview}>작성</ReviewSubmitBtn>
+                  <ReviewSubmitBtn onClick={saveReview}>작성</ReviewSubmitBtn>
                 </ReviewWriteBox>
                 <div>
 
@@ -565,7 +579,7 @@ const ReviewStar = styled.div`
   justify-content: start;
   align-items: center;
   &>p{
-    font-size: 16px;
+    font-size: 14px;
     margin-right: 5px;
   }
   &>svg:hover{
