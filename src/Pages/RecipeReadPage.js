@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import { Star } from "../Components/Evaluation";
+import { useUserContext } from '../contexts/UserContext';
 
 const RecipeReadPage = () => {
   const [recipe, setRecipe] = useState(null);
   const [mainIngredient, setMainIngredient] = useState([]);
   const [semiIngredient, setSemiIngredient] = useState([]);
   const [recipeOrder, setRecipeOrder] = useState([]);
+  const [star, setStar] = useState([0,0,0,0,0]);
   const params = useParams();
+  const textRef = useRef(null);
+  const { user } = useUserContext();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRecipe = async () => {
@@ -106,6 +110,37 @@ const RecipeReadPage = () => {
     }
   }, [recipe]);
 
+  const getStar = (num) => {
+    let _star = [0, 0, 0, 0, 0];
+    for(let i = 0; i < num; i++){
+      _star[i] = 1;
+    }
+    setStar(_star);
+  }
+
+  const setReview = () => {
+    let content = {};
+    content['star'] = star.lastIndexOf(1) > -1;
+    content['text'] = textRef.current?.value;
+    content['user'] = user.id;
+    if(content['user']){
+      if(content['star'] > -1 && content['text'].length > 0){
+        axios.post(`${axiosUrl}/recipe/set/review/${params.id}`, content)
+        .then((res) => {console.log('서버 응답 : ', res.data);
+        })
+        .catch((error) => {
+          console.log('오류');
+        });
+      }
+      else {
+        window.alert('평가가 덜 됐음.')
+      }
+    } else {
+      window.alert('로그인 필요');
+    }
+    
+  }
+
   return (
     <div>
       <Wrap>
@@ -178,11 +213,8 @@ const RecipeReadPage = () => {
               <RecipeDetailBox>
                 <BoxTitle>
                   <div>
-                    <p>리뷰</p>
+                    <p>댓글</p>
                     <p>{recipe?.reviewCount}</p>
-                  </div>
-                  <div>
-                    <p>리뷰작성</p>
                   </div>
                 </BoxTitle>
                 <ReviewExplainBox>
@@ -202,6 +234,18 @@ const RecipeReadPage = () => {
                     </div>
                   </div>
                 </ReviewExplainBox>
+                <ReviewWriteBox>
+                  <ReviewStar>
+                    <p>별점</p>
+                    <Star size={24} color={star[0] ? '#FFA800' : '#efefef'} onClick={() => {getStar(1)}} />
+                    <Star size={24} color={star[1] ? '#FFA800' : '#efefef'} onClick={() => {getStar(2)}} />
+                    <Star size={24} color={star[2] ? '#FFA800' : '#efefef'} onClick={() => {getStar(3)}} />
+                    <Star size={24} color={star[3] ? '#FFA800' : '#efefef'} onClick={() => {getStar(4)}} />
+                    <Star size={24} color={star[4] ? '#FFA800' : '#efefef'} onClick={() => {getStar(5)}} />
+                  </ReviewStar>
+                  <ReviewTextArea rows={3} placeholder='댓글을 작성해주세요.' ref={textRef} />
+                  <ReviewSubmitBtn onClick={setReview}>작성</ReviewSubmitBtn>
+                </ReviewWriteBox>
                 <div>
 
                 </div>
@@ -346,8 +390,7 @@ const BoxTitle = styled.div`
   text-align: start;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: start;
 
   & > div:first-child{
     display: flex;
@@ -359,12 +402,6 @@ const BoxTitle = styled.div`
     }
     & > p:last-child{
       color: #ffa800;
-    }
-  }
-  & > div:last-child{
-    font-size: 14px;
-    &:hover{
-      cursor: pointer;
     }
   }
 `;
@@ -514,33 +551,44 @@ const ReviewExplainBox = styled.div`
   }
 `;
 
-const StarBox = styled.div`
-  position: relative;
-  background-color: #efefef;
-  height: 14px;
-  width: 75px;
-  & > div{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(4.5 / 5 * 100%);
-    height: 100%;
-    background-color: #FFA800;
-    display: flex;
-    flex-direction: row;
-    & > div{
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 75px;
-      & > svg{
-        fill: #ffffff00;
-      }
-    }
-    
-  }
-  
-  
+const ReviewWriteBox = styled.div`
+  margin-top: 30px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #efefef;
+  border-radius: 5px;
+  padding: 10px;
 `;
-
+const ReviewStar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  &>p{
+    font-size: 16px;
+    margin-right: 5px;
+  }
+  &>svg:hover{
+    cursor: pointer;
+  }
+`;
+const ReviewTextArea = styled.textarea`
+  width: 100%;
+  margin: 10px 0;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  resize: none;
+`;
+const ReviewSubmitBtn = styled.button`
+  border: none;
+  border-radius: 5px;
+  background-color: #FFA800;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: white;
+  &:hover{
+    cursor: pointer;
+  }
+`;
 export default RecipeReadPage;
