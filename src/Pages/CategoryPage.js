@@ -45,7 +45,7 @@ function CategoryPage() {
                 starRate: res.data.content[i].starRate,
                 starCount: res.data.content[i].starCount,
                 profileImg: res.data.content[i].profileImg,
-                nickname: res.data.content[i].nickName,
+                nickname: res.data.content[i].nickname,
                 viewCount: res.data.content[i].viewCount,
               }
             }
