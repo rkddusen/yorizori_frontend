@@ -24,7 +24,7 @@ function Ranking() {
           starRate: res.data[i].starRate,
           starCount: res.data[i].starCount,
           profileImg: res.data[i].profileImg,
-          nickname: res.data[i].nickName,
+          nickname: res.data[i].nickname,
           viewCount: res.data[i].viewCount,
           rank: i + 1,
         });
