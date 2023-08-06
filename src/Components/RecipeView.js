@@ -14,7 +14,7 @@ function RecipeView(props){
   return(
       <RecipeBox onClick={() => movePage(recipe.id)}>
         <Profile>
-          <ProfileImg src={process.env.REACT_APP_IMG_URL + recipe?.profileImg} />
+          <ProfileImg src={recipe?.profileImg} />
           <NickName>{recipe?.nickname}</NickName>
         </Profile>
         <Clickable>
