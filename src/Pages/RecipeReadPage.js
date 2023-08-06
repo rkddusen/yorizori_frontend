@@ -187,9 +187,9 @@ const RecipeReadPage = () => {
                 </BoxTitle>
                 <ReviewExplainBox>
                   <div>
-                    <p>{recipe?.starRate}</p>
                     <div>
-                      <Star size={15} /><Star size={15} /><Star size={15} /><Star size={15} /><Star size={15} />
+                      <Star size={20} />
+                      <p>{recipe?.starRate}</p>
                     </div>
                   </div>
                   <div>
@@ -447,7 +447,7 @@ const RecipeOrderImgArea = styled.div`
 const ReviewExplainBox = styled.div`
   margin-top: 20px;
   background-color: #FFFBF4;
-  padding: 20px;
+  padding: 20px 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -456,14 +456,19 @@ const ReviewExplainBox = styled.div`
   & > div:first-child{
     width: 30%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 0 10px;
     border-right: 1px solid #aaaaaa;
-    & > p{
+    & > div{
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+    }
+    & > div > p{
       font-size: 25px;
-      margin-bottom: 5px;
+      margin-left: 5px;
     }
   }
   & > div:last-child{
@@ -507,6 +512,35 @@ const ReviewExplainBox = styled.div`
       }
     }
   }
+`;
+
+const StarBox = styled.div`
+  position: relative;
+  background-color: #efefef;
+  height: 14px;
+  width: 75px;
+  & > div{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(4.5 / 5 * 100%);
+    height: 100%;
+    background-color: #FFA800;
+    display: flex;
+    flex-direction: row;
+    & > div{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 75px;
+      & > svg{
+        fill: #ffffff00;
+      }
+    }
+    
+  }
+  
+  
 `;
 
 export default RecipeReadPage;
