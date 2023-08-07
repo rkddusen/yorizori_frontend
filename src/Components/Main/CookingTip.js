@@ -1,34 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import TipView from '../TipView';
 
 function CookingTip(){
   const [result, setResult] = useState([]);
   const navigate = useNavigate();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+
+  const getTip = async () => {
+    const res = await axios.get(`${axiosUrl}/tip/get/part`);
+    try {
+      let _result = [];
+      for(let i = 0; i < 8; i++){
+          _result.push(
+            <TipView
+              key={i}
+              tip={
+                {
+                  id: res.data[i].id,
+                  title: res.data[i].title,
+                  thumbnail: res.data[i].thumbnail,
+                  starCount: res.data[i].heartCount,
+                  profileImg: res.data[i].profileImg,
+                  nickname: res.data[i].nickname,
+                  viewCount: res.data[i].viewCount,
+                }
+              }
+            />
+          )
+        }
+      setResult(_result);
+    } catch {
+      console.log("오류");
+    }
+  };
 
   useEffect(() => {
-    let _result = [];
-    for(let i = 0; i < 8; i++){
-      _result.push(
-        <TipView
-          key={i}
-          tip={
-            {
-              id: i+1,
-              profileImg: "/userImage/sample.png",
-              nickname: "duyyaa",
-              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-              title: "제목",
-              heartCount: 100,
-              viewCount: 100,
-            }
-          }
-        />
-      )
-    }
-    
-    setResult(_result);
+    getTip();
   }, []);
 
 
