@@ -12,40 +12,41 @@ function TipPage() {
   const [result, setResult] = useState([]);
   const [totalTipCount, setTotalTipCount] = useState(0);
   const location = useLocation();
-
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
-  const getTip = async () => {
-      const res = await axios.get(`${axiosUrl}/tip/get/all/paging`);
-      try {
-        let _result = [];
-        for (let i = 0; i < 12; i++) {
+  const getTip = async (page) => {
+    const res = await axios.get(`${axiosUrl}/tip/get/all?pageNo=${page}`);
+    try {
+      let _result = [];
+      for(let i = 0; i < res.data.content.length; i++){
           _result.push(
             <TipView
               key={i}
               tip={
                 {
                   id: res.data.content[i].id,
-                  title: res.data.content[i].tipTitle,
-                  viewCount: res.data.content[i].tipHits,
-                  thumbnail: res.data.content[i].tipThumbnail,
-                  heartCount: 0,
-                  profileImg: '',
-                  nickname: 'ㅇㅇ',
+                  title: res.data.content[i].title,
+                  thumbnail: res.data.content[i].thumbnail,
+                  starCount: res.data.content[i].heartCount,
+                  profileImg: res.data.content[i].profileImg,
+                  nickname: res.data.content[i].nickname,
+                  viewCount: res.data.content[i].viewCount,
                 }
               }
             />
           )
         }
-        setTotalTipCount(res.data.content.length);
-        setResult(_result);
-      } catch {
-        console.log("오류");
-      }
-    };
+      setResult(_result);
+      setTotalTipCount(res.data.totalElements);
+    } catch {
+      console.log("오류");
+    }
+  };
 
   useEffect(() => {
-    getTip();
+    const search = new URLSearchParams(location.search);
+    const _page = search.get("page") || 1;
+    getTip(_page - 1);
   }, [location]);
 
   return (

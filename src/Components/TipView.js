@@ -14,7 +14,7 @@ function TipView(props){
   return(
       <TipBox onClick={() => movePage(tip?.id)}>
         <Profile>
-          <ProfileImg src={process.env.REACT_APP_IMG_URL + tip?.profileImg} />
+          <ProfileImg src={tip?.profileImg} />
           <NickName>{tip?.nickname}</NickName>
         </Profile>
         <Clickable>
