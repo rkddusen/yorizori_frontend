@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProfileBox from './ProfileBox';
 import { useUserContext } from '../../contexts/UserContext';
+import { ProfileImgClickable } from '../ProfileImg';
 
 function Menus(props){
   const { user } = useUserContext();
@@ -59,7 +60,7 @@ function Menus(props){
         {user.id ?
           <>
             <StyledProfileList  ref={boxRef}>
-              <ProfileImg onClick={OnBoxClickHandler} src={user.profileImg} />
+              <ProfileImgClickable onClick={OnBoxClickHandler} src={user.profileImg} style={{width: '40px'}} />
               <ProfileBox user={user} profileBoxOpen={profileBoxOpen} />
             </StyledProfileList>
             
@@ -96,10 +97,6 @@ const StyledProfileList = styled.li`
   @media screen and (max-width: 767px){
     display: none;
   }
-`;
-const ProfileImg = styled.img`
-  width: 40px;
-  border-radius: 100%;
 `;
 
 export default Menus;

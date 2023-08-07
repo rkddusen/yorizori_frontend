@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Star } from './Evaluation';
 import { useNavigate } from 'react-router-dom';
+import { ProfileImg } from './ProfileImg';
 
 function RecipeView(props){
   const { recipe } = props;
@@ -14,7 +15,7 @@ function RecipeView(props){
   return(
       <RecipeBox onClick={() => movePage(recipe.id)}>
         <Profile>
-          <ProfileImg src={recipe?.profileImg} />
+          <ProfileImg src={recipe?.profileImg} style={{width: '35px'}}/>
           <NickName>{recipe?.nickname}</NickName>
         </Profile>
         <Clickable>
@@ -48,9 +49,7 @@ const Profile = styled.div`
   justify-content: start;
   align-items: center;
 `;
-const ProfileImg = styled.img`
-  width: 35px;
-`;
+
 const NickName = styled.p`
   font-size: 14px;
   margin-left: 8px;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
+import { ProfileImg } from '../ProfileImg';
 
 const MyProfile = () => {
   const { user } = useUserContext();
@@ -9,7 +10,7 @@ const MyProfile = () => {
     <>
       <StyledMyProfile>
         <div>
-          <ProfileImg src={user.profileImg} />
+          <ProfileImg src={user.profileImg} style={{width: '250px', margin: '0 auto', textAlign: 'center'}} />
           <NickName>{user.nickName}</NickName>
         </div>
         <div>
@@ -19,7 +20,7 @@ const MyProfile = () => {
               <BasicCol>
                 <BasicRow>
                   <div>
-                    <BasicInfoImg src={user.profileImg} />
+                    <ProfileImg src={user.profileImg} style={{width: '60px'}} />
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
                   </div>
                   <div>
@@ -76,12 +77,7 @@ const StyledMyProfile = styled.div`
     flex-direction: column;
   }
 `;
-const ProfileImg = styled.img`
-  width: 250px;
-  margin: 0 auto;
-  text-align: center;
-  border-radius: 100%;
-`;
+
 const NickName = styled.p`
   font-size: 25px;
   margin-top: 10px;
@@ -133,10 +129,7 @@ const BasicRow = styled.div`
     font-weight: bold;
   }
 `;
-const BasicInfoImg = styled.img`
-  width: 60px;
-  border-radius: 100%;
-`;
+
 const BasicInfoNickName = styled.p`
   font-weight: bold;
   font-size: 24px;
