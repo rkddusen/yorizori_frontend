@@ -143,12 +143,14 @@ const RecipeReadPage = () => {
     }
   }
   const getReview = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/details/${params.id}`);
+    const res = await axios.get(`${axiosUrl}/recipe/get/reviews/${params.id}`);
     try {
       let _review = {};
       _review.starRate = res.data.starRate;
       _review.starCount = res.data.starCount;
       _review.reviewCount = res.data.reviewCount;
+      _review.reviews = res.data.reviews;
+      console.log(_review.starCount[0])
       setReview(_review);
     } catch {
       console.log("오류");
@@ -240,17 +242,17 @@ const RecipeReadPage = () => {
                   </div>
                   <div>
                     <div>
-                      <div><p>5</p><progress max={110} value={100} /><p>100</p></div>
-                      <div><p>4</p><progress max={110} value={0} /><p>0</p></div>
-                      <div><p>3</p><progress max={110} value={0} /><p>0</p></div>
-                      <div><p>2</p><progress max={110} value={10} /><p>10</p></div>
-                      <div><p>1</p><progress max={110} value={0} /><p>0</p></div>
+                      <div><p>5</p><progress max={review?.reviewCount} value={review?.starCount[0]} /><p>{review?.starCount[0]}</p></div>
+                      <div><p>4</p><progress max={review?.reviewCount} value={review?.starCount[1]} /><p>{review?.starCount[1]}</p></div>
+                      <div><p>3</p><progress max={review?.reviewCount} value={review?.starCount[2]} /><p>{review?.starCount[2]}</p></div>
+                      <div><p>2</p><progress max={review?.reviewCount} value={review?.starCount[3]} /><p>{review?.starCount[3]}</p></div>
+                      <div><p>1</p><progress max={review?.reviewCount} value={review?.starCount[4]} /><p>{review?.starCount[4]}</p></div>
                     </div>
                   </div>
                 </ReviewExplainBox>
                 <ReviewWriteBox>
                   <ReviewStar>
-                    <p>별점</p>
+                    <p>별점 : </p>
                     <Star size={24} color={star[0] ? '#FFA800' : '#efefef'} onClick={() => {getStar(1)}} />
                     <Star size={24} color={star[1] ? '#FFA800' : '#efefef'} onClick={() => {getStar(2)}} />
                     <Star size={24} color={star[2] ? '#FFA800' : '#efefef'} onClick={() => {getStar(3)}} />
@@ -261,7 +263,25 @@ const RecipeReadPage = () => {
                   <ReviewSubmitBtn onClick={saveReview}>작성</ReviewSubmitBtn>
                 </ReviewWriteBox>
                 <div>
-
+                  {review?.reviews.map((e, i) => (
+                    <ReviewList key={i}>
+                      <div>
+                        <img src={e.profileImg} />
+                      </div>
+                      <div>
+                        <ReviewListStar>
+                          <Star size={18} color={e.scope >= 1 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.scope >= 2 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.scope >= 3 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.scope >= 4 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.scope >= 5 ? '#FFA800' : '#efefef'} />
+                        </ReviewListStar>
+                        <ReviewListProfile>{e.nickname}</ReviewListProfile>
+                        <ReviewListContent>{e.review}</ReviewListContent>
+                        <ReviewListDate>{e.date}</ReviewListDate>
+                      </div>
+                    </ReviewList>
+                  ))}
                 </div>
               </RecipeDetailBox>
             </RecipeContents>
@@ -604,5 +624,41 @@ const ReviewSubmitBtn = styled.button`
   &:hover{
     cursor: pointer;
   }
+`;
+const ReviewList = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 20px;
+  padding: 0 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #efefef;
+  display: flex;
+  flex-direction: row;
+
+  & > div > img{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    margin-right: 5px;
+  }
+`;
+const ReviewListStar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  margin-bottom: 5px;
+`;
+const ReviewListProfile = styled.p`
+  margin-bottom: 10px;
+  font-size: 10px;
+  color: #aaaaaa;
+`;
+const ReviewListContent = styled.div`
+  margin-bottom: 10px;
+  font-size: 14px;
+`;
+const ReviewListDate = styled.p`
+  font-size: 12px;
+  color: #aaaaaa;
 `;
 export default RecipeReadPage;
