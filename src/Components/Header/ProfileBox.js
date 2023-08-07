@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../contexts/UserContext';
+import { ProfileImg } from '../ProfileImg';
 
 const ProfileBox = (props) => {
   const { profileBoxOpen } = props;
@@ -26,7 +27,7 @@ const ProfileBox = (props) => {
     <StyledProfileBox $profileBoxOpen={profileBoxOpen}>
       <MainArea>
         <InfoArea>
-          <ProfileImg src={user.profileImg} />
+          <ProfileImg src={user.profileImg} style={{width: '40px'}} />
           <NickName>{user.nickName}</NickName>
         </InfoArea>
         <VisitArea>
@@ -80,10 +81,7 @@ const InfoArea = styled.div`
   align-items: center;
   justify-content: start;
 `;
-const ProfileImg = styled.img`
-  width: 40px;
-  border-radius: 100%;
-`;
+
 const NickName = styled.p`
   font-size: 16px;
   margin-left: 10px;

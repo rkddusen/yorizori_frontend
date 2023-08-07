@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Heart } from './Evaluation';
+import { ProfileImg } from './ProfileImg';
 
 function TipView(props){
   const { tip } = props;
@@ -14,7 +15,7 @@ function TipView(props){
   return(
       <TipBox onClick={() => movePage(tip?.id)}>
         <Profile>
-          <ProfileImg src={tip?.profileImg} />
+          <ProfileImg src={tip?.profileImg} style={{width: '35px'}}/>
           <NickName>{tip?.nickname}</NickName>
         </Profile>
         <Clickable>
@@ -47,9 +48,7 @@ const Profile = styled.div`
   justify-content: start;
   align-items: center;
 `;
-const ProfileImg = styled.img`
-  width: 35px;
-`;
+
 const NickName = styled.p`
   font-size: 14px;
   margin-left: 8px;

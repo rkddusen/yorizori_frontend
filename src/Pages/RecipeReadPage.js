@@ -6,6 +6,7 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import { Star } from "../Components/Evaluation";
 import { useUserContext } from '../contexts/UserContext';
+import { ProfileImg } from '../Components/ProfileImg';
 
 const RecipeReadPage = () => {
   const [recipe, setRecipe] = useState(null);
@@ -192,12 +193,12 @@ const RecipeReadPage = () => {
                 <SubTitle>
                   <Star />
                   <SubTitleContent>
-                    {review?.starRate} ({review?.starCount})
+                    {review?.starRate} ({review?.reviewCount})
                   </SubTitleContent>
                 </SubTitle>
                 <Explain>
                   <Profile>
-                    <ProfileImg src={process.env.REACT_APP_IMG_URL + recipe?.profileImg} />
+                    <ProfileImg src={recipe?.profileImg} style={{width: '35px', marginRight: '10px'}} />
                     <ProfileNickname>{recipe?.nickname}</ProfileNickname>
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
@@ -389,10 +390,10 @@ const Profile = styled.div`
   justify-content: start;
   align-items: center;
 `;
-const ProfileImg = styled.img`
-  width: 35px;
-  margin-right: 10px;
-`;
+// const ProfileImg = styled.img`
+//   width: 35px;
+//   margin-right: 10px;
+// `;
 const ProfileNickname = styled.p`
   font-size: 18px;
 `;

@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import Menus from "./Menus";
 import ShortMenus from './ShortMenus';
 import ProfileBox from './ProfileBox';
+import { ProfileImgClickable } from '../ProfileImg'
 
 function Header() {
   const { user } = useUserContext();
@@ -72,7 +73,7 @@ function Header() {
               user.id ? 
               (
                 <StyledProfileList ref={boxRef}>
-                  <ProfileImg src={user.profileImg} onClick={OnBoxClickHandler} />
+                  <ProfileImgClickable src={user.profileImg} onClick={OnBoxClickHandler} style={{width:'32px', marginRight: '10px'}} />
                   <ProfileBox profileBoxOpen={profileBoxOpen} />
                 </StyledProfileList>
               ) : 
@@ -170,14 +171,14 @@ const StyledProfileList = styled.div`
     display: block;
   }
 `;
-const ProfileImg = styled.img`
-  width: 32px;
-  margin-right: 10px;
-  border-radius: 100%;
-  &:hover{
-    cursor: pointer;
-  }
-`;
+// const ProfileImg = styled.img`
+//   width: 32px;
+//   margin-right: 10px;
+//   border-radius: 100%;
+//   &:hover{
+//     cursor: pointer;
+//   }
+// `;
 const LoginBtn = styled.button`
   font-size: 12px;
   padding: 5px 10px;
