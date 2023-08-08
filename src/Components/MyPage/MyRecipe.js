@@ -1,36 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import RecipeView from '../RecipeView';
 import NoRecipe from '../NoRecipe';
+import Paging from '../Paging';
 
 const MyRecipe = () => {
   const { user } = useUserContext();
   const [result, setResult] = useState([]);
+  const [totalRecipeCount, setTotalRecipeCount] = useState(0);
+  const location = useLocation();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
-    let _result = [];
-    for(let i = 0; i < 0; i++){
-      _result.push(
-        <RecipeView
-          key={i}
-          recipe={
-            {
-              id: i+1,
-              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
-              nickname: "duyyaa",
-              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-              title: "제목",
-              starRate: 4.5,
-              starCount: 100,
-              viewCount: 100,
+    const search = new URLSearchParams(location.search);
+    const _page = search.get("page") || 1;
+    
+    getRecipe(_page-1);
+  }, [location]);
+
+  const getRecipe = async (page) => {
+    const res = await axios.get(
+      `${axiosUrl}/recipe/get/user/${user.id}?pageNo=${page}`
+    );
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.content.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data.content[i].id,
+                title: res.data.content[i].title,
+                thumbnail: res.data.content[i].thumbnail,
+                starRate: res.data.content[i].starRate,
+                starCount: res.data.content[i].starCount,
+                profileImg: res.data.content[i].profileImg,
+                nickname: res.data.content[i].nickname,
+                viewCount: res.data.content[i].viewCount,
+              }
             }
-          }
-        />
-      )
+          />
+        );
+      }
+      
+      setResult(_result);
+      setTotalRecipeCount(res.data.totalElements);
+    } catch {
+      console.log("오류");
     }
-    setResult(_result);
-  },[]);
+  };
 
   return (
     <>
@@ -39,6 +61,7 @@ const MyRecipe = () => {
           <RecipeList>
             {result}
           </RecipeList>
+          <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
         </>
       ) : (
         <NoRecipe />
