@@ -27,7 +27,7 @@ const ProfileBox = (props) => {
     <StyledProfileBox $profileBoxOpen={profileBoxOpen}>
       <MainArea>
         <InfoArea>
-          <ProfileImg src={user.profileImg} style={{width: '40px'}} />
+          <ProfileImg src={user.profileImg} style={{width: '40px', height: '40px'}} />
           <NickName>{user.nickName}</NickName>
         </InfoArea>
         <VisitArea>

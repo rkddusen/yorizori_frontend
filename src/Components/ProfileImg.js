@@ -11,6 +11,7 @@ export const ProfileImg = (props) => {
 const StyledProfileImg = styled.img`
   border-radius: 100%;
   border: 1px solid #dfdfdf;
+  object-fit: cover;
 `;
 
 export const ProfileImgClickable = (props) => {
@@ -23,6 +24,7 @@ export const ProfileImgClickable = (props) => {
   const StyledProfileImgClickable = styled.img`
     border-radius: 100%;
     border: 1px solid #dfdfdf;
+    object-fit: cover;
     &:hover{
         cursor: pointer;
     }
