@@ -15,6 +15,7 @@ import LoginPage from "./Pages/LoginPage";
 import MyPage from './Pages/MyPage';
 import RecipeReadPage from './Pages/RecipeReadPage';
 import Search from './Pages/Search';
+import WritingPage from './Pages/WritingPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -27,14 +28,14 @@ function App() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getUser = async () => {
-  const res = await axios.get(`${axiosUrl}/user/get/all`);
+  const res = await axios.get(`${axiosUrl}/user/get/abbbb`);
     try {
       let _user = { ...user };
-      _user.id = res.data[3].userTokenId;
-      _user.nickName = res.data[3].nickname;
-      _user.age = res.data[3].age;
-      _user.gender = res.data[3].gender;
-      _user.profileImg = res.data[3].imageAddress;
+      _user.id = res.data.userTokenId;
+      _user.nickName = res.data.nickname;
+      _user.age = res.data.age;
+      _user.gender = res.data.gender;
+      _user.profileImg = res.data.imageAddress;
       setUser(_user);
     } catch {
       console.log("오류");
@@ -67,6 +68,7 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/search" element={<Search />} />
             <Route path="/recipe/:id" element={<RecipeReadPage />} />
+            <Route path="/writing" element={<WritingPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>
