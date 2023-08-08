@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
+import axios from 'axios';
 import { ProfileImg } from '../ProfileImg';
 
 const MyProfile = () => {
   const { user } = useUserContext();
+  const profileImgRef = useRef(null);
 
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+
+  const handleProfileImgClick = () => {
+    profileImgRef.current.click();
+  };
+  const handleProfileImgChange = async (e) => {
+    const _profileImg = e.target.files[0];
+    const formData = new FormData();
+    formData.append("profileImage", _profileImg);
+    const headers = {
+      "Content-Type": "multipart/form-data",
+    };
+    axios
+      .post(`${axiosUrl}/user/update/profileImage/abbbb`, formData, { headers })
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <StyledMyProfile>
@@ -24,7 +47,8 @@ const MyProfile = () => {
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
                   </div>
                   <div>
-                    <ChangeBtn>사진 변경</ChangeBtn>
+                    <ChangeBtn onClick={handleProfileImgClick}>사진 변경</ChangeBtn>
+                    <input type="file" accept="image/*" style={{display: 'none'}} ref={profileImgRef} onChange={handleProfileImgChange} />
                     <ChangeBtn>닉네임 변경</ChangeBtn>
                   </div>
                 </BasicRow>
