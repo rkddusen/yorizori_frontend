@@ -33,7 +33,7 @@ const MyProfile = () => {
     <>
       <StyledMyProfile>
         <div>
-          <ProfileImg src={user.profileImg} style={{width: '250px', margin: '0 auto', textAlign: 'center'}} />
+          <ProfileImg src={user.profileImg} style={{width: '250px', height: '250px', margin: '0 auto', textAlign: 'center'}} />
           <NickName>{user.nickName}</NickName>
         </div>
         <div>
@@ -43,7 +43,7 @@ const MyProfile = () => {
               <BasicCol>
                 <BasicRow>
                   <div>
-                    <ProfileImg src={user.profileImg} style={{width: '60px'}} />
+                    <ProfileImg src={user.profileImg} style={{width: '60px', height: '60px'}} />
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
                   </div>
                   <div>

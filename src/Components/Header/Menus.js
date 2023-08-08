@@ -60,7 +60,7 @@ function Menus(props){
         {user.id ?
           <>
             <StyledProfileList  ref={boxRef}>
-              <ProfileImgClickable onClick={OnBoxClickHandler} src={user.profileImg} style={{width: '40px'}} />
+              <ProfileImgClickable onClick={OnBoxClickHandler} src={user.profileImg} style={{width: '40px', height: '40px'}} />
               <ProfileBox user={user} profileBoxOpen={profileBoxOpen} />
             </StyledProfileList>
             

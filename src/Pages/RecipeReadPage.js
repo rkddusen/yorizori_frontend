@@ -198,7 +198,7 @@ const RecipeReadPage = () => {
                 </SubTitle>
                 <Explain>
                   <Profile>
-                    <ProfileImg src={recipe?.profileImg} style={{width: '35px', marginRight: '10px'}} />
+                    <ProfileImg src={recipe?.profileImg} style={{width: '35px', heigth: '35px', marginRight: '10px'}} />
                     <ProfileNickname>{recipe?.nickname}</ProfileNickname>
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
