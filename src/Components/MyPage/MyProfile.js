@@ -1,94 +1,103 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
-import axios from 'axios';
 import { ProfileImg } from '../ProfileImg';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ProfileChange from './ProfileChange';
 
 const MyProfile = () => {
   const { user } = useUserContext();
-  const profileImgRef = useRef(null);
+  const [changeForm, setChangeForm] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const search = new URLSearchParams(location.search);
 
-  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const activeChangeForm = () => {
+    search.set("ischange", true);
+    navigate({
+      pathname: location.pathname,
+      search: search.toString(),
+    });
+  };
 
-  const handleProfileImgClick = () => {
-    profileImgRef.current.click();
-  };
-  const handleProfileImgChange = async (e) => {
-    const _profileImg = e.target.files[0];
-    const formData = new FormData();
-    formData.append("profileImage", _profileImg);
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
-    axios
-      .post(`${axiosUrl}/user/update/profileImage/abbbb`, formData, { headers })
-      .then((res) => {
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  useEffect(() => {
+    setChangeForm(search.get('ischange') || false)
+  },[location])
+
   return (
     <>
-      <StyledMyProfile>
-        <div>
-          <ProfileImg src={user.profileImg} style={{width: '250px', height: '250px', margin: '0 auto', textAlign: 'center'}} />
-          <NickName>{user.nickName}</NickName>
-        </div>
-        <div>
-          <ProfileInfo>
-            <ProfileBox>
-              <BasicInfo>기본 정보</BasicInfo>
-              <BasicCol>
-                <BasicRow>
-                  <div>
-                    <ProfileImg src={user.profileImg} style={{width: '60px', height: '60px'}} />
+      {!changeForm ? (
+        <StyledMyProfile>
+          <div>
+            <ProfileImg
+              src={user.profileImg}
+              style={{
+                width: "250px",
+                height: "250px",
+                margin: "0 auto",
+                textAlign: "center",
+              }}
+            />
+            <NickName>{user.nickName}</NickName>
+          </div>
+          <div>
+            <ProfileInfo>
+              <ProfileBox>
+                <InfoTitle>
+                  <p>기본 정보</p>
+                  <InfoChangeBtn onClick={activeChangeForm}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    프로필 변경
+                  </InfoChangeBtn>
+                </InfoTitle>
+                <InfoCol>
+                  <BasicRow>
+                    <ProfileImg
+                      src={user.profileImg}
+                      style={{ width: "60px", height: "60px" }}
+                    />
                     <BasicInfoNickName>{user.nickName}</BasicInfoNickName>
-                  </div>
-                  <div>
-                    <ChangeBtn onClick={handleProfileImgClick}>사진 변경</ChangeBtn>
-                    <input type="file" accept="image/*" style={{display: 'none'}} ref={profileImgRef} onChange={handleProfileImgChange} />
-                    <ChangeBtn>닉네임 변경</ChangeBtn>
-                  </div>
-                </BasicRow>
-              </BasicCol>
-              <BasicCol>
-                <BasicRow>
-                  <div>
-                    <p>성별</p><p>{user.gender}</p>
-                  </div>
-                  <div>
-                    <ChangeBtn>변경</ChangeBtn>
-                  </div>
-                </BasicRow>
-                <BasicRow>
-                  <div>
-                    <p>연령대</p><p>{user.age}</p>
-                  </div>
-                  <div>
-                    <ChangeBtn>변경</ChangeBtn>
-                  </div>
-                </BasicRow>
-              </BasicCol>
-              <BasicCol>
-                <BasicRow>
-                  <div>
+                  </BasicRow>
+                </InfoCol>
+                <InfoCol>
+                  <BasicRow>
+                    <p>성별</p>
+                    <p>{user.gender}</p>
+                  </BasicRow>
+                  <BasicRow>
+                    <p>연령대</p>
+                    <p>{user.age}</p>
+                  </BasicRow>
+                </InfoCol>
+                <InfoCol>
+                  <AgreeRow>
                     <p>개인 정보 수집 동의(?)</p>
-                  </div>
-                  <div>
-                    <StyledSvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></StyledSvg>
-                  </div>
-                </BasicRow>
-              </BasicCol>
-            </ProfileBox>
-            <DropOut>회원 탈퇴 {'>'}</DropOut>
-          </ProfileInfo>
-        </div>
-      </StyledMyProfile>
+                    <p>동의함</p>
+                  </AgreeRow>
+                </InfoCol>
+              </ProfileBox>
+              <DropOut>회원 탈퇴 {">"}</DropOut>
+            </ProfileInfo>
+          </div>
+        </StyledMyProfile>
+      ) : (
+        <ProfileChange />
+      )}
     </>
   );
-}
+};
 
 const StyledMyProfile = styled.div`
   width: 100%;
@@ -125,12 +134,33 @@ const ProfileBox = styled.div`
   box-sizing: border-box;
   box-shadow: 1px 5px 10px rgba(255,168,0,0.1);
 `;
-const BasicInfo = styled.p`
+const InfoTitle = styled.div`
   font-size: 14px;
-  color: #555555;
-  text-align: start;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  & > p:first-child{
+    color: #555555;
+  }
 `;
-const BasicCol = styled.div`
+const InfoChangeBtn = styled.p`
+  display: flex;
+  align-items: center;
+  stroke: #000000;
+    
+  & > svg{
+    margin-right: 2px;
+    stroke: inherit;
+  }
+  &:hover{
+    cursor: pointer;
+    color: #aaaaaa;
+    stroke: #aaaaaa;
+  }
+`;
+const InfoCol = styled.div`
   padding: 20px 0;
   border-bottom: 1px solid rgba(255,168,0,0.3);
   &:last-child{
@@ -139,16 +169,12 @@ const BasicCol = styled.div`
 `;
 const BasicRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: start;
   align-items: center;
   margin: 10px 0;
-
-  & > div{
-    display: flex;
-    justify-content: start;
-    align-items: center;
-  }
-  & > div > p:first-child{
+  height: 30px;
+  & > p:first-child{
     margin-right: 10px;
     font-weight: bold;
   }
@@ -159,22 +185,17 @@ const BasicInfoNickName = styled.p`
   font-size: 24px;
   margin-left: 10px;
 `;
-const ChangeBtn = styled.button`
-  background-color: #FFFDF9;
-  color: black;
-  padding: 5px 10px;
-  margin: 0 5px;
-  border: 1px solid rgba(255,168,0,0.3);
-  border-radius: 5px;
-  font-size: 14px;
-  &:hover{
-    cursor: pointer;
+const AgreeRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  height: 30px;
+  & > p:first-child{
+    font-weight: bold;
   }
-`;
-const StyledSvg = styled.svg`
-  margin: 0 5px;
-  &:hover{
-    cursor: pointer;
+  & > p:last-child{
+    font-size: 12px;
   }
 `;
 const DropOut = styled.p`
