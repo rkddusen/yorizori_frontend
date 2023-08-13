@@ -37,6 +37,7 @@ function MyPage() {
     const queryParams = new URLSearchParams(location.search);
     queryParams.set('view', view);
     queryParams.delete('page');
+    queryParams.delete('ischange');
     navigate({
       pathname: location.pathname,
       search: queryParams.toString(),
