@@ -80,6 +80,8 @@ const GlobalStyles = createGlobalStyle`
   body{
     font-family:'Noto Sans KR';
     color: #101010;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 `;
 

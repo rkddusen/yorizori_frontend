@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProfileBox from './ProfileBox';
 import { useUserContext } from '../../contexts/UserContext';
 import { ProfileImgClickable } from '../ProfileImg';
+import SearchBar from './SearchBar';
 
 function Menus(props){
   const { user } = useUserContext();
@@ -53,6 +54,7 @@ function Menus(props){
   return(
     <>
       <StyledMenus>
+        <StyledList><SearchBar strokeWidth={1.5} /></StyledList>
         <StyledList checked={nowPath === "/recommend" ? true : false} onClick={moveRecommendPage}>추천</StyledList>
         <StyledList checked={nowPath === "/category" ? true : false} onClick={moveCategoryPage}>카테고리</StyledList>
         <StyledList checked={nowPath === "/ranking" ? true : false} onClick={moveRankingPage}>랭킹</StyledList>
@@ -83,9 +85,11 @@ const StyledList = styled.li`
   margin-left: 36px;
   font-size: 16px;
   color: ${props => props.checked ? "#FFA800" : "reset"};
+  stroke: #000000;
   &:hover{
     cursor: pointer;
     color: #FFA800;
+    stroke: #FFA800;
   }
 `;
 const StyledProfileList = styled.li`
@@ -98,5 +102,4 @@ const StyledProfileList = styled.li`
     display: none;
   }
 `;
-
 export default Menus;

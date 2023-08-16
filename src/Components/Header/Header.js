@@ -59,7 +59,7 @@ function Header() {
           <img src={process.env.PUBLIC_URL + '/images/logo.png'} height="28px" alt="logo" />
         </a>
         <DesktopNav>
-          <SearchBar />
+          {/* <SearchBar /> */}
           <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
         </DesktopNav>
       </StyledHeaderDesktop>
@@ -69,6 +69,7 @@ function Header() {
             <img src={process.env.PUBLIC_URL + '/images/logo.png'} height="20px" alt="logo" />
           </a>
           <PhoneDetail>
+            <SearchBar strokeWidth={1} />
             {
               user.id ? 
               (
@@ -100,7 +101,7 @@ function Header() {
           </PhoneDetail>
           <ShortMenus shortMenusOpen={shortMenusOpen} setShortMenusOpen={setShortMenusOpen} />
         </PhoneNav>
-        <SearchBar />
+        {/* <SearchBar /> */}
       </StyledHeaderPhone>
     </StyledHeader>
   );
@@ -191,5 +192,4 @@ const LoginBtn = styled.button`
     cursor: pointer;
   }
 `;
-
 export default Header;
