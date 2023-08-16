@@ -12,6 +12,7 @@ function Header() {
   const { user } = useUserContext();
   const [shortMenusOpen, setShortMenusOpen] = useState(false);
   const [profileBoxOpen, setProfileBoxOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ function Header() {
         </a>
         <DesktopNav>
           {/* <SearchBar /> */}
-          <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
+          <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} isOpen={isOpen} setIsOpen={setIsOpen} />
         </DesktopNav>
       </StyledHeaderDesktop>
       <StyledHeaderPhone>
@@ -69,7 +70,7 @@ function Header() {
             <img src={process.env.PUBLIC_URL + '/images/logo.png'} height="20px" alt="logo" />
           </a>
           <PhoneDetail>
-            <SearchBar strokeWidth={1} />
+            <SearchBar strokeWidth={1} isOpen={isOpen} setIsOpen={setIsOpen} />
             {
               user.id ? 
               (

@@ -6,8 +6,7 @@ const Circle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.org/20
 const CheckCircle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width={size} height={size} viewBox="0 0 24 24" fill="white" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
 
 function SearchBar(props) {
-  const { strokeWidth } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const { strokeWidth, isOpen, setIsOpen } = props;
   const [isRemoveModal, setIsRemoveModal] = useState(true);
   const [type, setType] = useState('menu');
   const navigate = useNavigate();
@@ -29,7 +28,10 @@ function SearchBar(props) {
     if (isOpen) {
       const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollBarWidth}px`;
+      if(scrollBarWidth > 0){
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+      
       setIsRemoveModal(false);
     } else {
       const timer = setTimeout(() => {
@@ -100,6 +102,7 @@ function SearchBar(props) {
 }
 
 const SearchSvg = styled.svg`
+  margin: 0 10px;
   &:hover {
     cursor: pointer;
   }
@@ -146,8 +149,9 @@ const SearchModal = styled.div`
   left: 0;
   width: 100%;
   height: 400px;
-  background-image: url("./images/background.jpg");
+  background-image: url("./images/background.png");
   background-size: cover;
+  background-position: center;
   animation-name: ${props => props.$isopen ? SearchDown : SearchUp};
   animation-duration: 0.5s;
   animation-delay: 0s;

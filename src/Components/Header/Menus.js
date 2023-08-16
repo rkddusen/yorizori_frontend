@@ -8,7 +8,7 @@ import SearchBar from './SearchBar';
 
 function Menus(props){
   const { user } = useUserContext();
-  const { profileBoxOpen, setProfileBoxOpen } = props;
+  const { profileBoxOpen, setProfileBoxOpen, isOpen, setIsOpen } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const [nowPath, setNowPath] = useState(location.pathname);
@@ -54,7 +54,7 @@ function Menus(props){
   return(
     <>
       <StyledMenus>
-        <StyledList><SearchBar strokeWidth={1.5} /></StyledList>
+        <StyledList><SearchBar strokeWidth={1.5} isOpen={isOpen} setIsOpen={setIsOpen} /></StyledList>
         <StyledList checked={nowPath === "/recommend" ? true : false} onClick={moveRecommendPage}>추천</StyledList>
         <StyledList checked={nowPath === "/category" ? true : false} onClick={moveCategoryPage}>카테고리</StyledList>
         <StyledList checked={nowPath === "/ranking" ? true : false} onClick={moveRankingPage}>랭킹</StyledList>
@@ -90,6 +90,11 @@ const StyledList = styled.li`
     cursor: pointer;
     color: #FFA800;
     stroke: #FFA800;
+  }
+  &:first-child{
+    &:hover{
+      cursor: initial;
+    }
   }
 `;
 const StyledProfileList = styled.li`
