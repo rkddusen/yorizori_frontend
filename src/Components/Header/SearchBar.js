@@ -8,6 +8,7 @@ const CheckCircle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.o
 function SearchBar(props) {
   const { strokeWidth } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const [isRemoveModal, setIsRemoveModal] = useState(true);
   const [type, setType] = useState('menu');
   const navigate = useNavigate();
   const searchRef = useRef(null);
@@ -29,6 +30,12 @@ function SearchBar(props) {
       const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = `${scrollBarWidth}px`;
+      setIsRemoveModal(false);
+    } else {
+      const timer = setTimeout(() => {
+        setIsRemoveModal(true);
+      }, 500)
+      return () => clearTimeout(timer);
     }
 
     return () => {
@@ -39,59 +46,60 @@ function SearchBar(props) {
 
   return (
     <>
-      {!isOpen ? (
+    {
+      isRemoveModal ? (
         <SearchSvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" onClick={openSearch}>
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </SearchSvg>
       ) : (
-        <SearchArea>
-          <SearchModal isopen={isOpen}>
+        <SearchArea $isopen={isOpen} $isremovemodal={isRemoveModal}>
+          <SearchModal $isopen={isOpen}>
             <div>
-            <Contents>
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={closeSearch}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </div>
-              <div>
-                <SearchType>
-                  <div onClick={() => changeType('menu')}>{type === 'menu' ? <CheckCircle /> : <Circle />}메뉴로 검색</div>
-                  <div onClick={() => changeType('ingredient')}>{type === 'ingredient' ? <CheckCircle /> : <Circle />}재료로 검색</div>
-                </SearchType>
-                <SearchBox>
-                  <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef} onKeyDown={handleEnterKey} />
-                  <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  </SearchSvg>
-                </SearchBox>
-                <SearchExplain>
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  </div>
-                  <div>
-                    <p>이렇게 검색해보세요!</p>
-                    <br />
-                    <p>메뉴로 검색</p>
-                    <p>ex) 제육볶음</p>
-                    <p>ex) 파스타</p>
-                    <br />
-                    <p>재료로 검색</p>
-                    <p>ex) 달걀</p>
-                    <p>ex) 소세지, 케첩, 설탕, 양파</p>
-                  </div>
-                </SearchExplain>
-              </div>  
-            </Contents>
+              <Contents>
+                <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={closeSearch}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </div>
+                <div>
+                  <SearchType>
+                    <div onClick={() => changeType('menu')}>{type === 'menu' ? <CheckCircle /> : <Circle />}메뉴로 검색</div>
+                    <div onClick={() => changeType('ingredient')}>{type === 'ingredient' ? <CheckCircle /> : <Circle />}재료로 검색</div>
+                  </SearchType>
+                  <SearchBox>
+                    <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef} onKeyDown={handleEnterKey} />
+                    <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </SearchSvg>
+                  </SearchBox>
+                  <SearchExplain>
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <div>
+                      <p>이렇게 검색해보세요!</p>
+                      <br />
+                      <p>메뉴로 검색</p>
+                      <p>ex) 제육볶음</p>
+                      <p>ex) 파스타</p>
+                      <br />
+                      <p>재료로 검색</p>
+                      <p>ex) 달걀</p>
+                      <p>ex) 소세지, 케첩, 설탕, 양파</p>
+                    </div>
+                  </SearchExplain>
+                </div>  
+              </Contents>
             </div>
           </SearchModal>
         </SearchArea>
-      )}
+      )
+    }
     </>
   );
 }
 
 const SearchSvg = styled.svg`
-  margin: 0 10px;
   &:hover {
     cursor: pointer;
   }
@@ -103,7 +111,14 @@ const SearchArea = styled.div`
   width: 100%;
   height: 100%;
   background-color: #00000099;
-  overflow-y: scroll;
+  overflow-y: ${props => props.$isopen ? 'scroll' : 'hidden'};
+  visibility: ${props => props.$isopen ? 'visible' : 'hidden'};
+  ${props => !props.$isopen ? `
+    transition-property: visibility;
+    transition-delay: 0.5s` 
+    : null
+  };
+  display: ${props => props.$isremovemodal ? 'none' : 'block'};
   &:hover{
     cursor: initial;
     color: black;
@@ -133,7 +148,7 @@ const SearchModal = styled.div`
   height: 400px;
   background-image: url("./images/background.jpg");
   background-size: cover;
-  animation-name: ${props => props.isopen ? SearchDown : SearchUp};
+  animation-name: ${props => props.$isopen ? SearchDown : SearchUp};
   animation-duration: 0.5s;
   animation-delay: 0s;
   animation-fill-mode: backwards;
