@@ -14,7 +14,7 @@ import NeedLoginPage from "./Pages/NeedLoginPage";
 import LoginPage from "./Pages/LoginPage";
 import MyPage from './Pages/MyPage';
 import RecipeReadPage from './Pages/RecipeReadPage';
-import Search from './Pages/Search';
+import SearchPage from './Pages/SearchPage';
 import WritingPage from './Pages/WritingPage';
 
 function App() {
@@ -66,7 +66,7 @@ function App() {
             />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/mypage" element={<MyPage />} />
-            <Route path="/search" element={<Search />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/recipe/:id" element={<RecipeReadPage />} />
             <Route path="/writing" element={<WritingPage />} />
           </Routes>
