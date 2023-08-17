@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Circle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width={size} height={size} viewBox="0 0 24 24" fill="white" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>);
 const CheckCircle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width={size} height={size} viewBox="0 0 24 24" fill="white" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
@@ -8,8 +8,9 @@ const CheckCircle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.o
 function SearchBar(props) {
   const { strokeWidth, isOpen, setIsOpen } = props;
   const [isRemoveModal, setIsRemoveModal] = useState(true);
-  const [type, setType] = useState('menu');
+  const [type, setType] = useState('food');
   const navigate = useNavigate();
+  const location = useLocation();
   const searchRef = useRef(null);
 
   const openSearch = () => setIsOpen(true);
@@ -17,8 +18,13 @@ function SearchBar(props) {
   const changeType = (str) => setType(str);
 
   const search = () => {
-    navigate(`/search?search=`+searchRef.current.value);
+    navigate(`/search?search=${searchRef.current.value}&method=${type}`);
   };
+  useEffect(() => {
+    setIsOpen(false);
+    setIsRemoveModal(true);
+  }, [location]);
+
   const handleEnterKey = (event) => {
     if(event.key === 'Enter'){
       search();
@@ -31,7 +37,6 @@ function SearchBar(props) {
       if(scrollBarWidth > 0){
         document.body.style.paddingRight = `${scrollBarWidth}px`;
       }
-      
       setIsRemoveModal(false);
     } else {
       const timer = setTimeout(() => {
@@ -43,8 +48,13 @@ function SearchBar(props) {
     return () => {
       document.body.style.overflow = 'auto';
       document.body.style.paddingRight = '0';
+      setType('food');
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if(!isRemoveModal) searchRef.current?.focus();
+  },[isRemoveModal])
 
   return (
     <>
@@ -64,12 +74,12 @@ function SearchBar(props) {
                 </div>
                 <div>
                   <SearchType>
-                    <div onClick={() => changeType('menu')}>{type === 'menu' ? <CheckCircle /> : <Circle />}메뉴로 검색</div>
-                    <div onClick={() => changeType('ingredient')}>{type === 'ingredient' ? <CheckCircle /> : <Circle />}재료로 검색</div>
+                    <div onClick={() => changeType('food')}>{type === 'food' ? <CheckCircle /> : <Circle />}요리명 검색</div>
+                    <div onClick={() => changeType('ingredient')}>{type === 'ingredient' ? <CheckCircle /> : <Circle />}재료명 검색</div>
                   </SearchType>
                   <SearchBox>
                     <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef} onKeyDown={handleEnterKey} />
-                    <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
+                    <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
                       <circle cx="11" cy="11" r="8"></circle>
                       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </SearchSvg>
@@ -81,11 +91,11 @@ function SearchBar(props) {
                     <div>
                       <p>이렇게 검색해보세요!</p>
                       <br />
-                      <p>메뉴로 검색</p>
+                      <p>요리명 검색</p>
                       <p>ex) 제육볶음</p>
                       <p>ex) 파스타</p>
                       <br />
-                      <p>재료로 검색</p>
+                      <p>재료명 검색</p>
                       <p>ex) 달걀</p>
                       <p>ex) 소세지, 케첩, 설탕, 양파</p>
                     </div>
@@ -105,6 +115,7 @@ const SearchSvg = styled.svg`
   margin: 0 10px;
   &:hover {
     cursor: pointer;
+    stroke: #FFA800;
   }
 `;
 const SearchArea = styled.div`

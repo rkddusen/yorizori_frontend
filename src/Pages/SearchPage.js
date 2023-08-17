@@ -7,45 +7,36 @@ import RecipeView from '../Components/RecipeView';
 import Paging from '../Components/Paging';
 import NoRecipe from '../Components/NoRecipe';
 
-function Search() {
+function SearchPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [nowQuery, setNowQuery] = useState('food');
+  const [nowMethod, setNowMethod] = useState('');
+  const [nowSearch, setNowSearch] = useState('');
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    if(queryParams.get('method') === 'ingredient') {
-      getRecipe('ingredient');
-      setNowQuery('ingredient');
-    }
-    else {
-      getRecipe('food');
-      setNowQuery('food');
-    }
+    let _method = queryParams.get('method');
+    let _search = queryParams.get('search');
+    
+    getRecipe(_method, _search);
+    setNowMethod(_method);
+    setNowSearch(_search);
+
   },[location]);
 
-  const movePage = (method) => {
-    const queryParams = new URLSearchParams(location.search);
-    queryParams.set('method', method);
-    navigate({
-      pathname: location.pathname,
-      search: queryParams.toString(),
-    });
-  }
-
-  const getRecipe = (method) => {
+  const getRecipe = (method, search) => {
     let _result = [];
     let _count = 0;
-    for(let i = 0; i < 0; i++){
+    for(let i = 0; i < 10; i++){
       _result.push(
         <RecipeView
           key={i}
           recipe={
             {
               id: i+1,
-              title: method,
+              title: method + search,
               thumbnail: '/src',
               starRate: 4.5,
               starCount: 100,
@@ -69,10 +60,10 @@ function Search() {
       <Header />
       <StyledBody>
         <Contents>
-          <SearchNavUl>
-            <SearchNavLi onClick={() => movePage('food')} checked={nowQuery === 'food'}>요리 검색</SearchNavLi>
-            <SearchNavLi onClick={() => movePage('ingredient')} checked={nowQuery === 'ingredient'}>재료 검색</SearchNavLi>
-          </SearchNavUl>
+          <SearchNav>
+            <p>{nowMethod === 'food' ? '요리명' : '재료명'} 검색 결과</p>
+            <p>"{nowSearch}"</p>
+          </SearchNav>
           {result.length ? (
               <>
                 <RecipeList>{result}</RecipeList>
@@ -108,29 +99,14 @@ const Contents = styled.div`
   }
 `;
 
-const SearchNavUl = styled.ul`
+const SearchNav = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: 50px;
-  margin-top: 50px;
-`;
-const SearchNavLi = styled.li`
-  width: 110px;
-  font-size: 18px;
-  text-align: center;
-  padding: 10px 0;
-  margin: 0 20px;
-  border-bottom: ${props => props.checked ? '2px solid #FFA800' : 'none'};
-  color: ${props => props.checked ? '#FFA800' : 'black'};
-  &:hover{
-    cursor: pointer;
-  }
-  @media screen and (max-width: 767px) {
-    width: 90px;
-    font-size: 14px;
-    margin: 0 15px;
+  font-size: 25px;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  & > p:first-child{
+    margin-bottom: 10px;
+    font-size: 20px;
   }
 `;
 
@@ -150,4 +126,4 @@ const RecipeList = styled.div`
   }
 `;
 
-export default Search;
+export default SearchPage;
