@@ -76,7 +76,7 @@ function Header() {
               (
                 <StyledProfileList ref={boxRef}>
                   <ProfileImgClickable src={user.profileImg} onClick={OnBoxClickHandler} style={{width:'32px', height:'32px', marginRight: '10px'}} />
-                  <ProfileBox profileBoxOpen={profileBoxOpen} />
+                  <ProfileBox profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
                 </StyledProfileList>
               ) : 
               (
