@@ -170,20 +170,24 @@ const RecipeReadPage = () => {
                   <img src={process.env.REACT_APP_IMG_URL + recipe?.thumbnail} />
                 </Thumbnail>
                 <Title>{recipe?.title}</Title>
-                <SubTitle>
-                  <SubTitleName>난이도</SubTitleName>
-                  <SubTitleContent $level={recipe?.level === "하"}>
-                    하
-                  </SubTitleContent>
-                  <SubTitleContent $level={recipe?.level === "중"}>
-                    중
-                  </SubTitleContent>
-                  <SubTitleContent $level={recipe?.level === "상"}>
-                    상
-                  </SubTitleContent>
-                  <SubTitleName>소요시간</SubTitleName>
-                  <SubTitleContent>{recipe?.time}</SubTitleContent>
-                </SubTitle>
+                <SubTitleFirst>
+                  <div>
+                    <SubTitleName>난이도</SubTitleName>
+                    <SubTitleContent $level={recipe?.level === "하"}>
+                      하
+                    </SubTitleContent>
+                    <SubTitleContent $level={recipe?.level === "중"}>
+                      중
+                    </SubTitleContent>
+                    <SubTitleContent $level={recipe?.level === "상"}>
+                      상
+                    </SubTitleContent>
+                  </div>
+                  <div>
+                    <SubTitleName>소요시간</SubTitleName>
+                    <SubTitleContent>{recipe?.time}</SubTitleContent>
+                  </div>
+                </SubTitleFirst>
                 <SubTitle>
                   <SubTitleName>카테고리</SubTitleName>
                   <SubTitleContent>
@@ -348,6 +352,9 @@ const Title = styled.div`
   text-align: start;
   margin-top: 20px;
   margin-bottom: 20px;
+  @media screen and (max-width: 767px) {
+    font-size: 20px;
+  }
 `;
 const SubTitle = styled.div`
   width: 100%;
@@ -360,6 +367,17 @@ const SubTitle = styled.div`
     padding: 10px 0;
   }
 `;
+const SubTitleFirst = styled(SubTitle)`
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+  }
+  & > div{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+  }
+`;
+
 const SubTitleName = styled.p`
   margin-left: 20px;
   margin-right: 10px;
