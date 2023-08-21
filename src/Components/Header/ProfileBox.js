@@ -5,12 +5,17 @@ import { useUserContext } from '../../contexts/UserContext';
 import { ProfileImg } from '../ProfileImg';
 
 const ProfileBox = (props) => {
-  const { profileBoxOpen } = props;
+  const { profileBoxOpen, setProfileBoxOpen } = props;
   const { user, setUser } = useUserContext();
   const navigate = useNavigate();
 
   const moveMypage = () => {
+    setProfileBoxOpen(false);
     navigate(`/mypage`);
+  }
+  const moveWritingPage = () => {
+    setProfileBoxOpen(false);
+    navigate(`/writing`);
   }
 
   const logout = () => {
@@ -35,7 +40,7 @@ const ProfileBox = (props) => {
           <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></StyledSvg>
             마이페이지
           </Visit>
-          <Visit>
+          <Visit onClick={moveWritingPage}>
           <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></StyledSvg>
             게시글 등록
           </Visit>
