@@ -13,7 +13,7 @@ function CookingTip(){
     const res = await axios.get(`${axiosUrl}/tip/get/part`);
     try {
       let _result = [];
-      for(let i = 0; i < 8; i++){
+      for(let i = 0; i < res.data.length; i++){
           _result.push(
             <TipView
               key={i}
@@ -22,7 +22,7 @@ function CookingTip(){
                   id: res.data[i].id,
                   title: res.data[i].title,
                   thumbnail: res.data[i].thumbnail,
-                  starCount: res.data[i].heartCount,
+                  heartCount: res.data[i].heartCount,
                   profileImg: res.data[i].profileImg,
                   nickname: res.data[i].nickname,
                   viewCount: res.data[i].viewCount,

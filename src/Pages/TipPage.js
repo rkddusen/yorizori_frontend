@@ -18,6 +18,7 @@ function TipPage() {
     const res = await axios.get(`${axiosUrl}/tip/get/all?pageNo=${page}`);
     try {
       let _result = [];
+      console.log(res.data);
       for(let i = 0; i < res.data.content.length; i++){
           _result.push(
             <TipView
