@@ -20,7 +20,8 @@ function TipView(props){
         </Profile>
         <Clickable>
           <Thumbnail>
-            <ThumbnailImg src={process.env.REACT_APP_IMG_URL + tip?.thumbnail} />
+            {/* <ThumbnailImg src={process.env.REACT_APP_IMG_URL + tip?.thumbnail} /> */}
+            <ThumbnailImg src={tip?.thumbnail} />
           </Thumbnail>
           <div>
             <div>
@@ -99,7 +100,7 @@ const Indicators = styled.div`
   }
 `;
 const HeartCount = styled.p`
-  margin-left: 2px;
+  margin-left: 5px;
   margin-right: 8px;
 `;
 

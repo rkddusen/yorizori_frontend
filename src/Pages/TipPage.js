@@ -18,7 +18,6 @@ function TipPage() {
     const res = await axios.get(`${axiosUrl}/tip/get/all?pageNo=${page}`);
     try {
       let _result = [];
-      console.log(res.data);
       for(let i = 0; i < res.data.content.length; i++){
           _result.push(
             <TipView
@@ -28,7 +27,7 @@ function TipPage() {
                   id: res.data.content[i].id,
                   title: res.data.content[i].title,
                   thumbnail: res.data.content[i].thumbnail,
-                  starCount: res.data.content[i].heartCount,
+                  heartCount: res.data.content[i].heartCount,
                   profileImg: res.data.content[i].profileImg,
                   nickname: res.data.content[i].nickname,
                   viewCount: res.data.content[i].viewCount,
@@ -99,7 +98,7 @@ const TipList = styled.div`
     grid-template-columns: repeat(3, 1fr);
   }
   @media screen and (max-width: 767px) {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
