@@ -21,7 +21,7 @@ const RecipeReadPage = () => {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRecipe = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/details/${params.id}`);
+    const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
     try {
       let _recipe = {};
       _recipe.id = res.data.id;

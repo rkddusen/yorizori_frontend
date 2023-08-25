@@ -146,10 +146,18 @@ const RecipeWriting = () => {
   const submitRecipeWriting = async () => {
     let confirm = window.confirm('레시피를 등록하시겠습니까?');
     if(confirm){
+      let paramsObject = {
+        userId: user.id,
+        thumbnail: thumbnail,
+        recipeInfo: recipeInfo,
+        mainIngredient: mainIngredient,
+        semiIngredient: semiIngredient,
+        recipeDetail: recipeDetail
+      }
       axios
-        .get(`${axiosUrl}/recipe/save?userId=${user.id}&thumbnail=${thumbnail}&mainIngredient=${mainIngredient}&semiIngredient=${semiIngredient}&recipeDetail=${recipeDetail}`)
+        .post(`${axiosUrl}/recipe/save/details`, paramsObject)
         .then((res) => {
-          navigate(`/recipe/${res.data.data.id}`);
+          navigate(`/recipe/${res.data}`);
         })
         .catch((error) => {
           console.log(error);
