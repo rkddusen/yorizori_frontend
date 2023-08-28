@@ -28,7 +28,7 @@ function App() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getUser = async () => {
-  const res = await axios.get(`${axiosUrl}/user/get/abbbb`);
+  const res = await axios.get(`${axiosUrl}/user/get/yorizori2018`);
     try {
       let _user = { ...user };
       _user.id = res.data.userTokenId;
