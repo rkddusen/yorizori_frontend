@@ -14,16 +14,9 @@ const MyRecipe = () => {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
-  useEffect(() => {
-    const search = new URLSearchParams(location.search);
-    const _page = search.get("page") || 1;
-    
-    getRecipe(_page-1);
-  }, [location]);
-
   const getRecipe = async (page) => {
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/user/${user.id}?pageNo=${page}`
+      `${axiosUrl}/user/get/${user.id}/recipe?pageNo=${page}`
     );
     try {
       let _result = [];
@@ -53,6 +46,14 @@ const MyRecipe = () => {
       console.log("오류");
     }
   };
+  useEffect(() => {
+    if(user !== null){
+      const search = new URLSearchParams(location.search);
+      const _page = search.get("page") || 1;
+      getRecipe(_page-1);
+    }
+  }, [user, location]);
+
 
   return (
     <>

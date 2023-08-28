@@ -1,39 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { useUserContext } from '../../contexts/UserContext';
 import { styled } from 'styled-components';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import TipView from '../TipView'
+import NoRecipe from '../NoRecipe';
+import Paging from '../Paging';
 
 const MyTip = () => {
   const { user } = useUserContext();
   const [result, setResult] = useState([]);
+  const [totalTipCount, setTotalTipCount] = useState(0);
+  const location = useLocation();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
-    let _result = [];
-    for(let i = 0; i < 38; i++){
-      _result.push(
-        <TipView
-          key={i}
-          tip={
-            {
-              id: i+1,
-              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
-              nickname: "duyyaa",
-              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-              title: "제목",
-              heartCount: 100,
-              viewCount: 100,
-            }
-          }
-        />
-      )
+    if(user !== null){
+      const search = new URLSearchParams(location.search);
+      const _page = search.get("page") || 1;
+    
+      getTip(_page-1);
     }
-    setResult(_result);
-  },[]);
+  }, [user, location]);
+
+  const getTip = async (page) => {
+    const res = await axios.get(
+      `${axiosUrl}/user/get/${user.id}/tip?pageNo=${page}`
+    );
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.content.length; i++) {
+        _result.push(
+          <TipView
+            key={i}
+            recipe={
+              {
+                id: res.data.content[i].id,
+                title: res.data.content[i].title,
+                thumbnail: res.data.content[i].thumbnail,
+                heartCount: res.data.content[i].heartCount,
+                profileImg: res.data.content[i].profileImg,
+                nickname: res.data.content[i].nickname,
+                viewCount: res.data.content[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+      setTotalTipCount(res.data.totalElements);
+    } catch {
+      console.log("오류");
+    }
+  };
 
   return (
-    <TipList>
-      {result}
-    </TipList>
+    <>
+      {result.length ? (
+        <>
+          <TipList>
+            {result}
+          </TipList>
+          <Paging pagingCount={Math.ceil(totalTipCount / 12)} />
+        </>
+      ) : (
+        <NoRecipe />
+      )}
+    </>
   );
 }
 
