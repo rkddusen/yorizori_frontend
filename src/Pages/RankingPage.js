@@ -7,51 +7,42 @@ import RecipeView from "../Components/RecipeView";
 import PageExplain from "../Components/PageExplain";
 
 function Ranking() {
-  const [recipeCount, setRecipeCount] = useState(0);
   const [result, setResult] = useState([]);
-  const [recipe, setRecipe] = useState([]);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
-  const getRankRecipe = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/rank/total`);
+  const getRankRecipe = async (page) => {
+    const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
+    
     try {
       let _recipe = [];
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < res.data.content.length; i++) {
         _recipe.push({
-          id: res.data[i].id,
-          title: res.data[i].title,
-          thumbnail: res.data[i].thumbnail,
-          starRate: res.data[i].starRate,
-          starCount: res.data[i].starCount,
-          profileImg: res.data[i].profileImg,
-          nickname: res.data[i].nickname,
-          viewCount: res.data[i].viewCount,
+          id: res.data.content[i].id,
+          title: res.data.content[i].title,
+          thumbnail: res.data.content[i].thumbnail,
+          starRate: res.data.content[i].starRate,
+          starCount: res.data.content[i].starCount,
+          profileImg: res.data.content[i].profileImg,
+          nickname: res.data.content[i].nickname,
+          viewCount: res.data.content[i].viewCount,
           rank: i + 1,
         });
       }
-      setRecipe(_recipe);
+
+      let _result = [];
+      for (let i = 0; i < 20; i++) {
+        _result.push(<RecipeView key={result.length + i} recipe={_recipe[i]} />);
+      }
+      setResult([...result].concat(_result));
     } catch {
       console.log("오류");
     }
   };
-
   useEffect(() => {
-    getRankRecipe();
+    getRankRecipe(0);
   }, []);
 
-  useEffect(() => {
-    if (recipe.length) {
-      let _result = [];
-      for (let i = 0; i < 20; i++) {
-        _result.push(<RecipeView key={i} recipe={recipe[i]} />);
-      }
-      setResult([...result, _result]);
-
-      setRecipeCount(20);
-    }
-  }, [recipe]);
-
-  useEffect(() => {
+   useEffect(() => {
     function handleScroll() {
       const { scrollTop, clientHeight, scrollHeight } =
         document.documentElement; // 페이지의 높이와 스크롤 위치
@@ -60,23 +51,15 @@ function Ranking() {
         // 스크롤이 페이지 하단에 도달했는지 확인
         loadMoreContents(); // 추가 콘텐츠를 로드하는 로직을 실행
     }
-    if (recipeCount < 100) window.addEventListener("scroll", handleScroll); // 스크롤 이벤트 리스너를 추가
+    if (result.length < 100) window.addEventListener("scroll", handleScroll); // 스크롤 이벤트 리스너를 추가
 
     return () => {
       window.removeEventListener("scroll", handleScroll); // 컴포넌트가 언마운트되면 스크롤 이벤트 리스너를 제거
     };
-  }, [recipeCount]);
+   }, [result]);
 
   function loadMoreContents() {
-    // 추가로 로드할 콘텐츠를 가져오는 비동기 로직을 수행(20개)
-    // 콘텐츠를 가져오는 비동기 작업이 완료되면 result, recipeCount 상태 변수를 업데이트
-    let _result = [];
-    for (let i = recipeCount; i < recipeCount + 20; i++) {
-      _result.push(<RecipeView key={i} recipe={recipe[i]} />);
-    }
-    setResult([...result, _result]);
-    // 로드된 콘텐츠 개수를 업데이트
-    setRecipeCount((prevRecipeCount) => prevRecipeCount + 20);
+    getRankRecipe((result.length)/20);
   }
 
   return (
