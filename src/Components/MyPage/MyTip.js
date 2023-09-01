@@ -33,7 +33,7 @@ const MyTip = () => {
         _result.push(
           <TipView
             key={i}
-            recipe={
+            tip={
               {
                 id: res.data.content[i].id,
                 title: res.data.content[i].title,
