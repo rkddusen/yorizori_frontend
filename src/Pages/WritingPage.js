@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import RecipeWriting from '../Components/Writing/RecipeWriting';
+import TipWriting from '../Components/Writing/TipWriting';
 
 function WritingPage() {
   const [writing, setWriting] = useState('recipe');
@@ -24,7 +25,7 @@ function WritingPage() {
           {writing === 'recipe' ? (
               <RecipeWriting />
             ) : (
-              <></>
+              <TipWriting />
             )}
         </Contents>
       </StyledBody>
