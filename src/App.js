@@ -16,6 +16,7 @@ import MyPage from './Pages/MyPage';
 import RecipeReadPage from './Pages/RecipeReadPage';
 import SearchPage from './Pages/SearchPage';
 import WritingPage from './Pages/WritingPage';
+import Redirection from './Components/Login/Redirection';
 
 function App() {
   const [user, setUser] = useState({
@@ -28,17 +29,20 @@ function App() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getUser = async () => {
-  const res = await axios.get(`${axiosUrl}/user/get/yorizori2018`);
-    try {
-      let _user = { ...user };
-      _user.id = res.data.userTokenId;
-      _user.nickName = res.data.nickname;
-      _user.age = res.data.age;
-      _user.gender = res.data.gender;
-      _user.profileImg = res.data.imageAddress;
-      setUser(_user);
-    } catch {
-      console.log("오류");
+    let _id = localStorage.getItem('user');
+    if(_id){
+      const res = await axios.get(`${axiosUrl}/user/get/${_id}`);
+      try {
+        let _user = { ...user };
+        _user.id = res.data.userTokenId;
+        _user.nickName = res.data.nickname;
+        _user.age = res.data.age;
+        _user.gender = res.data.gender;
+        _user.profileImg = res.data.imageAddress;
+        setUser(_user);
+      } catch {
+        console.log("오류");
+      }
     }
   };
   useEffect(() => {
@@ -69,6 +73,7 @@ function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/recipe/:id" element={<RecipeReadPage />} />
             <Route path="/writing" element={<WritingPage />} />
+            <Route exact path='/user/kakao/callback' element={<Redirection />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

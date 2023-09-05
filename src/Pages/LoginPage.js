@@ -8,6 +8,12 @@ function LoginPage() {
   const moveHome = () => {
     navigate(`/`);
   }
+
+  const kakaoLogin = () => {
+    const client_id = process.env.REACT_APP_KAKAO_CLIENT_ID;
+    const redirect_uri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+    window.location.href =`https://kauth.kakao.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code`;
+  }
   return (
     <StyledLogin>
       <Content>
@@ -15,7 +21,7 @@ function LoginPage() {
         <Explain>소셜 로그인으로 로그인/회원가입</Explain>
         <LoginApi>
 
-          <LoginButton $sns="kakao">카카오로 시작하기</LoginButton>
+          <LoginButton onClick={kakaoLogin} $sns="kakao">카카오로 시작하기</LoginButton>
           <LoginButton $sns="naver">네이버로 시작하기</LoginButton>
           <LoginButton $sns="google">구글로 시작하기</LoginButton>
         </LoginApi>
