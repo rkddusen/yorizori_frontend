@@ -121,14 +121,14 @@ const TipWriting = () => {
         tipDetail: tipContents,
       }
       
-      // axios
-      //   .post(`${axiosUrl}/tip/save/details`, paramsObject)
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      axios
+        .post(`${axiosUrl}/tip/save/details`, paramsObject)
+        .then((res) => {
+          navigate(`/tip/${res.data}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       
     }
   }
