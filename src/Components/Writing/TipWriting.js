@@ -116,8 +116,8 @@ const TipWriting = () => {
 
       let paramsObject = {
         userId: user.id,
-        thumbnail: thumbnail,
-        title: titleRef.current.value,
+        tipThumbnail: thumbnail,
+        tipTitle: titleRef.current.value,
         tipDetail: tipContents,
       }
       
