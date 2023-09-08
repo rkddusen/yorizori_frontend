@@ -24,13 +24,13 @@ function TipPage() {
               key={i}
               tip={
                 {
-                  id: res.data.content[i].id,
-                  title: res.data.content[i].title,
-                  thumbnail: res.data.content[i].thumbnail,
-                  heartCount: res.data.content[i].heartCount,
+                  id: res.data.content[i].tipId,
+                  title: res.data.content[i].tipTitle,
+                  thumbnail: res.data.content[i].tipThumbnail,
+                  heartCount: res.data.content[i].tipHeartCount,
                   profileImg: res.data.content[i].profileImg,
                   nickname: res.data.content[i].nickname,
-                  viewCount: res.data.content[i].viewCount,
+                  viewCount: res.data.content[i].tipViewCount,
                 }
               }
             />

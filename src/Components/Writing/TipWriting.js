@@ -116,19 +116,19 @@ const TipWriting = () => {
 
       let paramsObject = {
         userId: user.id,
-        thumbnail: thumbnail,
-        title: titleRef.current.value,
+        tipThumbnail: thumbnail,
+        tipTitle: titleRef.current.value,
         tipDetail: tipContents,
       }
       
-      // axios
-      //   .post(`${axiosUrl}/tip/save/details`, paramsObject)
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      axios
+        .post(`${axiosUrl}/tip/save/details`, paramsObject)
+        .then((res) => {
+          navigate(`/tip/${res.data}`);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       
     }
   }

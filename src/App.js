@@ -17,6 +17,7 @@ import RecipeReadPage from './Pages/RecipeReadPage';
 import SearchPage from './Pages/SearchPage';
 import WritingPage from './Pages/WritingPage';
 import Redirection from './Components/Login/Redirection';
+import TipReadPage from './Pages/TipReadPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -72,6 +73,7 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/recipe/:id" element={<RecipeReadPage />} />
+            <Route path="/tip/:id" element={<TipReadPage />} />
             <Route path="/writing" element={<WritingPage />} />
             <Route exact path='/user/kakao/callback' element={<Redirection />} />
           </Routes>

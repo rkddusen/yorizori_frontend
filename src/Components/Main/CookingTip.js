@@ -19,13 +19,13 @@ function CookingTip(){
               key={i}
               tip={
                 {
-                  id: res.data[i].id,
-                  title: res.data[i].title,
-                  thumbnail: res.data[i].thumbnail,
-                  heartCount: res.data[i].heartCount,
+                  id: res.data[i].tipId,
+                  title: res.data[i].tipTitle,
+                  thumbnail: res.data[i].tipThumbnail,
+                  heartCount: res.data[i].tipHeartCount,
                   profileImg: res.data[i].profileImg,
                   nickname: res.data[i].nickname,
-                  viewCount: res.data[i].viewCount,
+                  viewCount: res.data[i].tipViewCount,
                 }
               }
             />
