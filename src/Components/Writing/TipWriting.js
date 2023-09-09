@@ -222,15 +222,15 @@ const TipContents = styled.div`
     box-sizing: border-box;
     border: 1px solid rgb(204, 204, 204);
     padding: 10px;
-    margin: 10px 0;
+    margin: 20px 0;
   }
 `;
 
 const Thumbnail = styled.div`
-  width: 40%;
+  width: 100%;
   border-radius: 10px;
   position: relative;
-  padding-bottom: 40%;
+  padding-bottom: 60%;
   border: 1px solid #dfdfdf;
   &:hover{
     cursor: pointer;
