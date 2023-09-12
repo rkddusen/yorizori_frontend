@@ -26,6 +26,8 @@ const ProfileBox = (props) => {
       gender: null,
       profileImg: null,
     });
+    localStorage.removeItem('user');
+    navigate(`/`);
   }
 
   return (
