@@ -75,7 +75,9 @@ function App() {
             <Route path="/recipe/:id" element={<RecipeReadPage />} />
             <Route path="/tip/:id" element={<TipReadPage />} />
             <Route path="/writing" element={<WritingPage />} />
-            <Route exact path='/user/kakao/callback' element={<Redirection />} />
+            <Route exact path='/user/kakao/callback' element={<Redirection login="kakao" />} />
+            <Route exact path='/user/naver/callback' element={<Redirection login="naver" />} />
+            <Route exact path='/user/google/callback' element={<Redirection login="google" />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

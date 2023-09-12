@@ -14,6 +14,16 @@ function LoginPage() {
     const redirect_uri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
     window.location.href =`https://kauth.kakao.com/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code`;
   }
+  const naverLogin = () => {
+    const client_id = process.env.REACT_APP_NAVER_CLIENT_ID;
+    const redirect_uri = process.env.REACT_APP_NAVER_REDIRECT_URI;
+    window.location.href =`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&state=test`;
+  }
+  const googleLogin = () => {
+    const client_id = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const redirect_uri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+    window.location.href =`https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=profile`;
+  }
   return (
     <StyledLogin>
       <Content>
@@ -22,8 +32,8 @@ function LoginPage() {
         <LoginApi>
 
           <LoginButton onClick={kakaoLogin} $sns="kakao">카카오로 시작하기</LoginButton>
-          <LoginButton $sns="naver">네이버로 시작하기</LoginButton>
-          <LoginButton $sns="google">구글로 시작하기</LoginButton>
+          <LoginButton onClick={naverLogin} $sns="naver">네이버로 시작하기</LoginButton>
+          <LoginButton onClick={googleLogin} $sns="google">구글로 시작하기</LoginButton>
         </LoginApi>
         <CopyRight>Copyright KKANG KU JUNG. All rights reserved.</CopyRight>
       </Content>
