@@ -5,11 +5,14 @@ import { Star } from "../Evaluation";
 import { useUserContext } from "../../contexts/UserContext";
 import { ProfileImg } from "../ProfileImg";
 import { useNavigate } from 'react-router-dom';
+import RecipeOrderWriting from './RecipeOrderWriting';
 
 const PlusCircle = ({size=16, color="#000000", clickEvent}) => (<Svg onClick={clickEvent} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></Svg>);
 const Trash = ({size=16, color="#000000", clickEvent}) => (<Svg onClick={clickEvent} style={{flexShrink: '0'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></Svg>);
 const Svg = styled.svg`
-  cursor: pointer;
+  &:hover{
+    cursor: pointer;
+  }
 `;
 
 const RecipeWriting = () => {
@@ -27,6 +30,28 @@ const RecipeWriting = () => {
   const [semiIngredient, setSemiIngredient] = useState([{}]);
   const [recipeDetail, setRecipeDetail] = useState([{}]);
   const [recipeImageHover, setRecipeImageHover] = useState([false]);
+  const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
+
+  const [recipeTemplate, setRecipeTemplate] = useState({
+    0: [{}],
+  });
+  // {
+  //   1: [
+  //     {sentence: ''},
+  //     {
+  //       condition: '',
+  //       ingredient: '',
+  //     }
+  //   ],
+  //   2: [
+  //     {sentence: ''},
+  //     {
+  //       condition: '',
+  //       ingredient: '',
+  //     }
+  //   ],
+  // }
+
   const thumbnailRef = useRef(null);
   const recipeImageRef = useRef([]);
   const navigate = useNavigate();
@@ -171,6 +196,14 @@ const RecipeWriting = () => {
     }
   }
 
+
+  const handleTemplateOpen = (index) => {
+    let _isTemplateOpen = isTemplateOpen;
+    _isTemplateOpen[index] = true;
+    console.log(_isTemplateOpen);
+    setIsTemplateOpen(_isTemplateOpen);
+  }
+
   return (
     <RecipeContents>
       <RecipeTitle>
@@ -297,47 +330,9 @@ const RecipeWriting = () => {
           </IngredientPlus>
         </div>
       </RecipeDetailBox>
-      <RecipeDetailBox>
-        <BoxTitle>
-          <p>레시피</p>
-        </BoxTitle>
-        {recipeDetail.map((value, index) => (
-          <RecipeOrderBox key={index} $first={index ? false : true}>
-            <RecipeNav $only={recipeDetail.length === 1 ? true : false}>
-              <Trash size={20} clickEvent={() => handleRecipeDetailDelete(index)} />
-            </RecipeNav>
-            <RecipeOrder>
-              <RecipeOrderDetailArea>
-                <p>
-                  Step {index + 1}
-                </p>
-                <textarea rows={5} value={value['text'] || ''} onChange={(e) => handleRecipeDetail(index, e)} />
-              </RecipeOrderDetailArea>
-              <RecipeOrderImgArea onMouseEnter={() => handleRecipeImageHover(index, true)} onMouseLeave={() => handleRecipeImageHover(index, false)} onClick={() => handleRecipeImageClick(index)}>
-                <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
-                {value['image'] ? (
-                  <div>
-                    <ThumbnailDeleteSvg xmlns="http://www.w3.org/2000/svg" $thumbnailhover={recipeImageHover[index]} width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></ThumbnailDeleteSvg>
-                    <ThumbnailImg src={value['image']} $thumbnailhover={recipeImageHover[index]} />
-                  </div>
-                ) : (
-                  <div>
-                    <ThumbnailSvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></ThumbnailSvg>
-                  </div>
-                )}
-              </RecipeOrderImgArea>
-            </RecipeOrder>
-          </RecipeOrderBox>
-        ))}
-        <RecipePlusArea>
-          <PlusCircle size={25} clickEvent={() => {
-            setRecipeDetail(prev => [...prev, {}]);
-            setRecipeImageHover(prev => [...prev, false]);
-          }} />
-        </RecipePlusArea>
-      </RecipeDetailBox>
+      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} recipeImageHover={recipeImageHover} setRecipeImageHover={setRecipeImageHover} recipeTemplate={recipeTemplate} setRecipeTemplate={setRecipeTemplate} />
       <ButtonBox>
-        <button onClick={submitRecipeWriting}>적용</button>
+        <button onClick={submitRecipeWriting}>저장</button>
         <button onClick={cancelRecipeWriting}>취소</button>
       </ButtonBox>
     </RecipeContents>
@@ -560,9 +555,6 @@ const RecipeNav = styled.div`
   display: ${props => props.$only ? 'none' : 'block'};
 `;
 const RecipeOrder = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   width: 100%;
   padding-bottom: 30px;
 
@@ -595,6 +587,16 @@ const RecipeOrderDetailArea = styled.div`
   @media screen and (max-width: 767px) {
     width: 100%;
     padding-right: 0;
+  }
+`;
+const RecipeOrderContents = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  & button{
+    &:hover{
+      cursor: pointer;
+    }
   }
 `;
 const RecipeOrderImgArea = styled.div`
