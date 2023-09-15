@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const ProfileChange = () => {
   const { user, setUser } = useUserContext();
   const [nowImg, setNowImg] = useState(null);
+  const [gender, setGender] = useState("성별");
+  const [age, setAge] = useState("연령대");
   const profileImgRef = useRef(null);
   const nicknameRef = useRef(null);
   const location = useLocation();
@@ -18,14 +20,17 @@ const ProfileChange = () => {
   
   useEffect(() => {
     setNowImg(user.profileImg);
+    setGender(user.gender ? user.gender : '성별');
+    setAge(user.age ? user.age : '연령대');
   },[user]);
 
   const submitProfileChange = () => {
     let nowNickname = nicknameRef.current.value;
-    let pattern = /[^a-zA-Z0-9가-힣]/g
+    let pattern1 = /[^a-zA-Z0-9가-힣]/g;
+
     if(nowNickname.length < 1){
       alert("닉네임을 입력하세요.");
-    } else if(pattern.test(nowNickname)){
+    } else if(pattern1.test(nowNickname)){
       alert("닉네임은 한글, 영어, 숫자만 가능합니다.");
     } else{
       applyProfileChange(nowImg, nowNickname);
@@ -85,8 +90,10 @@ const ProfileChange = () => {
       });
   }
   const applyProfileChange = async (img, nickname) => {
+    let _age = age === '연령대' ? null : age;
+    let _gender = gender === '성별' ? null : gender;
     axios
-      .get(`${axiosUrl}/image/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}`)
+      .get(`${axiosUrl}/image/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}&age=${_age}&gender=${_gender}`)
       .then((res) => {
         if(img !== user.profileImg && user.profileImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
           deleteProfileImg(user.profileImg);
@@ -110,6 +117,13 @@ const ProfileChange = () => {
         console.log(error);
       });
   };
+  const handleGenderChange = (event) => {
+    console.log(event);
+    setGender(event.target.value);
+  };
+  const handleAgeChange = (event) => {
+    setAge(event.target.value);
+  };
 
   return (
     <>
@@ -132,7 +146,29 @@ const ProfileChange = () => {
               <Col>
                 <Row>
                   <p>닉네임</p>
-                  <NickNameChangeInput type='text' defaultValue={user.nickName || ''} ref={nicknameRef} />
+                  <ChangeInput type='text' defaultValue={user.nickName || ''} ref={nicknameRef} />
+                </Row>
+              </Col>
+              <Col>
+                <Row>
+                  <p>성별</p>
+                  <SelectInput value={gender} onChange={handleGenderChange}>
+                    <option value="성별">성별</option>
+                    <option value="남자">남자</option>
+                    <option value="여자">여자</option>
+                  </SelectInput>
+                </Row>
+                <Row>
+                  <p>연령대</p>
+                  <SelectInput value={age} onChange={handleAgeChange}>
+                    <option>연령대</option>
+                    <option>20대 이하</option>
+                    <option>20-29</option>
+                    <option>30-39</option>
+                    <option>40-49</option>
+                    <option>50-59</option>
+                    <option>60대 이상</option>
+                  </SelectInput>
                 </Row>
               </Col>
               <Col>
@@ -202,8 +238,15 @@ const Row = styled.div`
   align-items: center;
   margin: 10px 0;
   min-height: 30px;
+  & > p{
+    width: 50px;
+  }
+  
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    & > p{
+      width: auto;
+    }
   }
 `;
 const AgreeRow = styled.div`
@@ -239,7 +282,17 @@ const ChangeBtn = styled.button`
     cursor: pointer;
   }
 `;
-const NickNameChangeInput = styled.input`
+const ChangeInput = styled.input`
+  font-size: 16px;
+  border: 1px solid #cfcfcf;
+  margin-left: 20px;
+  padding: 5px;
+  @media screen and (max-width: 767px) {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+`;
+const SelectInput = styled.select`
   font-size: 16px;
   border: 1px solid #cfcfcf;
   margin-left: 20px;
