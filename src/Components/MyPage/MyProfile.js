@@ -72,13 +72,14 @@ const MyProfile = () => {
                   </BasicRow>
                 </InfoCol>
                 <InfoCol>
+                  <p style={{textAlign: 'start', fontSize: '12px', color: 'rgba(255, 0, 0, 0.5)', fontWeight: 'bold', textShadow: '1px 1px  3px rgba(0,0,0,0.1)'}}>프로필 정보를 입력하여 더 나은 사용자 맞춤 추천 기능을 이용해 보세요!</p>
                   <BasicRow>
                     <p>성별</p>
-                    <p>{user.gender}</p>
+                    <p>{user.gender ? user.gender : '정보 없음'}</p>
                   </BasicRow>
                   <BasicRow>
                     <p>연령대</p>
-                    <p>{user.age}</p>
+                    <p>{user.age ? user.age : '정보 없음'}</p>
                   </BasicRow>
                 </InfoCol>
                 <InfoCol>
@@ -177,6 +178,9 @@ const BasicRow = styled.div`
   & > p:first-child{
     margin-right: 10px;
     font-weight: bold;
+  }
+  & > p:last-child{
+    font-size: 14px;
   }
 `;
 
