@@ -15,13 +15,13 @@ function TipView(props){
   return(
       <TipBox onClick={() => movePage(tip?.id)}>
         <Profile>
-          <ProfileImg src={tip?.profileImg} style={{width: '35px'}}/>
+          <ProfileImg src={tip?.profileImg} style={{width: '35px', height: '35px'}}/>
           <NickName>{tip?.nickname}</NickName>
         </Profile>
         <Clickable>
           <Thumbnail>
             {/* <ThumbnailImg src={process.env.REACT_APP_IMG_URL + tip?.thumbnail} /> */}
-            <ThumbnailImg src={tip?.thumbnail} />
+            <ThumbnailImg src={process.env.REACT_APP_IMG_URL + tip?.thumbnail} />
           </Thumbnail>
           <div>
             <div>
