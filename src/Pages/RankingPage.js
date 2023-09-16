@@ -14,14 +14,15 @@ function Ranking() {
     const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
     
     try {
+      console.log(res.data.content[0]);
       let _recipe = [];
       for (let i = 0; i < res.data.content.length; i++) {
         _recipe.push({
           id: res.data.content[i].id,
           title: res.data.content[i].title,
           thumbnail: res.data.content[i].thumbnail,
-          starRate: res.data.content[i].starRate,
           starCount: res.data.content[i].starCount,
+          reviewCount: res.data.content[i].reviewCount,
           profileImg: res.data.content[i].profileImg,
           nickname: res.data.content[i].nickname,
           viewCount: res.data.content[i].viewCount,

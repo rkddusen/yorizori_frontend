@@ -22,7 +22,7 @@ function Ranking(){
                   id: res.data[i].id,
                   title: res.data[i].title,
                   thumbnail: res.data[i].thumbnail,
-                  starRate: res.data[i].starRate,
+                  reviewCount: res.data[i].reviewCount,
                   starCount: res.data[i].starCount,
                   profileImg: res.data[i].profileImg,
                   nickname: res.data[i].nickname,
