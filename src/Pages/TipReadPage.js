@@ -7,11 +7,13 @@ import Footer from "../Components/Footer/Footer";
 import { Heart } from "../Components/Evaluation";
 import { useUserContext } from '../contexts/UserContext';
 import { ProfileImg } from '../Components/ProfileImg';
+import EditButton from '../Components/EditButton';
 
 const TipReadPage = () => {
   const { user } = useUserContext();
   const [tip, setTip] = useState(null);
   const [review, setReview] = useState(null);
+  const [heartCount, setHeartCount] = useState(0);
   const [isHeart, setIsHeart] = useState(false);
   const params = useParams();
   const textRef = useRef(null);
@@ -26,10 +28,10 @@ const TipReadPage = () => {
       _tip.title = res.data.tipTitle;
       _tip.profileImg = res.data.profileImg;
       _tip.nickname = res.data.nickname;
+      _tip.tipUserTokenId = res.data.tipUserTokenId;
       _tip.date = res.data.date;
       _tip.tipDetail = res.data.tipDetail;
       _tip.viewCount = res.data.tipViewCount;
-      _tip.heartCount = res.data.tipHeartCount;
       setTip(_tip);
     } catch {
       console.log("오류");
@@ -66,7 +68,6 @@ const TipReadPage = () => {
   const getReview = async () => {
     const res = await axios.get(`${axiosUrl}/tip/get/reviews/${params.id}`);
     try {
-      console.log(res);
       let _review = {};
       _review.reviewCount = res.data.reviewCount;
       _review.reviews = res.data.reviews;
@@ -81,10 +82,9 @@ const TipReadPage = () => {
   const getIsHeart = async () => {
     if(user.id){
       const res = await axios.get(`${axiosUrl}/user/get/tip/isHeart/${params.id}?userId=${user.id}`);
-      console.log(res);
     try {
-      let _isHeart = res.data.heart;
-      setIsHeart(_isHeart);
+      setIsHeart(res.data.heart);
+      setHeartCount(res.data.tipHeartCount);
     } catch {
       console.log("오류");
     }
@@ -114,12 +114,16 @@ const TipReadPage = () => {
                 <Title>{tip?.title}</Title>
                 <HeartBox onClick={handleHeartClick}>
                   <Heart size={22} color={isHeart ? '#FFA800' : '#dfdfdf'} />
-                  {tip?.heartCount}
+                  {heartCount}
                 </HeartBox>
                 <Explain>
                   <Profile>
-                    <ProfileImg src={tip?.profileImg} style={{width: '35px', heigth: '35px', marginRight: '10px'}} />
-                    <ProfileNickname>{tip?.nickname}</ProfileNickname>
+                    <div>
+                      <ProfileImg src={tip?.profileImg} style={{width: '35px', height: '35px', marginRight: '10px'}} />
+                      <ProfileNickname>{tip?.nickname}</ProfileNickname>
+                    </div>
+                    {user.id === tip?.tipUserTokenId ? <EditButton mode='tip' isSelf={true} /> : null}
+                    
                   </Profile>
                   <ExplainSemi>
                     <p>조회수 {tip?.viewCount}회</p>
@@ -257,8 +261,13 @@ const Explain = styled.div`
 const Profile = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
+  & > div:first-child{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
 `;
 
 const ProfileNickname = styled.p`
