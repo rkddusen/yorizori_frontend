@@ -28,8 +28,8 @@ function RecipeView(props){
             </div>
             <Indicators>
               <Star />
-              <StarRate>{recipe?.starRate}</StarRate>
-              <StarCount>({recipe?.starCount})</StarCount>
+              <StarRate>{recipe?.starCount}</StarRate>
+              <StarCount>({recipe?.reviewCount})</StarCount>
               <p>조회수 {recipe?.viewCount}</p>
             </Indicators>
           </div>

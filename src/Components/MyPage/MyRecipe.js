@@ -29,7 +29,7 @@ const MyRecipe = () => {
                 id: res.data.content[i].id,
                 title: res.data.content[i].title,
                 thumbnail: res.data.content[i].thumbnail,
-                starRate: res.data.content[i].starRate,
+                reviewCount: res.data.content[i].reviewCount,
                 starCount: res.data.content[i].starCount,
                 profileImg: res.data.content[i].profileImg,
                 nickname: res.data.content[i].nickname,

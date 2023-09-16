@@ -23,6 +23,7 @@ const RecipeReadPage = () => {
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
     try {
+      console.log(res);
       let _recipe = {};
       _recipe.id = res.data.id;
       _recipe.thumbnail = res.data.thumbnail;
@@ -120,11 +121,11 @@ const RecipeReadPage = () => {
 
   const saveReview = () => {
     let content = {};
-    content['star'] = star.lastIndexOf(1) + 1;
+    content['starCount'] = star.lastIndexOf(1) + 1;
     content['text'] = textRef.current.value;
     content['userTokenId'] = user.id;
     if(content['userTokenId']){
-      if(content['star'] > -1 && content['text'].length > 0){
+      if(content['starCount'] > -1 && content['text'].length > 0){
         axios.post(`${axiosUrl}/user/save/review/${params.id}`, content)
         .then(() => {
           let _star = [0,0,0,0,0];
@@ -147,11 +148,10 @@ const RecipeReadPage = () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/reviews/${params.id}`);
     try {
       let _review = {};
-      _review.starRate = res.data.starRate;
-      _review.starCount = res.data.starCount;
+      _review.recipeStarCount = res.data.recipeStarCount;
+      _review.userStarCount = res.data.userStarCount;
       _review.reviewCount = res.data.reviewCount;
       _review.reviews = res.data.reviews;
-      console.log(_review.starCount[0])
       setReview(_review);
     } catch {
       console.log("오류");
@@ -197,7 +197,7 @@ const RecipeReadPage = () => {
                 <SubTitle>
                   <Star />
                   <SubTitleContent>
-                    {review?.starRate} ({review?.reviewCount})
+                    {review?.recipeStarCount} ({review?.reviewCount})
                   </SubTitleContent>
                 </SubTitle>
                 <Explain>
@@ -242,16 +242,16 @@ const RecipeReadPage = () => {
                   <div>
                     <div>
                       <Star size={20} />
-                      <p>{review?.starRate}</p>
+                      <p>{review?.recipeStarCount}</p>
                     </div>
                   </div>
                   <div>
                     <div>
-                      <div><p>5</p><progress max={review?.reviewCount} value={review?.starCount[0]} /><p>{review?.starCount[0]}</p></div>
-                      <div><p>4</p><progress max={review?.reviewCount} value={review?.starCount[1]} /><p>{review?.starCount[1]}</p></div>
-                      <div><p>3</p><progress max={review?.reviewCount} value={review?.starCount[2]} /><p>{review?.starCount[2]}</p></div>
-                      <div><p>2</p><progress max={review?.reviewCount} value={review?.starCount[3]} /><p>{review?.starCount[3]}</p></div>
-                      <div><p>1</p><progress max={review?.reviewCount} value={review?.starCount[4]} /><p>{review?.starCount[4]}</p></div>
+                      <div><p>5</p><progress max={review?.reviewCount} value={review?.userStarCount[0]} /><p>{review?.userStarCount[0]}</p></div>
+                      <div><p>4</p><progress max={review?.reviewCount} value={review?.userStarCount[1]} /><p>{review?.userStarCount[1]}</p></div>
+                      <div><p>3</p><progress max={review?.reviewCount} value={review?.userStarCount[2]} /><p>{review?.userStarCount[2]}</p></div>
+                      <div><p>2</p><progress max={review?.reviewCount} value={review?.userStarCount[3]} /><p>{review?.userStarCount[3]}</p></div>
+                      <div><p>1</p><progress max={review?.reviewCount} value={review?.userStarCount[4]} /><p>{review?.userStarCount[4]}</p></div>
                     </div>
                   </div>
                 </ReviewExplainBox>
@@ -275,11 +275,11 @@ const RecipeReadPage = () => {
                       </div>
                       <div>
                         <ReviewListStar>
-                          <Star size={18} color={e.scope >= 1 ? '#FFA800' : '#efefef'} />
-                          <Star size={18} color={e.scope >= 2 ? '#FFA800' : '#efefef'} />
-                          <Star size={18} color={e.scope >= 3 ? '#FFA800' : '#efefef'} />
-                          <Star size={18} color={e.scope >= 4 ? '#FFA800' : '#efefef'} />
-                          <Star size={18} color={e.scope >= 5 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.starCount >= 1 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.starCount >= 2 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.starCount >= 3 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.starCount >= 4 ? '#FFA800' : '#efefef'} />
+                          <Star size={18} color={e.starCount >= 5 ? '#FFA800' : '#efefef'} />
                         </ReviewListStar>
                         <ReviewListProfile>{e.nickname}</ReviewListProfile>
                         <ReviewListContent>{e.review}</ReviewListContent>
