@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import Header from "../Components/Header/Header";
@@ -7,6 +7,7 @@ import Footer from "../Components/Footer/Footer";
 import { Star } from "../Components/Evaluation";
 import { useUserContext } from '../contexts/UserContext';
 import { ProfileImg } from '../Components/ProfileImg';
+import EditButton from '../Components/EditButton';
 
 const RecipeReadPage = () => {
   const [recipe, setRecipe] = useState(null);
@@ -18,12 +19,12 @@ const RecipeReadPage = () => {
   const params = useParams();
   const textRef = useRef(null);
   const { user } = useUserContext();
+  const navigate = useNavigate();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
     try {
-      console.log(res);
       let _recipe = {};
       _recipe.id = res.data.id;
       _recipe.thumbnail = res.data.thumbnail;
@@ -31,6 +32,7 @@ const RecipeReadPage = () => {
       _recipe.level = res.data.level;
       _recipe.time = res.data.time;
       _recipe.profileImg = res.data.profileImg;
+      _recipe.recipeUserTokenId = res.data.recipeUserTokenId;
       _recipe.nickname = res.data.nickname;
       _recipe.date = res.data.date;
       _recipe.explain = res.data.explain;
@@ -158,6 +160,18 @@ const RecipeReadPage = () => {
     }
   }
 
+  const handleDelete = async () => {
+    if(window.confirm('레시피를 삭제하시겠습니까?')){
+      const res = await axios.delete(`${axiosUrl}/recipe/delete/${params.id}`);
+      try {
+        alert('삭제가 완료되었습니다.');
+        navigate(-1);
+      } catch {
+        console.log("오류");
+      }
+    }
+  }
+
   return (
     <div>
       <Wrap>
@@ -202,8 +216,11 @@ const RecipeReadPage = () => {
                 </SubTitle>
                 <Explain>
                   <Profile>
-                    <ProfileImg src={recipe?.profileImg} style={{width: '35px', heigth: '35px', marginRight: '10px'}} />
-                    <ProfileNickname>{recipe?.nickname}</ProfileNickname>
+                    <div>
+                      <ProfileImg src={recipe?.profileImg} style={{width: '35px', heigth: '35px', marginRight: '10px'}} />
+                      <ProfileNickname>{recipe?.nickname}</ProfileNickname>
+                    </div>
+                    <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} />
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
                   <ExplainSemi>
@@ -405,8 +422,13 @@ const Explain = styled.div`
 const Profile = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
+  & > div:first-child{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
 `;
 // const ProfileImg = styled.img`
 //   width: 35px;
