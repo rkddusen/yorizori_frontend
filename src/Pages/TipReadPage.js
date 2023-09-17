@@ -135,7 +135,7 @@ const TipReadPage = () => {
                 <BoxTitle>
                   <p>팁</p>
                 </BoxTitle>
-                {tip?.tipDetail}
+                <TipContent dangerouslySetInnerHTML={{ __html: tip?.tipDetail }} />
               </RecipeDetailBox>
               <RecipeDetailBox>
                 <BoxTitle>
@@ -312,7 +312,65 @@ const BoxTitle = styled.div`
     }
   }
 `;
+const TipContent = styled.div`
+  width: 80%;
+  margin: 30px auto;
+  margin-bottom: 100px;
+  line-height: normal;
+  color: #333333;
+  & h1{
+    font-size: 30px;
+  }
+  & h2{
+    font-size: 25px;
+  }
+  & h3{
+    font-size: 18px;
+  }
+  & p{
+    font-size: 14px;
+  }
+  & ol{
+    list-style: decimal;
+    list-style-position: inside;
+  }
+  & ul{
+    list-style: inside;
+  }
+  & strong{
+    font-weight: 900;
+  }
+  & em{
+    font-style: italic;
+  }
+  & u{
+    text-decoration: underline;
+  }
+  & s{
+    text-decoration: overline;
+  }
+  & img{
+    width: 100%;
+  }
+  & blockquote{
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-left: 4px solid #ccc;
+    padding-left: 16px;
+  }
+  & pre{
+    color: white;
+    background-color: black;
+    padding: 5px;
+  }
 
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
+`;
 
 const ReviewWriteBox = styled.div`
   margin-top: 30px;
