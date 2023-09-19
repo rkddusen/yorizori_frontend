@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import Header from "../Components/Header/Header";
@@ -16,6 +16,7 @@ const TipReadPage = () => {
   const [heartCount, setHeartCount] = useState(0);
   const [isHeart, setIsHeart] = useState(false);
   const params = useParams();
+  const navigate = useNavigate();
   const textRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
@@ -100,6 +101,18 @@ const TipReadPage = () => {
     }
   }
 
+  const handleDelete = async () => {
+    if(window.confirm('팁을 삭제하시겠습니까?')){
+      const res = await axios.delete(`${axiosUrl}/tip/delete/${params.id}`);
+      try {
+        alert('삭제가 완료되었습니다.');
+        navigate(-1);
+      } catch {
+        console.log("오류");
+      }
+    }
+  }
+
   return (
     <div>
       <Wrap>
@@ -122,7 +135,7 @@ const TipReadPage = () => {
                       <ProfileImg src={tip?.profileImg} style={{width: '35px', height: '35px', marginRight: '10px'}} />
                       <ProfileNickname>{tip?.nickname}</ProfileNickname>
                     </div>
-                    {user.id === tip?.tipUserTokenId ? <EditButton mode='tip' isSelf={true} /> : null}
+                    {user.id === tip?.tipUserTokenId ? <EditButton mode='tip' isSelf={true} handleDelete={handleDelete} /> : null}
                     
                   </Profile>
                   <ExplainSemi>
