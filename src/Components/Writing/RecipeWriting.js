@@ -149,7 +149,8 @@ const RecipeWriting = () => {
   }
   const handleCategoryChange = (e) => {
     let _recipeInfo = {...recipeInfo};
-    if(e.target.value !== '전체' && _recipeInfo['category'].indexOf(e.target.value) === -1)
+    if(!_recipeInfo['category']) _recipeInfo['category'] = [e.target.value];
+    else if(e.target.value !== '전체' && _recipeInfo['category'].indexOf(e.target.value) === -1)
       _recipeInfo['category'].push(e.target.value);
     setRecipeInfo(_recipeInfo);
   }
@@ -173,54 +174,54 @@ const RecipeWriting = () => {
       setSemiIngredient(_semiIngredient);
     }
   }
-  const handleRecipeDetail = (index, e) => {
-    let _recipeDetail = [...recipeDetail];
-    _recipeDetail[index]['text'] = e.target.value;
-    setRecipeDetail(_recipeDetail);
-  }
-  const handleRecipeDetailDelete = (index) => {
-    let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
-    setRecipeDetail(_recipeDetail);
-  }
-  const handleRecipeImageHover = (index, bool) => {
-    let _recipeImageHover = [...recipeImageHover];
-    _recipeImageHover[index] = bool;
-    setRecipeImageHover(_recipeImageHover);
-  }
-  const handleRecipeImageClick = (index) => {
-    if(recipeDetail[index]['image']){
-      let _recipeDetail = [...recipeDetail];
-      serverImageDelete(_recipeDetail[index]['image']);
-      delete _recipeDetail[index]['image'];
-      setRecipeDetail(_recipeDetail);
-      recipeImageRef.current[index].value = null;
-    } else recipeImageRef.current[index].click();
-  }
-  const handleRecipeImageChange = (index, e) => {
-    const _recipeImg = e.target.files[0];
-    const fileExtension = _recipeImg.name.split('.').pop();
-    if(fileExtension.toLowerCase() === 'jpg' || fileExtension.toLowerCase() === 'jpeg' || fileExtension.toLowerCase() === 'png' ){
-      const formData = new FormData();
-    formData.append('recipeImage', _recipeImg);
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
-    axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
-        .then((res) => {
-          let _recipeDetail = [...recipeDetail];
-          _recipeDetail[index]['image'] = res.data.data.url;
-          setRecipeDetail(_recipeDetail);
-          let _recipeImageHover = [...recipeImageHover];
-          _recipeImageHover[index] = false;
-          setRecipeImageHover(_recipeImageHover);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else{
-      alert('jpg, png 형식의 파일만 첨부하실 수 있습니다.');
-    }
-  }
+  // const handleRecipeDetail = (index, e) => {
+  //   let _recipeDetail = [...recipeDetail];
+  //   _recipeDetail[index]['text'] = e.target.value;
+  //   setRecipeDetail(_recipeDetail);
+  // }
+  // const handleRecipeDetailDelete = (index) => {
+  //   let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
+  //   setRecipeDetail(_recipeDetail);
+  // }
+  // const handleRecipeImageHover = (index, bool) => {
+  //   let _recipeImageHover = [...recipeImageHover];
+  //   _recipeImageHover[index] = bool;
+  //   setRecipeImageHover(_recipeImageHover);
+  // }
+  // const handleRecipeImageClick = (index) => {
+  //   if(recipeDetail[index]['image']){
+  //     let _recipeDetail = [...recipeDetail];
+  //     serverImageDelete(_recipeDetail[index]['image']);
+  //     delete _recipeDetail[index]['image'];
+  //     setRecipeDetail(_recipeDetail);
+  //     recipeImageRef.current[index].value = null;
+  //   } else recipeImageRef.current[index].click();
+  // }
+  // const handleRecipeImageChange = (index, e) => {
+  //   const _recipeImg = e.target.files[0];
+  //   const fileExtension = _recipeImg.name.split('.').pop();
+  //   if(fileExtension.toLowerCase() === 'jpg' || fileExtension.toLowerCase() === 'jpeg' || fileExtension.toLowerCase() === 'png' ){
+  //     const formData = new FormData();
+  //   formData.append('recipeImage', _recipeImg);
+  //   const headers = {
+  //     "Content-Type": "multipart/form-data",
+  //   };
+  //   axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
+  //       .then((res) => {
+  //         let _recipeDetail = [...recipeDetail];
+  //         _recipeDetail[index]['image'] = res.data.data.url;
+  //         setRecipeDetail(_recipeDetail);
+  //         let _recipeImageHover = [...recipeImageHover];
+  //         _recipeImageHover[index] = false;
+  //         setRecipeImageHover(_recipeImageHover);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //   } else{
+  //     alert('jpg, png 형식의 파일만 첨부하실 수 있습니다.');
+  //   }
+  // }
   const submitRecipeWriting = async () => {
       let paramsObject = {
         userId: user.id,
@@ -252,12 +253,12 @@ const RecipeWriting = () => {
   }
 
 
-  const handleTemplateOpen = (index) => {
-    let _isTemplateOpen = isTemplateOpen;
-    _isTemplateOpen[index] = true;
-    console.log(_isTemplateOpen);
-    setIsTemplateOpen(_isTemplateOpen);
-  }
+  // const handleTemplateOpen = (index) => {
+  //   let _isTemplateOpen = isTemplateOpen;
+  //   _isTemplateOpen[index] = true;
+  //   console.log(_isTemplateOpen);
+  //   setIsTemplateOpen(_isTemplateOpen);
+  // }
 
 
   return (
