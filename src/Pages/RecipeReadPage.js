@@ -41,6 +41,7 @@ const RecipeReadPage = () => {
       _recipe.order = res.data.order;
       _recipe.category = res.data.category;
       _recipe.viewCount = res.data.viewCount;
+      _recipe.referenceRecipe = res.data.referenceRecipe;
       setRecipe(_recipe);
     } catch {
       console.log("오류");
@@ -59,7 +60,7 @@ const RecipeReadPage = () => {
           _mainIngredient.push(
             <IngredientList key={i}>
               <p>{recipe.mainIngredient[i].name}</p>
-              <p>{recipe.mainIngredient[i].detail}</p>
+              <p>{recipe.mainIngredient[i].size}</p>
             </IngredientList>
           );
         }
@@ -78,7 +79,7 @@ const RecipeReadPage = () => {
           _semiIngredient.push(
             <IngredientList key={i}>
               <p>{recipe.semiIngredient[i].name}</p>
-              <p>{recipe.semiIngredient[i].detail}</p>
+              <p>{recipe.semiIngredient[i].size}</p>
             </IngredientList>
           );
         }
@@ -97,12 +98,12 @@ const RecipeReadPage = () => {
           <RecipeOrder key={i}>
             <RecipeOrderDetailArea>
               <p>Step {i + 1}</p>
-              <p>{recipe.order[i].contents}</p>
+              <p>{recipe.order[i].detail}</p>
             </RecipeOrderDetailArea>
             <RecipeOrderImgArea>
               <div>
                 <img
-                  src={process.env.REACT_APP_IMG_URL + recipe.order[i].img}
+                  src={process.env.REACT_APP_IMG_URL + recipe.order[i].image}
                 />
               </div>
             </RecipeOrderImgArea>
@@ -171,6 +172,9 @@ const RecipeReadPage = () => {
       }
     }
   }
+  const handleReferenceWriting = () => {
+    navigate(`/writing?reference=${recipe.id}`);
+  }
 
   return (
     <div>
@@ -217,12 +221,13 @@ const RecipeReadPage = () => {
                 <Explain>
                   <Profile>
                     <div>
-                      <ProfileImg src={recipe?.profileImg} style={{width: '35px', heigth: '35px', marginRight: '10px'}} />
+                      <ProfileImg src={recipe?.profileImg} style={{width: '35px', height: '35px', marginRight: '10px'}} />
                       <ProfileNickname>{recipe?.nickname}</ProfileNickname>
                     </div>
-                    <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} />
+                    <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} handleReferenceWriting={handleReferenceWriting} />
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
+                  <ExplainMain>{recipe?.referenceRecipe ? '원작 레시피 ' + recipe?.referenceRecipe : null}</ExplainMain>
                   <ExplainSemi>
                     <p>조회수 {recipe?.viewCount}회</p>
                     <p>{recipe?.date}</p>

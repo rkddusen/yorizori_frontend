@@ -117,7 +117,7 @@ const Template = (props) => {
   const handleApplyTemplate = () => {
     if(sentence){
       let _recipeDetail = [...recipeDetail];
-      _recipeDetail[index]['text'] = sentence;
+      _recipeDetail[index]['detail'] = sentence;
       setRecipeDetail(_recipeDetail);
     }
     setRecipeTemplate(savingRecipeTemplate);

@@ -110,9 +110,9 @@ const RecipeOrderWriting = (props) => {
                 ) : (
                   <RecipeOrderContents>
                     {
-                      recipeDetail[index]['text'] ? (
+                      recipeDetail[index]['detail'] ? (
                         <div>
-                          <p>{recipeDetail[index]['text']}</p>
+                          <p>{recipeDetail[index]['detail']}</p>
                           <button onClick={() => handleTemplateOpen(index)}>수정하기</button>
                         </div>
                       ) : (

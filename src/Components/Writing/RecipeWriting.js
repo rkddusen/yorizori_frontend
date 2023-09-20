@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Star } from "../Evaluation";
 import { useUserContext } from "../../contexts/UserContext";
 import { ProfileImg } from "../ProfileImg";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import RecipeOrderWriting from './RecipeOrderWriting';
 
 const PlusCircle = ({size=16, color="#000000", clickEvent}) => (<Svg onClick={clickEvent} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></Svg>);
@@ -31,6 +31,12 @@ const RecipeWriting = () => {
   const [recipeDetail, setRecipeDetail] = useState([{}]);
   const [recipeImageHover, setRecipeImageHover] = useState([false]);
   const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
+  const location = useLocation();
+  const [referenceUser, setReferenceUser] = useState({
+    id: null,
+    profileImg: null,
+    nickname: null,
+  })
 
   const [recipeTemplate, setRecipeTemplate] = useState({
     0: [{}],
@@ -52,10 +58,51 @@ const RecipeWriting = () => {
   //   ],
   // }
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    let _reference = queryParams.get('reference');
+    if(_reference){
+      getReferenceRecipe(_reference);
+    }
+  },[]);
+  const getReferenceRecipe = async (reference) => {
+    if(reference){
+    const res = await axios.get(`${axiosUrl}/recipe/get/writing/reference?recipeId=${reference}`);
+    try {
+      let _thumbnail = process.env.REACT_APP_IMG_URL + res.data.thumbnail;
+      let _recipeInfo = {};
+      _recipeInfo.title = res.data.title;
+      _recipeInfo.level = res.data.level;
+      _recipeInfo.time = res.data.time;
+      _recipeInfo.category = res.data.category;
+      _recipeInfo.explain = res.data.explain;
+      let _referenceUser = {};
+      _referenceUser.id = res.data.id;
+      _referenceUser.profileImg = res.data.profileImg;
+      _referenceUser.nickname = res.data.nickname;
+      let _mainIngredient = res.data.mainIngredient;
+      let _semiIngredient = res.data.semiIngredient;
+      let _recipeDetail = res.data.order;
+      _recipeDetail.map(order => order.image = process.env.REACT_APP_IMG_URL + order.image);
+
+      setThumbnail(_thumbnail);
+      setRecipeInfo(_recipeInfo);
+      setReferenceUser(_referenceUser);
+      setMainIngredient(_mainIngredient);
+      setSemiIngredient(_semiIngredient);
+      setRecipeDetail(_recipeDetail);
+    } catch {
+      console.log("오류");
+    }
+  }
+  };
+
   const thumbnailRef = useRef(null);
   const recipeImageRef = useRef([]);
   const navigate = useNavigate();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+
+
 
   const handleThumbnailHover = (bool) => {
     setThumbnailHover(bool);
@@ -98,6 +145,12 @@ const RecipeWriting = () => {
   const handleInfoChange = (e, info) =>{
     let _recipeInfo = {...recipeInfo};
     _recipeInfo[info] = e.target.value || '';
+    setRecipeInfo(_recipeInfo);
+  }
+  const handleCategoryChange = (e) => {
+    let _recipeInfo = {...recipeInfo};
+    if(e.target.value !== '전체' && _recipeInfo['category'].indexOf(e.target.value) === -1)
+      _recipeInfo['category'].push(e.target.value);
     setRecipeInfo(_recipeInfo);
   }
   const handleIngredient = (type, index, field, e) => {
@@ -169,16 +222,18 @@ const RecipeWriting = () => {
     }
   }
   const submitRecipeWriting = async () => {
-    let confirm = window.confirm('레시피를 등록하시겠습니까?');
-    if(confirm){
       let paramsObject = {
         userId: user.id,
         thumbnail: thumbnail,
         recipeInfo: recipeInfo,
         mainIngredient: mainIngredient,
         semiIngredient: semiIngredient,
-        recipeDetail: recipeDetail
-      }
+        recipeDetail: recipeDetail,
+        referenceRecipe: referenceUser.id,
+      };
+      console.log(paramsObject);
+    let confirm = window.confirm('레시피를 등록하시겠습니까?');
+    if(confirm){
       axios
         .post(`${axiosUrl}/recipe/save/details`, paramsObject)
         .then((res) => {
@@ -204,6 +259,7 @@ const RecipeWriting = () => {
     setIsTemplateOpen(_isTemplateOpen);
   }
 
+
   return (
     <RecipeContents>
       <RecipeTitle>
@@ -219,13 +275,13 @@ const RecipeWriting = () => {
           )}
         </Thumbnail>
         <Title>
-          <input type='text' placeholder='요리 제목을 알려주세요.' onChange={(e) => handleInfoChange(e, 'title')}/>
+          <input type='text' value={recipeInfo?.title || ''} placeholder='요리 제목을 알려주세요.' onChange={(e) => handleInfoChange(e, 'title')}/>
         </Title>
         <SubTitleFirst>
           <div>
             <SubTitleName>난이도</SubTitleName>
             <SubTitleContent>
-              <select onChange={(e) => handleInfoChange(e, 'level')}>
+              <select value={recipeInfo?.level || '난이도'} onChange={(e) => handleInfoChange(e, 'level')}>
                 <option>난이도</option>
                 <option>하</option>
                 <option>중</option>
@@ -236,7 +292,7 @@ const RecipeWriting = () => {
           <div>
             <SubTitleName>소요시간</SubTitleName>
             <SubTitleContent>
-              <select onChange={(e) => handleInfoChange(e, 'time')}>
+              <select value={recipeInfo?.time || '시간'} onChange={(e) => handleInfoChange(e, 'time')}>
                 <option>시간</option>
                 <option>5분 이내</option>
                 <option>10분 이내</option>
@@ -252,7 +308,12 @@ const RecipeWriting = () => {
         <SubTitle>
           <SubTitleName>카테고리</SubTitleName>
           <SubTitleContent>
-            <select onChange={(e) => handleInfoChange(e, 'category')}>
+            {
+              recipeInfo?.category?.map((c, i) => 
+                <p key={i}>{c}</p>
+              )
+            }
+            <select onChange={(e) => handleCategoryChange(e)}>
               <option>전체</option>
               <option>한식</option>
               <option>중식</option>
@@ -283,7 +344,7 @@ const RecipeWriting = () => {
             <ProfileNickname>{user?.nickName}</ProfileNickname>
           </Profile>
           <ExplainMain>
-            <ExplainTextArea rows={5} placeholder='요리를 소개해주세요.' onChange={(e) => handleInfoChange(e, 'explain')} />
+            <ExplainTextArea value={recipeInfo?.explain || ''} rows={5} placeholder='요리를 소개해주세요.' onChange={(e) => handleInfoChange(e, 'explain')} />
           </ExplainMain>
         </Explain>
       </RecipeTitle>

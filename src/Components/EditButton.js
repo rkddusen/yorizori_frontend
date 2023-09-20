@@ -17,7 +17,7 @@ const TextSvg = styled.svg`
   margin-right: 5px ;
 `;
 const EditButton = (props) => {
-  const { mode, isSelf, handleDelete } = props;
+  const { mode, isSelf, handleDelete, handleReferenceWriting } = props;
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef(null);
   
@@ -43,7 +43,7 @@ const EditButton = (props) => {
       <MoreVertical handleModal={handleModal} />
       {isOpen ? (
         <Modal>
-          {mode === 'recipe' ? <p><ShareRegister />공유등록</p> : null}
+          {mode === 'recipe' ? <p onClick={handleReferenceWriting}><ShareRegister />공유등록</p> : null}
           {isSelf ? <p><Edit />편집</p> : null}
           {isSelf ? <p onClick={handleDelete}><Delete />삭제</p> : null}
         </Modal>
