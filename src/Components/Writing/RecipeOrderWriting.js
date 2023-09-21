@@ -27,6 +27,18 @@ const RecipeOrderWriting = (props) => {
   const handleRecipeDetailDelete = (index) => {
     let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
     setRecipeDetail(_recipeDetail);
+    
+    let _recipeTemplate = {...recipeTemplate};
+    delete _recipeTemplate[index];
+    let newRecipeTemplate = {};
+    for(let key in _recipeTemplate){
+      if(key > index){
+        newRecipeTemplate[key - 1] = _recipeTemplate[key];
+      } else{
+        newRecipeTemplate[key] = _recipeTemplate[key];
+      }
+    }
+    setRecipeTemplate(newRecipeTemplate);
   }
   const handleRecipeImageHover = (index, bool) => {
     let _recipeImageHover = [...recipeImageHover];
