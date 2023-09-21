@@ -23,14 +23,14 @@ const RecipeWriting = () => {
     title: null,
     level: null,
     time: null,
-    category: null,
     explain: null,
   });
+  const [category, setCategory] = useState([]);
   const [mainIngredient, setMainIngredient] = useState([{}]);
   const [semiIngredient, setSemiIngredient] = useState([{}]);
   const [recipeDetail, setRecipeDetail] = useState([{}]);
   const [recipeImageHover, setRecipeImageHover] = useState([false]);
-  const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
+  // const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
   const location = useLocation();
   const [referenceUser, setReferenceUser] = useState({
     id: null,
@@ -74,8 +74,8 @@ const RecipeWriting = () => {
       _recipeInfo.title = res.data.title;
       _recipeInfo.level = res.data.level;
       _recipeInfo.time = res.data.time;
-      _recipeInfo.category = res.data.category;
       _recipeInfo.explain = res.data.explain;
+      let _category = res.data.category;
       let _referenceUser = {};
       _referenceUser.id = res.data.id;
       _referenceUser.profileImg = res.data.profileImg;
@@ -87,6 +87,7 @@ const RecipeWriting = () => {
 
       setThumbnail(_thumbnail);
       setRecipeInfo(_recipeInfo);
+      setCategory(_category);
       setReferenceUser(_referenceUser);
       setMainIngredient(_mainIngredient);
       setSemiIngredient(_semiIngredient);
@@ -98,7 +99,7 @@ const RecipeWriting = () => {
   };
 
   const thumbnailRef = useRef(null);
-  const recipeImageRef = useRef([]);
+  // const recipeImageRef = useRef([]);
   const navigate = useNavigate();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
@@ -148,12 +149,17 @@ const RecipeWriting = () => {
     setRecipeInfo(_recipeInfo);
   }
   const handleCategoryChange = (e) => {
-    let _recipeInfo = {...recipeInfo};
-    if(!_recipeInfo['category']) _recipeInfo['category'] = [e.target.value];
-    else if(e.target.value !== '전체' && _recipeInfo['category'].indexOf(e.target.value) === -1)
-      _recipeInfo['category'].push(e.target.value);
-    setRecipeInfo(_recipeInfo);
+    let _category = [...category];
+    if(e.target.value !== '전체' && _category.indexOf(e.target.value) === -1)
+      _category.push(e.target.value);
+    setCategory(_category);
   }
+  const handleCategoryDelete = (index) => {
+    let _category = [...category];
+    _category.splice(index, 1);
+    setCategory(_category);
+  }
+
   const handleIngredient = (type, index, field, e) => {
     if(type === 'main'){
       let _mainIngredient = [...mainIngredient];
@@ -223,19 +229,48 @@ const RecipeWriting = () => {
   //   }
   // }
   const submitRecipeWriting = async () => {
-      let paramsObject = {
-        userId: user.id,
-        thumbnail: thumbnail,
-        recipeInfo: recipeInfo,
-        mainIngredient: mainIngredient,
-        semiIngredient: semiIngredient,
-        recipeDetail: recipeDetail,
-        referenceRecipe: referenceUser.id,
-      };
-      console.log(paramsObject);
+    const filteredMainIngredient = mainIngredient.filter(obj => Object.keys(obj).length > 0);
+    const filteredSemiIngredient = semiIngredient.filter(obj => Object.keys(obj).length > 0);
+
+    const filteredRecipeDetail = recipeDetail.filter(obj => Object.keys(obj).length > 0);
+
+    let paramsObject = {
+      userId: user.id,
+      thumbnail: thumbnail,
+      recipeInfo: {...recipeInfo, category: category},
+      mainIngredient: filteredMainIngredient,
+      semiIngredient: filteredSemiIngredient,
+      recipeDetail: filteredRecipeDetail,
+      referenceRecipe: referenceUser.id,
+    };
+    console.log(paramsObject);
     let confirm = window.confirm('레시피를 등록하시겠습니까?');
     if(confirm){
-      axios
+      if(paramsObject.thumbnail.length < 1){
+        alert('썸네일 사진을 등록해주세요.');
+      }
+      else if(!paramsObject.recipeInfo.title){
+        alert('레시피 제목을 입력해주세요.');
+      }
+      else if(!paramsObject.recipeInfo.level){
+        alert('레시피의 난이도를 설정해주세요.');
+      }
+      else if(!paramsObject.recipeInfo.time){
+        alert('요리 시간을 설정해주세요.');
+      }
+      else if(paramsObject.recipeInfo.category.length < 1){
+        alert('레시피의 카테고리를 설정해주세요.');
+      }
+      else if(!paramsObject.recipeInfo.explain){
+        alert('요리 설명을 해주세요.');
+      }
+      else if(paramsObject.mainIngredient.length === 0 && paramsObject.semiIngredient.length === 0){
+        alert('1개 이상의 재료가 필요합니다.');
+      }
+      else if(paramsObject.recipeDetail.length < 1){
+        alert('레시피 내용을 입력해주세요.');
+      }
+      else{axios
         .post(`${axiosUrl}/recipe/save/details`, paramsObject)
         .then((res) => {
           navigate(`/recipe/${res.data}`);
@@ -243,6 +278,7 @@ const RecipeWriting = () => {
         .catch((error) => {
           console.log(error);
         });
+      }
     }
   }
   const cancelRecipeWriting = () => {
@@ -309,12 +345,16 @@ const RecipeWriting = () => {
         <SubTitle>
           <SubTitleName>카테고리</SubTitleName>
           <SubTitleContent>
-            {
-              recipeInfo?.category?.map((c, i) => 
-                <p key={i}>{c}</p>
-              )
-            }
-            <select onChange={(e) => handleCategoryChange(e)}>
+            <div>
+              {
+                category.map((c, i) => 
+                  <p key={i}>
+                    {c} <svg onClick={() => handleCategoryDelete(i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF0000" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </p>
+                )
+              }
+            </div>
+            <select value="전체" onChange={(e) => handleCategoryChange(e)}>
               <option>전체</option>
               <option>한식</option>
               <option>중식</option>
@@ -347,6 +387,15 @@ const RecipeWriting = () => {
           <ExplainMain>
             <ExplainTextArea value={recipeInfo?.explain || ''} rows={5} placeholder='요리를 소개해주세요.' onChange={(e) => handleInfoChange(e, 'explain')} />
           </ExplainMain>
+          {referenceUser?.id ? (
+            <div>
+              <p>
+                Recipe by {referenceUser.id}
+              </p>
+            </div>
+          ) : (
+            null
+          )}
         </Explain>
       </RecipeTitle>
       <RecipeDetailBox>
@@ -466,12 +515,14 @@ const SubTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
+  align-items: start;
 
   & > svg {
     padding: 10px 0;
   }
 `;
 const SubTitleFirst = styled(SubTitle)`
+  
   @media screen and (max-width: 767px) {
     flex-direction: column;
   }
@@ -479,6 +530,7 @@ const SubTitleFirst = styled(SubTitle)`
     display: flex;
     flex-direction: row;
     justify-content: start;
+    align-items: center;
   }
 `;
 const SubTitleName = styled.p`
@@ -489,12 +541,29 @@ const SubTitleName = styled.p`
     margin-left: 0px;
   }
 `;
-const SubTitleContent = styled.p`
+const SubTitleContent = styled.div`
   margin-right: 5px;
   background-color: ${(props) => (props.$level ? "#FFA800" : "white")};
   color: ${(props) => (props.$level ? "white" : "#888888")};
   border-radius: 100%;
   padding: 10px;
+  & > div > p{
+    margin-bottom: 10px;
+    display: flex;
+    align-items: bottom;
+    & > svg{
+      margin-left: 10px;
+      stroke-width: 2;
+    }
+    & > svg:hover{
+      cursor: pointer;
+      stroke-width: 4;
+    }
+  }
+
+  & > select{
+    font-size: 16px;
+  }
 `;
 
 const Explain = styled.div`
@@ -606,89 +675,89 @@ const IngredientPlus = styled.div`
   } */
 `;
 
-const RecipeOrderBox = styled.div`
-  width: 100%;
-  border-top: ${props => props.$first ? 'none' : '1px solid #ffa80050'};
-  padding-top: 30px;
-`;
-const RecipeNav = styled.div`
-  width: 100%;
-  padding-bottom: 10px;
-  display: ${props => props.$only ? 'none' : 'block'};
-`;
-const RecipeOrder = styled.div`
-  width: 100%;
-  padding-bottom: 30px;
+// const RecipeOrderBox = styled.div`
+//   width: 100%;
+//   border-top: ${props => props.$first ? 'none' : '1px solid #ffa80050'};
+//   padding-top: 30px;
+// `;
+// const RecipeNav = styled.div`
+//   width: 100%;
+//   padding-bottom: 10px;
+//   display: ${props => props.$only ? 'none' : 'block'};
+// `;
+// const RecipeOrder = styled.div`
+//   width: 100%;
+//   padding-bottom: 30px;
 
-  @media screen and (max-width: 767px) {
-    flex-direction: column;
-    justify-content: start;
-  }
-`;
-const RecipeOrderDetailArea = styled.div`
-  width: 60%;
-  box-sizing: border-box;
-  padding-right: 20px;
+//   @media screen and (max-width: 767px) {
+//     flex-direction: column;
+//     justify-content: start;
+//   }
+// `;
+// const RecipeOrderDetailArea = styled.div`
+//   width: 60%;
+//   box-sizing: border-box;
+//   padding-right: 20px;
 
-  & > p {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-style: italic;
-    color: #ffa800;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-  & > textarea{
-    font-size: 14px;
-    width: 100%;
-    outline: none;
-    resize: none;
-  }
+//   & > p {
+//     font-size: 20px;
+//     margin-bottom: 10px;
+//     font-style: italic;
+//     color: #ffa800;
+//     display: flex;
+//     flex-direction: row;
+//     align-items: center;
+//   }
+//   & > textarea{
+//     font-size: 14px;
+//     width: 100%;
+//     outline: none;
+//     resize: none;
+//   }
 
-  @media screen and (max-width: 767px) {
-    width: 100%;
-    padding-right: 0;
-  }
-`;
-const RecipeOrderContents = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  & button{
-    &:hover{
-      cursor: pointer;
-    }
-  }
-`;
-const RecipeOrderImgArea = styled.div`
-  width: 40%;
-  & > div {
-    width: 100%;
-    height: 0;
-    padding-bottom: 100%;
-    position: relative;
-    border-radius: 10px;
-    border: 1px solid #dfdfdf;
-  }
-  & > div > img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-  }
+//   @media screen and (max-width: 767px) {
+//     width: 100%;
+//     padding-right: 0;
+//   }
+// `;
+// const RecipeOrderContents = styled.div`
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+//   & button{
+//     &:hover{
+//       cursor: pointer;
+//     }
+//   }
+// `;
+// const RecipeOrderImgArea = styled.div`
+//   width: 40%;
+//   & > div {
+//     width: 100%;
+//     height: 0;
+//     padding-bottom: 100%;
+//     position: relative;
+//     border-radius: 10px;
+//     border: 1px solid #dfdfdf;
+//   }
+//   & > div > img {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     border-radius: 10px;
+//   }
 
-  @media screen and (max-width: 767px) {
-    width: 100%;
-    margin-top: 10px;
-  }
-`;
-const RecipePlusArea = styled.p`
-  text-align: center;
-  padding: 20px 0;
-`;
+//   @media screen and (max-width: 767px) {
+//     width: 100%;
+//     margin-top: 10px;
+//   }
+// `;
+// const RecipePlusArea = styled.p`
+//   text-align: center;
+//   padding: 20px 0;
+// `;
 
 const ButtonBox = styled.div`
   text-align: center;
