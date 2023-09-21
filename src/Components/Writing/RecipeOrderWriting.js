@@ -34,13 +34,14 @@ const RecipeOrderWriting = (props) => {
     setRecipeImageHover(_recipeImageHover);
   }
   const handleRecipeImageClick = (index) => {
-    if(recipeDetail[index]['image']){
-      let _recipeDetail = [...recipeDetail];
-      serverImageDelete(_recipeDetail[index]['image']);
-      delete _recipeDetail[index]['image'];
-      setRecipeDetail(_recipeDetail);
-      recipeImageRef.current[index].value = null;
-    } else recipeImageRef.current[index].click();
+    recipeImageRef.current[index].click();
+  }
+  const handleRecipeImageDelete = (index) => {
+    let _recipeDetail = [...recipeDetail];
+    serverImageDelete(_recipeDetail[index]['image']);
+    delete _recipeDetail[index]['image'];
+    setRecipeDetail(_recipeDetail);
+    
   }
   const handleRecipeImageChange = (index, e) => {
     const _recipeImg = e.target.files[0];
@@ -54,11 +55,14 @@ const RecipeOrderWriting = (props) => {
     axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
         .then((res) => {
           let _recipeDetail = [...recipeDetail];
+          if(_recipeDetail[index]['image']){
+            serverImageDelete(_recipeDetail[index]['image']);
+            delete _recipeDetail[index]['image'];
+          }
           _recipeDetail[index]['image'] = res.data.data.url;
           setRecipeDetail(_recipeDetail);
-          let _recipeImageHover = [...recipeImageHover];
-          _recipeImageHover[index] = false;
-          setRecipeImageHover(_recipeImageHover);
+          
+          recipeImageRef.current[index].value = null;
         })
         .catch((error) => {
           console.log(error);
@@ -100,41 +104,72 @@ const RecipeOrderWriting = (props) => {
               {
                 isTemplateOpen[index] ? (
                   <Template
-                    index={index}
-                    isTemplateOpen={isTemplateOpen}
-                    setIsTemplateOpen={setIsTemplateOpen}
-                    recipeTemplate={recipeTemplate}
-                    setRecipeTemplate={setRecipeTemplate} 
-                    recipeDetail={recipeDetail}
-                    setRecipeDetail={setRecipeDetail} />
-                ) : (
-                  <RecipeOrderContents>
-                    {
-                      recipeDetail[index]['detail'] ? (
-                        <div>
-                          <p>{recipeDetail[index]['detail']}</p>
-                          <button onClick={() => handleTemplateOpen(index)}>수정하기</button>
-                        </div>
-                      ) : (
-                        <div>
-                          <button onClick={() => handleTemplateOpen(index)}>작성하기</button>
-                        </div>
-                      )
-                    }
-                    <RecipeOrderImgArea onMouseEnter={() => handleRecipeImageHover(index, true)} onMouseLeave={() => handleRecipeImageHover(index, false)} onClick={() => handleRecipeImageClick(index)}>
-                      <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
+                  index={index}
+                  isTemplateOpen={isTemplateOpen}
+                  setIsTemplateOpen={setIsTemplateOpen}
+                  recipeTemplate={recipeTemplate}
+                  setRecipeTemplate={setRecipeTemplate} 
+                  recipeDetail={recipeDetail}
+                  setRecipeDetail={setRecipeDetail} />
+                  ) : (
+                    <>
+                    <RecipeOrderButton>
+                      <button onClick={() => handleTemplateOpen(index)}>작성하기</button>
                       {value['image'] ? (
-                       <div>
-                          <ThumbnailDeleteSvg xmlns="http://www.w3.org/2000/svg" $thumbnailhover={recipeImageHover[index]} width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></ThumbnailDeleteSvg>
-                          <ThumbnailImg src={value['image']} $thumbnailhover={recipeImageHover[index]} />
+                        <>
+                          <button onClick={() => handleRecipeImageClick(index)}>사진 수정하기</button>
+                          <button onClick={() => handleRecipeImageDelete(index)}>사진 삭제하기</button>
+                        </>
+                      ) : (
+                        <button onClick={() => handleRecipeImageClick(index)}>사진 추가하기</button>
+                      )}
+                    </RecipeOrderButton>
+                    <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
+                    <RecipeOrderDetail>
+                      {value['detail'] ? (
+                        <p>{value['detail']}</p>
+                      ) : (
+                        null
+                      )}
+                      {value['image'] ? (
+                        <div>
+                          <div>
+                            <img src={value['image']} />
+                          </div>
                         </div>
                       ) : (
-                        <div>
-                          <ThumbnailSvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></ThumbnailSvg>
-                        </div>
+                        null
                       )}
-                    </RecipeOrderImgArea>
-                  </RecipeOrderContents>
+                    </RecipeOrderDetail>
+                    
+                  </>
+                  // <RecipeOrderContents>
+                  //   {
+                  //     recipeDetail[index]['detail'] ? (
+                  //       <div>
+                  //         <p>{recipeDetail[index]['detail']}</p>
+                  //         <button onClick={() => handleTemplateOpen(index)}>수정하기</button>
+                  //       </div>
+                  //     ) : (
+                  //       <div>
+                  //         <button onClick={() => handleTemplateOpen(index)}>작성하기</button>
+                  //       </div>
+                  //     )
+                  //   }
+                  //   <RecipeOrderImgArea onMouseEnter={() => handleRecipeImageHover(index, true)} onMouseLeave={() => handleRecipeImageHover(index, false)} onClick={() => handleRecipeImageClick(index)}>
+                  //     <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
+                  //     {value['image'] ? (
+                  //      <div>
+                  //         <ThumbnailDeleteSvg xmlns="http://www.w3.org/2000/svg" $thumbnailhover={recipeImageHover[index]} width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></ThumbnailDeleteSvg>
+                  //         <ThumbnailImg src={value['image']} $thumbnailhover={recipeImageHover[index]} />
+                  //       </div>
+                  //     ) : (
+                  //       <div>
+                  //         <ThumbnailSvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></ThumbnailSvg>
+                  //       </div>
+                  //     )}
+                  //   </RecipeOrderImgArea>
+                  // </RecipeOrderContents>
                 )
               }
               
@@ -150,17 +185,17 @@ const RecipeOrderWriting = (props) => {
   );
 };
 
-const ThumbnailSvg = styled.svg`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
-`;
-const ThumbnailDeleteSvg = styled(ThumbnailSvg)`
-  display: ${props => props.$thumbnailhover ? 'block' : 'none'};
-  z-index: 1;
-`;
+// const ThumbnailSvg = styled.svg`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   border-radius: 10px;
+// `;
+// const ThumbnailDeleteSvg = styled(ThumbnailSvg)`
+//   display: ${props => props.$thumbnailhover ? 'block' : 'none'};
+//   z-index: 1;
+// `;
 const ThumbnailImg = styled.img`
   position: absolute;
   top: 0;
@@ -218,9 +253,7 @@ const RecipeOrder = styled.div`
   }
 `;
 const RecipeOrderDetailArea = styled.div`
-  width: 60%;
-  box-sizing: border-box;
-  padding-right: 20px;
+  margin-bottom: 20px;
 
   & > p {
     font-size: 20px;
@@ -243,27 +276,37 @@ const RecipeOrderDetailArea = styled.div`
     padding-right: 0;
   }
 `;
-const RecipeOrderContents = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+
+const RecipeOrderButton = styled.div`
   & button{
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    padding: 8px 25px;
+    margin-right: 10px;
     &:hover{
+      background-color: #efefef;
       cursor: pointer;
     }
   }
 `;
-const RecipeOrderImgArea = styled.div`
-  width: 40%;
-  & > div {
+const RecipeOrderDetail = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  & > div{
+    width: 40%;
+  }
+  & > div > div{
     width: 100%;
     height: 0;
     padding-bottom: 100%;
     position: relative;
-    border-radius: 10px;
-    border: 1px solid #dfdfdf;
   }
-  & > div > img {
+  & > div > div > img {
     position: absolute;
     top: 0;
     left: 0;
@@ -271,12 +314,46 @@ const RecipeOrderImgArea = styled.div`
     height: 100%;
     border-radius: 10px;
   }
-
-  @media screen and (max-width: 767px) {
-    width: 100%;
-    margin-top: 10px;
-  }
 `;
+// const RecipeOrderContents = styled.div`
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+//   & button{
+//     border: 1px solid black;
+//     background-color: white;
+//     color: black;
+//     padding: 5px 10px;
+//     margin-right: 10px;
+//     &:hover{
+//       cursor: pointer;
+//     }
+//   }
+// `;
+// const RecipeOrderImgArea = styled.div`
+//   width: 40%;
+//   & > div {
+//     width: 100%;
+//     height: 0;
+//     padding-bottom: 100%;
+//     position: relative;
+//     border-radius: 10px;
+//     border: 1px solid #dfdfdf;
+//   }
+//   & > div > img {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     border-radius: 10px;
+//   }
+
+//   @media screen and (max-width: 767px) {
+//     width: 100%;
+//     margin-top: 10px;
+//   }
+// `;
 const RecipePlusArea = styled.p`
   text-align: center;
   padding: 20px 0;
