@@ -232,7 +232,31 @@ const RecipeWriting = () => {
     const filteredMainIngredient = mainIngredient.filter(obj => Object.keys(obj).length > 0);
     const filteredSemiIngredient = semiIngredient.filter(obj => Object.keys(obj).length > 0);
 
-    const filteredRecipeDetail = recipeDetail.filter(obj => Object.keys(obj).length > 0);
+    // step 뛰어 넘었을 때,
+     // 예) step 1을 쓰지 않고 step 2부터 작성했다면 step 1을 삭제 시켜야 함.
+     // filteredElements는 step 1을 삭제시킨 recipeDetail.
+     // filteredIndexes는 삭제시킨 recipeDetail의 인덱스.
+     const filteredRecipeDetail = recipeDetail.reduce((result, obj, index) => {
+      if (Object.keys(obj).length > 0) {
+        result.filteredElements.push(obj);
+      } else{
+        result.filteredIndexes.push(index);
+      }
+      return result;
+    }, { filteredElements: [], filteredIndexes: [] });
+
+    // recipeTemplate에서도 recipeDetail에서 삭제한 부분 삭제해야 함.
+    let _recipeTemplate = {...recipeTemplate}
+    for(let i = 0; i < filteredRecipeDetail.filteredIndexes.length; i++){
+      delete _recipeTemplate[filteredRecipeDetail.filteredIndexes[i]];
+    }
+    // recipeTemplate 재배치. key가 recipeDetail의 인덱스였는데, 삭제시키면서 달라짐.
+    let filteredRecipeTemplate = {};
+    let newIndex = 0;
+    for(const key in _recipeTemplate){
+      filteredRecipeTemplate[newIndex] = _recipeTemplate[key];
+      newIndex++;
+    }
 
     let paramsObject = {
       userId: user.id,
@@ -240,7 +264,7 @@ const RecipeWriting = () => {
       recipeInfo: {...recipeInfo, category: category},
       mainIngredient: filteredMainIngredient,
       semiIngredient: filteredSemiIngredient,
-      recipeDetail: filteredRecipeDetail,
+      recipeDetail: filteredRecipeDetail.filteredElements,
       referenceRecipe: referenceUser.id,
     };
     console.log(paramsObject);
@@ -269,6 +293,9 @@ const RecipeWriting = () => {
       }
       else if(paramsObject.recipeDetail.length < 1){
         alert('레시피 내용을 입력해주세요.');
+      }
+      else if(paramsObject.recipeDetail.filter(obj => obj.detail.length < 1).length > 0){// 이미지만 있고 문장은 없는 경우
+        alert('레시피를 입력해주세요.');
       }
       else{axios
         .post(`${axiosUrl}/recipe/save/details`, paramsObject)
