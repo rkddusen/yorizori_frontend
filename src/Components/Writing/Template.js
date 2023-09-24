@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled, {css} from 'styled-components';
+import axios from 'axios';
 
 const Circle = ({size=12, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>);
 
@@ -11,6 +12,7 @@ const Template = (props) => {
   const [checkedNum, setCheckedNum] = useState(0);
   const [sentence , setSentence] = useState(recipeDetail[index]['text'] || null);
   const inputRef = useRef([]);
+  const axiosUrl = process.env.REACT_APP_AI_AXIOS_URL;
 
   useEffect(() => {
     setNewRecipeTemplate(recipeTemplate);
@@ -76,22 +78,36 @@ const Template = (props) => {
       setCheckedNum(num);
     }
   }
-  const handleMakingSentence = () => {
+  const handleMakingSentence = async () => {
     // 문장 + 템플릿 서버에 보내고 문장 받기
     let _newRecipeTemplate = setTemplate();
     if(isTemplateEmpty(_newRecipeTemplate)){
       alert('비어 있는 템플릿이 존재합니다.');
     } else{
-      //
-      let _sentence = '';
-      for(let i = 0; i < _newRecipeTemplate[index].length; i++){
-        if(_newRecipeTemplate[index][i]){
-          _sentence += _newRecipeTemplate[index][i].condition + _newRecipeTemplate[index][i].ingredient + _newRecipeTemplate[index][i].size + _newRecipeTemplate[index][i].time + _newRecipeTemplate[index][i].tool + _newRecipeTemplate[index][i].action;
-        }
-      }
-      setSentence(_sentence);
-      setNewRecipeTemplate(_newRecipeTemplate);
-      setSavingRecipeTemplate(_newRecipeTemplate);
+
+      // let _sentence = '';
+      // for(let i = 0; i < _newRecipeTemplate[index].length; i++){
+      //   if(_newRecipeTemplate[index][i]){
+      //     _sentence += _newRecipeTemplate[index][i].condition + _newRecipeTemplate[index][i].ingredient + _newRecipeTemplate[index][i].size + _newRecipeTemplate[index][i].time + _newRecipeTemplate[index][i].tool + _newRecipeTemplate[index][i].action;
+      //   }
+      // }
+      // setSentence(_sentence);
+      // setNewRecipeTemplate(_newRecipeTemplate);
+      // setSavingRecipeTemplate(_newRecipeTemplate);
+
+      let paramsObject = {template: _newRecipeTemplate[index]}
+      axios.post(`${axiosUrl}/template`, paramsObject)
+        .then((res) => {
+          console.log(res);
+          let _sentence = res.data;
+          setSentence(_sentence);
+          setNewRecipeTemplate(_newRecipeTemplate);
+          setSavingRecipeTemplate(_newRecipeTemplate);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+
     }
   }
   const handleTemplateDelete = () => {
@@ -211,7 +227,7 @@ const Template = (props) => {
 }
 
 const TemplateBox = styled.div`
-  width: 100%;
+  width: calc(100% - 20px);
   padding: 20px;
   box-sizing: border-box;
   margin: 10px;
