@@ -4,13 +4,22 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import RecipeWriting from '../Components/Writing/RecipeWriting';
 import TipWriting from '../Components/Writing/TipWriting';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function WritingPage() {
-  const [writing, setWriting] = useState('recipe');
+  const [mode, setMode] = useState('recipe');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const changeWriting = (str) => {
-    setWriting(str);
+    navigate(`/writing?mode=${str}`);
   };
+
+  useEffect(() => {
+    const search = new URLSearchParams(location.search);
+    const _mode = search.get('mode') || 'recipe';
+    setMode(_mode);
+  },[location]);
 
   return (
     <div>
@@ -19,10 +28,10 @@ function WritingPage() {
       <StyledBody>
         <Contents>
           <SearchNavUl>
-            <SearchNavLi onClick={() => changeWriting('recipe')} checked={writing === 'recipe'}>레시피 작성</SearchNavLi>
-            <SearchNavLi onClick={() => changeWriting('tip')} checked={writing === 'tip'}>팁 작성</SearchNavLi>
+            <SearchNavLi onClick={() => changeWriting('recipe')} checked={mode === 'recipe'}>레시피 작성</SearchNavLi>
+            <SearchNavLi onClick={() => changeWriting('tip')} checked={mode === 'tip'}>팁 작성</SearchNavLi>
           </SearchNavUl>
-          {writing === 'recipe' ? (
+          {mode === 'recipe' ? (
               <RecipeWriting />
             ) : (
               <TipWriting />
