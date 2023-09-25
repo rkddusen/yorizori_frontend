@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "styled-components";
 import axios from 'axios';
 import ReactQuill from "react-quill";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../contexts/UserContext';
 
 const TipWriting = () => {
@@ -15,7 +15,25 @@ const TipWriting = () => {
   const titleRef = useRef(null);
   const quillRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+
+  useEffect(() => {
+    const search = new URLSearchParams(location.search);
+    const _updateId = search.get('updateId');
+    if(_updateId){
+      handleUpdateWriting(_updateId)
+    }
+  },[]);
+
+  const handleUpdateWriting = async (_updateId) => {
+    const res = await axios.post(`${axiosUrl}/tip/update/${_updateId}`);
+    try {
+      console.log(res);
+    } catch {
+      console.log("오류");
+      }
+  }
 
   const handleThumbnailHover = (bool) => {
     setThumbnailHover(bool);

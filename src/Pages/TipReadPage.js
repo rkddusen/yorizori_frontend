@@ -112,6 +112,21 @@ const TipReadPage = () => {
       }
     }
   }
+  // const handleEditing = async () => {
+  //   if(window.confirm('팁을 수정하시겠습니까?')){
+  //     const res = await axios.post(`${axiosUrl}/tip/update?tipId=${params.id}`);
+  //     try {
+  //       navigate(`/writing`);
+  //     } catch {
+  //       console.log("오류");
+  //     }
+  //   }
+  // }
+  const handleEditing = () => {
+    if(window.confirm('팁을 수정하시겠습니까?')){
+      navigate(`/writing?mode=tip&updateId=${params.id}`);
+    }
+  }
 
   return (
     <div>
@@ -135,7 +150,7 @@ const TipReadPage = () => {
                       <ProfileImg src={tip?.profileImg} style={{width: '35px', height: '35px', marginRight: '10px'}} />
                       <ProfileNickname>{tip?.nickname}</ProfileNickname>
                     </div>
-                    {user.id === tip?.tipUserTokenId ? <EditButton mode='tip' isSelf={true} handleDelete={handleDelete} /> : null}
+                    {user.id === tip?.tipUserTokenId ? <EditButton mode='tip' isSelf={true} handleDelete={handleDelete} handleEditing={handleEditing} /> : null}
                     
                   </Profile>
                   <ExplainSemi>
