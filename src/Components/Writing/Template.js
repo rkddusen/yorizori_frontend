@@ -99,7 +99,7 @@ const Template = (props) => {
       axios.post(`${axiosUrl}/template`, paramsObject)
         .then((res) => {
           console.log(res);
-          let _sentence = res.data;
+          let _sentence = res.data.response;
           setSentence(_sentence);
           setNewRecipeTemplate(_newRecipeTemplate);
           setSavingRecipeTemplate(_newRecipeTemplate);
