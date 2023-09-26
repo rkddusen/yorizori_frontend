@@ -258,6 +258,10 @@ const RecipeWriting = () => {
       newIndex++;
     }
 
+    for(let i = 0; i < filteredRecipeDetail.filteredElements.length; i++){
+      filteredRecipeDetail.filteredElements[i]['template'] = filteredRecipeTemplate[i];
+    }
+
     let paramsObject = {
       userId: user.id,
       thumbnail: thumbnail,
