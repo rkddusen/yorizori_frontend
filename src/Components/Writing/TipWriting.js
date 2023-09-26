@@ -22,14 +22,16 @@ const TipWriting = () => {
     const search = new URLSearchParams(location.search);
     const _updateId = search.get('updateId');
     if(_updateId){
-      handleUpdateWriting(_updateId)
+      handleEditWriting(_updateId)
     }
   },[]);
 
-  const handleUpdateWriting = async (_updateId) => {
-    const res = await axios.post(`${axiosUrl}/tip/update/${_updateId}`);
+  const handleEditWriting = async (_updateId) => {
+    const res = await axios.get(`${axiosUrl}/tip/get/edit/${_updateId}`);
     try {
-      console.log(res);
+      setThumbnail(process.env.REACT_APP_IMG_URL + res.data.tipThumbnail);
+      titleRef.current.value = res.data.tipTitle;
+      setTipContents(res.data.tipDetail);
     } catch {
       console.log("오류");
       }
@@ -64,6 +66,7 @@ const TipWriting = () => {
       axios.post(`${axiosUrl}/image/upload/tip`, formData, { headers })
         .then((res) => {
           setThumbnail(res.data.data.url);
+          console.log(res.data.data.url)
           setThumbnailHover(false);
         })
         .catch((error) => {
@@ -129,7 +132,6 @@ const TipWriting = () => {
         .catch((error) => {
           console.log(error);
         });
-      console.log(deleteObject);
 
 
       let paramsObject = {
@@ -139,14 +141,29 @@ const TipWriting = () => {
         tipDetail: tipContents,
       }
       
-      axios
-        .post(`${axiosUrl}/tip/save/details`, paramsObject)
-        .then((res) => {
-          navigate(`/tip/${res.data}`);
-        })
-        .catch((error) => {
+      const search = new URLSearchParams(location.search);
+      const _updateId = search.get('updateId');
+      if(_updateId){
+        axios
+          .post(`${axiosUrl}/tip/update/details?tipId=${_updateId}`, paramsObject)
+          .then((res) => {
+            console.log(res);
+            navigate(`/tip/${_updateId}`);
+          })
+         .catch((error) => {
           console.log(error);
         });
+      }
+      else{
+        axios
+          .post(`${axiosUrl}/tip/save/details`, paramsObject)
+          .then((res) => {
+            navigate(`/tip/${res.data}`);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
       
     }
   }
@@ -214,6 +231,7 @@ const TipWriting = () => {
           modules={modules}
           ref={quillRef}
           onChange={handleOnChange}
+          value={tipContents}
         />
       </TextEditor>
       
