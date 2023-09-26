@@ -21,6 +21,12 @@ function RecipeView(props){
         <Clickable>
           <Thumbnail>
             <ThumbnailImg src={process.env.REACT_APP_IMG_URL + recipe?.thumbnail} />
+            {recipe?.rank ? (
+              <RankBox>{recipe?.rank}</RankBox>
+            ) : (
+              null
+            )
+            }
           </Thumbnail>
           <div>
             <div>
@@ -82,6 +88,19 @@ const ThumbnailImg = styled.img`
   border-radius: 15px;
   transition-duration: 0.2s;
   transition-delay: 0s;
+`;
+const RankBox = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFA800;
+  color: white;
 `;
 const Title = styled.p`
   color: inherit; // 부모의 색상 따라감

@@ -14,7 +14,6 @@ function Ranking() {
     const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
     
     try {
-      console.log(res.data.content[0]);
       let _recipe = [];
       for (let i = 0; i < res.data.content.length; i++) {
         _recipe.push({
@@ -26,7 +25,7 @@ function Ranking() {
           profileImg: res.data.content[i].profileImg,
           nickname: res.data.content[i].nickname,
           viewCount: res.data.content[i].viewCount,
-          rank: i + 1,
+          rank: result.length + i + 1,
         });
       }
 
