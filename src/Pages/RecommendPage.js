@@ -6,39 +6,64 @@ import Footer from "../Components/Footer/Footer";
 import RecipeView from '../Components/RecipeView';
 import PageExplain from '../Components/PageExplain';
 import RecommendNav from '../Components/Recommend/RecommendNav';
+import { useUserContext } from '../contexts/UserContext';
+import axios from 'axios';
+import NoRecipe from '../Components/NoRecipe';
 
 function RecommendPage() {
+  const { user } = useUserContext();
   const [mode, setMode] = useState('TR');
   const [result, setResult] = useState([]);
   const location = useLocation();
+  const axiosUrl = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
     const _mode = search.get('mode') || 'TR';
     setMode(_mode);
 
-    let _result = [];
-    for(let i = 0; i < 12; i++){
-      _result.push(
-        <RecipeView
-          key={i}
-          recipe={
-            {
-              id: i+1,
-              profileImg: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/userImage/sample.png",
-              nickname: "duyyaa",
-              thumbnail: "https://yorizori-s3.s3.ap-northeast-2.amazonaws.com/src/8455f69d-6f83-4a85-9f95-a577c8d807bf.jpg",
-              title: "제목",
-              starRate: 4.5,
-              starCount: 100,
-              viewCount: 100,
-            }
-          }
-        />
-      )
+    if(user.id && _mode === 'PR'){
+      getPRRecipe();
+    } else if(user.id && _mode === 'TR'){
+      getTRRecipe();
     }
-    setResult(_result);
   }, [location]);
+
+  const getPRRecipe = async () => {
+    const res = await axios.get(`${axiosUrl}/recipe/get/recommend/${user.id}`);
+    
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data[i].id,
+                title: res.data[i].title,
+                thumbnail: res.data[i].thumbnail,
+                reviewCount: res.data[i].reviewCount,
+                starCount: res.data[i].starCount,
+                profileImg: res.data[i].profileImg,
+                nickname: res.data[i].nickname,
+                viewCount: res.data[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+    } catch {
+      console.log("오류");
+    }
+  };
+  const getTRRecipe = async () => {
+    let _result = [];
+    
+    setResult(_result);
+  }
 
   return (
     <div>
@@ -48,9 +73,11 @@ function RecommendPage() {
         <Contents>
           <PageExplain title="RECOMMEND RECIPE" explain="추천되는 레시피를 살펴보세요!" />
           <RecommendNav mode={mode} />
-          <RecipeList>
-            {result}
-          </RecipeList>
+            {result.length ? (
+              <RecipeList>{result}</RecipeList>
+            ) : (
+              <NoRecipe />
+            )}
         </Contents>
       </StyledBody>
       </Wrap>
