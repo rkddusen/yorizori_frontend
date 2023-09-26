@@ -6,52 +6,64 @@ import Footer from "../Components/Footer/Footer";
 import RecipeView from '../Components/RecipeView';
 import Paging from '../Components/Paging';
 import NoRecipe from '../Components/NoRecipe';
+import { useUserContext } from '../contexts/UserContext';
+import axios from 'axios';
 
 function SearchPage() {
+  const { user } = useUserContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [nowMethod, setNowMethod] = useState('');
   const [nowSearch, setNowSearch] = useState('');
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     let _method = queryParams.get('method');
     let _search = queryParams.get('search');
-    
-    getRecipe(_method, _search);
+    const _page = queryParams.get("page") || 1;
+
+    getRecipe(_method, _search, _page - 1);
     setNowMethod(_method);
     setNowSearch(_search);
 
   },[location]);
 
-  const getRecipe = (method, search) => {
-    let _result = [];
-    let _count = 0;
-    for(let i = 0; i < 10; i++){
-      _result.push(
-        <RecipeView
-          key={i}
-          recipe={
-            {
-              id: i+1,
-              title: method + search,
-              thumbnail: '/src',
-              starRate: 4.5,
-              starCount: 100,
-              profileImg: '/src',
-              nickname: 'ㅇㅇ',
-              viewCount: 100,
+  const getRecipe = async (method, search, page) => {
+    console.log(search)
+    const res = await axios.get(
+      `${axiosUrl}/recipe/get/search/${method}?userId=${user.id}&search=${search}&pageNo=${page}`
+    );
+    try {
+      let _result = [];
+      console.log(res.data);
+      for (let i = 0; i < res.data.content.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data.content[i].id,
+                title: res.data.content[i].title,
+                thumbnail: res.data.content[i].thumbnail,
+                reviewCount: res.data.content[i].reviewCount,
+                starCount: res.data.content[i].starCount,
+                profileImg: res.data.content[i].profileImg,
+                nickname: res.data.content[i].nickname,
+                viewCount: res.data.content[i].viewCount,
+              }
             }
-          }
-        />
-      )
+          />
+        );
+      }
+      
+      setResult(_result);
+      setTotalRecipeCount(res.data.totalElements);
+    } catch {
+      console.log("오류");
     }
-
-    setResult(_result);
-    _count = 30;
-    setTotalRecipeCount(_count);
   };
 
   return (
