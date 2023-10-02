@@ -10,19 +10,21 @@ const Template = (props) => {
   const [newRecipeTemplate, setNewRecipeTemplate] = useState(null);
   const [savingRecipeTemplate, setSavingRecipeTemplate] = useState(null);
   const [checkedNum, setCheckedNum] = useState(0);
-  const [sentence , setSentence] = useState(recipeDetail[index]['text'] || null);
+  const [sentence , setSentence] = useState(recipeDetail[index]['detail'] || null);
   const inputRef = useRef([]);
+  const textareaRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AI_AXIOS_URL;
 
   useEffect(() => {
     setNewRecipeTemplate(recipeTemplate);
     setSavingRecipeTemplate(recipeTemplate);
     console.log(recipeTemplate);
-    getTemplate(recipeTemplate);
+    if(recipeTemplate)
+      getTemplate(recipeTemplate);
   },[]);
 
   useEffect(() => {
-    if(newRecipeTemplate && newRecipeTemplate[index][checkedNum]){
+    if(newRecipeTemplate && newRecipeTemplate[index] && newRecipeTemplate[index][checkedNum]){
       getTemplate(newRecipeTemplate);
     }
   },[checkedNum]);
@@ -128,6 +130,24 @@ const Template = (props) => {
     initTemplate();
     setCheckedNum(_newRecipeTemplate[index].length - 1);
   }
+  const handleDirectWriting = () => {
+    if(textareaRef.current?.value !== sentence){
+      let _newRecipeTemplate = newRecipeTemplate;
+      let _savingRecipeTemplate = savingRecipeTemplate;
+      if(_newRecipeTemplate[index]){
+        delete _newRecipeTemplate[index];
+        delete _savingRecipeTemplate[index];
+      }
+      
+      if(newRecipeTemplate.length < 1){
+        setNewRecipeTemplate(null);
+        setSavingRecipeTemplate(null);
+      }
+      initTemplate();
+      setCheckedNum(0);
+      setSentence(textareaRef.current?.value);
+    }
+  }
 
 
   const handleApplyTemplate = () => {
@@ -151,7 +171,7 @@ const Template = (props) => {
       <TemplateBox>
         <TemplateTitle>
           {
-            newRecipeTemplate ? (
+            newRecipeTemplate && newRecipeTemplate[index] ? (
               newRecipeTemplate[index].map((_, i) => (
                 <NumBox key={i} $checked={checkedNum === i} onClick={() => handleCheckNum(i)}>
                   {i+1}
@@ -162,7 +182,7 @@ const Template = (props) => {
             )
           }
         </TemplateTitle>
-        { newRecipeTemplate && newRecipeTemplate[index].length > 1 ? (
+        { newRecipeTemplate && newRecipeTemplate[index] && newRecipeTemplate[index].length > 1 ? (
             <DeleteTemplate>
               <button onClick={handleTemplateDelete}>현재 템플릿 삭제</button>
             </DeleteTemplate>
@@ -213,7 +233,7 @@ const Template = (props) => {
            <button onClick={handleMakingSentence}>변환 ▶︎</button>
         </ConvertBtn>
         <Result>
-          <textarea rows={5} value={sentence} />
+          <textarea rows={5} ref={textareaRef} value={sentence || ""} onChange={handleDirectWriting} />
           <button onClick={handleTemplatePlus}>이어붙이기 +</button>
         </Result>
         </TemplateArea>
