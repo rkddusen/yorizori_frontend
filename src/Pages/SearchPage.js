@@ -25,16 +25,18 @@ function SearchPage() {
     let _search = queryParams.get('search');
     const _page = queryParams.get("page") || 1;
 
-    getRecipe(_method, _search, _page - 1);
+    if(_method === 'food')
+    getRecipe(_search, _page - 1);
+  else{getIRecipe(_search, _page - 1);}
     setNowMethod(_method);
     setNowSearch(_search);
 
   },[location]);
 
-  const getRecipe = async (method, search, page) => {
+  const getRecipe = async (search, page) => {
     console.log(search)
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/search/${method}?userId=${user.id}&search=${search}&pageNo=${page}`
+      `${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}`
     );
     try {
       let _result = [];
@@ -53,6 +55,41 @@ function SearchPage() {
                 profileImg: res.data.content[i].profileImg,
                 nickname: res.data.content[i].nickname,
                 viewCount: res.data.content[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+      setTotalRecipeCount(res.data.totalElements);
+    } catch {
+      console.log("오류");
+    }
+  };
+
+  const getIRecipe = async (search, page) => {
+    console.log(search)
+    const res = await axios.get(
+      `${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}`
+    );
+    try {
+      let _result = [];
+      console.log(res.data);
+      for (let i = 0; i < res.data.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data[i].id,
+                title: res.data[i].title,
+                thumbnail: res.data[i].thumbnail,
+                reviewCount: res.data[i].reviewCount,
+                starCount: res.data[i].starCount,
+                profileImg: res.data[i].profileImg,
+                nickname: res.data[i].nickname,
+                viewCount: res.data[i].viewCount,
               }
             }
           />
