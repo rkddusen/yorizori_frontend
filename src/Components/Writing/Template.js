@@ -150,43 +150,43 @@ const Template = (props) => {
         <div>
           <Contents>
             <ContentsTitle><Circle color='#FF7171' /><p>조건</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[0] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
           <Contents>
             <ContentsTitle><Circle color='#FFB571' /><p>재료</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[1] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
           <Contents>
             <ContentsTitle><Circle color='#FFE071' /><p>크기</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[2] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
           <Contents>
             <ContentsTitle><Circle color='#71FFA1' /><p>시간</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[3] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
           <Contents>
             <ContentsTitle><Circle color='#71B2FF' /><p>조리 도구</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[4] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
           <Contents>
             <ContentsTitle><Circle color='#C071FF' /><p>행동</p></ContentsTitle>
-            <div>
+            <ContentsInput>
               <input type='text' ref={e => inputRef.current[5] = e} />
-            </div>
+            </ContentsInput>
           </Contents>
         </div>
         <ConvertBtn>
-           <button onClick={handleMakingSentence}>변환 ▶︎</button>
+           <button onClick={handleMakingSentence}>변환 ▼</button>
         </ConvertBtn>
         <Result>
           <textarea rows={5} ref={textareaRef} value={sentence || ""} onChange={handleDirectWriting} />
@@ -212,8 +212,16 @@ const TemplateBox = styled.div`
 `;
 const TemplateArea = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  & > div:first-child{
+    width: auto;
+  }
+  @media screen and (max-width: 767px) {
+    & > div{
+      width: 100%;
+    }
+  }
 `;
 const TemplateTitle = styled.div`
   font-size: 16px;
@@ -252,19 +260,38 @@ const Contents = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px 0;
-
+  width: 100%;
+`;
+const ContentsInput = styled.div`
+  width: 100%;
   & input{
+    box-sizing: border-box;
     font-size: 16px;
     padding: 5px;
+    width: 250px;
+  }
+  
+  @media screen and (max-width: 767px) {
+    & input{
+      width: 100%;
+      font-size: 14px;
+    }
   }
 `;
 const ContentsTitle = styled.div`
-  width: 100px;
+  min-width: 100px;
   display: flex;
   justify-content: start;
   align-items: center;
+  font-size: 16px;
+  margin-right: 5px;
   & > svg{
     margin-right: 5px;
+  }
+
+  @media screen and (max-width: 767px) {
+    min-width: 80px;
+    font-size: 14px;
   }
 `;
 
@@ -278,7 +305,7 @@ const ConvertBtn = styled.div`
     padding: 5px 20px;
     font-size: 14px;
     border-radius: 15px;
-    margin: 0 20px;
+    margin: 20px 0;
     &:hover {
       cursor: pointer;
       color: #aaaaaa;
