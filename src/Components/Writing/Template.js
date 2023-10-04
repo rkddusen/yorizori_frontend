@@ -2,47 +2,49 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled, {css} from 'styled-components';
 import axios from 'axios';
 
-const Circle = ({size=12, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>);
+const Circle = ({size=10, color="#000000"}) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>);
 
 
 const Template = (props) => {
-  const { index, isTemplateOpen, setIsTemplateOpen, recipeTemplate, setRecipeTemplate, recipeDetail, setRecipeDetail } = props;
-  const [newRecipeTemplate, setNewRecipeTemplate] = useState(null);
-  const [savingRecipeTemplate, setSavingRecipeTemplate] = useState(null);
+  const { index, handleTemplateClose, thisRecipeDetail, handleSavingRecipeDetail } = props;
+  const [newRecipeTemplate, setNewRecipeTemplate] = useState(thisRecipeDetail['template'] || [{}]);
+  const [savingRecipeTemplate, setSavingRecipeTemplate] = useState(thisRecipeDetail['template'] || [{}]);
   const [checkedNum, setCheckedNum] = useState(0);
-  const [sentence , setSentence] = useState(recipeDetail[index]['detail'] || null);
+  const [sentence , setSentence] = useState(thisRecipeDetail['detail'] || '');
   const inputRef = useRef([]);
   const textareaRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AI_AXIOS_URL;
 
   useEffect(() => {
-    setNewRecipeTemplate(recipeTemplate);
-    setSavingRecipeTemplate(recipeTemplate);
-    console.log(recipeTemplate);
-    if(recipeTemplate)
-      getTemplate(recipeTemplate);
-  },[]);
-
-  useEffect(() => {
-    if(newRecipeTemplate && newRecipeTemplate[index] && newRecipeTemplate[index][checkedNum]){
-      getTemplate(newRecipeTemplate);
-    }
+    initTemplate();
+    // 기존 데이터가 있는 경우
+    if(newRecipeTemplate)
+      getTemplate(newRecipeTemplate[checkedNum]);
   },[checkedNum]);
-
 
   const initTemplate = () => {
     for(let i = 0; i < 6; i++){
       inputRef.current[i].value = '';
     }
   }
-  const getTemplate = (_newRecipeTemplate) => {
-    inputRef.current[0].value = _newRecipeTemplate[index][checkedNum].condition ? _newRecipeTemplate[index][checkedNum].condition : '';
-    inputRef.current[1].value = _newRecipeTemplate[index][checkedNum].ingredient ? _newRecipeTemplate[index][checkedNum].ingredient : '';
-    inputRef.current[2].value = _newRecipeTemplate[index][checkedNum].size ? _newRecipeTemplate[index][checkedNum].size : '';
-    inputRef.current[3].value = _newRecipeTemplate[index][checkedNum].time ? _newRecipeTemplate[index][checkedNum].time : '';
-    inputRef.current[4].value = _newRecipeTemplate[index][checkedNum].tool ? _newRecipeTemplate[index][checkedNum].tool : '';
-    inputRef.current[5].value = _newRecipeTemplate[index][checkedNum].action ? _newRecipeTemplate[index][checkedNum].action : '';
+  const getTemplate = (template) => {
+    inputRef.current[0].value = template.condition ? template.condition : '';
+    inputRef.current[1].value = template.ingredient ? template.ingredient : '';
+    inputRef.current[2].value = template.size ? template.size : '';
+    inputRef.current[3].value = template.time ? template.time : '';
+    inputRef.current[4].value = template.tool ? template.tool : '';
+    inputRef.current[5].value = template.action ? template.action : '';
   }
+
+  const handleCheckNum = (num) => {
+    if(checkedNum !== num){
+      let _newRecipeTemplate = setTemplate();
+      setNewRecipeTemplate( _newRecipeTemplate);
+      initTemplate();
+      setCheckedNum(num);
+    }
+  }
+
   const setTemplate = () => {
     const _newRecipeTemplate = JSON.parse(JSON.stringify(newRecipeTemplate));
     const updated = {
@@ -53,54 +55,27 @@ const Template = (props) => {
       tool: inputRef.current[4].value,
       action: inputRef.current[5].value,
     }
-    _newRecipeTemplate[index][checkedNum] = updated;
-    // setNewRecipeTemplate(_newRecipeTemplate);
+    _newRecipeTemplate[checkedNum] = updated;
     return _newRecipeTemplate;
   }
 
-  const isTemplateEmpty = (_newRecipeTemplate) => {
-    for(let i = 0; i < _newRecipeTemplate[index].length; i++){
-      let str = '';
-      if(_newRecipeTemplate[index][i]){
-        str = _newRecipeTemplate[index][i].condition + _newRecipeTemplate[index][i].ingredient + _newRecipeTemplate[index][i].size + _newRecipeTemplate[index][i].time + _newRecipeTemplate[index][i].tool + _newRecipeTemplate[index][i].action;
-      }
-      
-      if(str.length === 0){
+  const isTemplateEmpty = (template) => {
+    for(let i = 0; i < template.length; i++){
+      if(!(template[i].condition || template[i].ingredient || template[i].size || template[i].time || template[i].tool || template[i].action))
         return true;
-      }
     }
     return false;
   }
 
-  const handleCheckNum = (num) => {
-    if(checkedNum !== num){
-      let _newRecipeTemplate = setTemplate();
-      setNewRecipeTemplate(_newRecipeTemplate);
-      initTemplate();
-      setCheckedNum(num);
-    }
-  }
+  // 문장 + 템플릿 서버에 보내고 문장 받기
   const handleMakingSentence = async () => {
-    // 문장 + 템플릿 서버에 보내고 문장 받기
     let _newRecipeTemplate = setTemplate();
     if(isTemplateEmpty(_newRecipeTemplate)){
       alert('비어 있는 템플릿이 존재합니다.');
     } else{
-
-      // let _sentence = '';
-      // for(let i = 0; i < _newRecipeTemplate[index].length; i++){
-      //   if(_newRecipeTemplate[index][i]){
-      //     _sentence += _newRecipeTemplate[index][i].condition + _newRecipeTemplate[index][i].ingredient + _newRecipeTemplate[index][i].size + _newRecipeTemplate[index][i].time + _newRecipeTemplate[index][i].tool + _newRecipeTemplate[index][i].action;
-      //   }
-      // }
-      // setSentence(_sentence);
-      // setNewRecipeTemplate(_newRecipeTemplate);
-      // setSavingRecipeTemplate(_newRecipeTemplate);
-
-      let paramsObject = {template: _newRecipeTemplate[index]}
+      let paramsObject = {template: _newRecipeTemplate}
       axios.post(`${axiosUrl}/template`, paramsObject)
         .then((res) => {
-          console.log(res);
           let _sentence = res.data.response;
           setSentence(_sentence);
           setNewRecipeTemplate(_newRecipeTemplate);
@@ -109,61 +84,42 @@ const Template = (props) => {
         .catch((error) => {
           console.log(error);
         })
-
     }
   }
   const handleTemplateDelete = () => {
     const _newRecipeTemplate = JSON.parse(JSON.stringify(newRecipeTemplate));
-    _newRecipeTemplate[index].splice(checkedNum, 1);
+    _newRecipeTemplate.splice(checkedNum, 1);
     setNewRecipeTemplate(_newRecipeTemplate);
-    if(checkedNum >= _newRecipeTemplate[index].length){
+    if(checkedNum >= _newRecipeTemplate.length){
       setCheckedNum(prev => prev - 1)
     } else{
       initTemplate();
-      getTemplate(_newRecipeTemplate);
+      getTemplate(_newRecipeTemplate[checkedNum]);
     }
   }
   const handleTemplatePlus = () => {
     let _newRecipeTemplate = setTemplate();
-    _newRecipeTemplate[index].push({});
+    _newRecipeTemplate.push({});
     setNewRecipeTemplate(_newRecipeTemplate);
-    initTemplate();
-    setCheckedNum(_newRecipeTemplate[index].length - 1);
+    setCheckedNum(_newRecipeTemplate.length - 1);
   }
   const handleDirectWriting = () => {
-    if(textareaRef.current?.value !== sentence){
-      let _newRecipeTemplate = newRecipeTemplate;
-      let _savingRecipeTemplate = savingRecipeTemplate;
-      if(_newRecipeTemplate[index]){
-        delete _newRecipeTemplate[index];
-        delete _savingRecipeTemplate[index];
-      }
-      
-      if(newRecipeTemplate.length < 1){
-        setNewRecipeTemplate(null);
-        setSavingRecipeTemplate(null);
-      }
-      initTemplate();
-      setCheckedNum(0);
-      setSentence(textareaRef.current?.value);
+    if(newRecipeTemplate && textareaRef.current?.value !== sentence){
+      setNewRecipeTemplate([{}]);
+      setSavingRecipeTemplate([{}]);
     }
+    initTemplate();
+    setCheckedNum(0);
+    setSentence(textareaRef.current?.value);
   }
 
 
   const handleApplyTemplate = () => {
-    if(sentence){
-      let _recipeDetail = [...recipeDetail];
-      _recipeDetail[index]['detail'] = sentence;
-      setRecipeDetail(_recipeDetail);
-    }
-    setRecipeTemplate(savingRecipeTemplate);
-    
-    handleTemplateClose();
-  }
-  const handleTemplateClose = () => {
-    let _isTemplateOpen = [...isTemplateOpen];
-    _isTemplateOpen[index] = false;
-    setIsTemplateOpen(_isTemplateOpen);
+    let _thisRecipeDetail = {...thisRecipeDetail};
+    _thisRecipeDetail['detail'] = sentence;
+    _thisRecipeDetail['template'] = savingRecipeTemplate;
+    handleSavingRecipeDetail(index, _thisRecipeDetail);
+    handleTemplateClose(index);
   }
 
   return (
@@ -171,8 +127,8 @@ const Template = (props) => {
       <TemplateBox>
         <TemplateTitle>
           {
-            newRecipeTemplate && newRecipeTemplate[index] ? (
-              newRecipeTemplate[index].map((_, i) => (
+            newRecipeTemplate ? (
+              newRecipeTemplate.map((_, i) => (
                 <NumBox key={i} $checked={checkedNum === i} onClick={() => handleCheckNum(i)}>
                   {i+1}
                 </NumBox>
@@ -182,7 +138,7 @@ const Template = (props) => {
             )
           }
         </TemplateTitle>
-        { newRecipeTemplate && newRecipeTemplate[index] && newRecipeTemplate[index].length > 1 ? (
+        { newRecipeTemplate && newRecipeTemplate.length > 1 ? (
             <DeleteTemplate>
               <button onClick={handleTemplateDelete}>현재 템플릿 삭제</button>
             </DeleteTemplate>
@@ -199,7 +155,7 @@ const Template = (props) => {
             </div>
           </Contents>
           <Contents>
-            <ContentsTitle><Circle color='#FFB571' /><p>재료(양)</p></ContentsTitle>
+            <ContentsTitle><Circle color='#FFB571' /><p>재료</p></ContentsTitle>
             <div>
               <input type='text' ref={e => inputRef.current[1] = e} />
             </div>
@@ -239,7 +195,7 @@ const Template = (props) => {
         </TemplateArea>
         <ButtonBox>
           <button onClick={handleApplyTemplate}>적용</button>
-          <button onClick={handleTemplateClose}>취소</button>
+          <button onClick={() => handleTemplateClose(index)}>취소</button>
         </ButtonBox>
       </TemplateBox>
     </>
