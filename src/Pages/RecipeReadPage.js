@@ -100,13 +100,20 @@ const RecipeReadPage = () => {
               <p>Step {i + 1}</p>
               <p>{recipe.order[i].detail}</p>
             </RecipeOrderDetailArea>
-            <RecipeOrderImgArea>
-              <div>
-                <img
-                  src={process.env.REACT_APP_IMG_URL + recipe.order[i].image}
-                />
-              </div>
-            </RecipeOrderImgArea>
+            {
+              recipe.order[i].image ? (
+                <RecipeOrderImgArea>
+                  <div>
+                    <img
+                      src={process.env.REACT_APP_IMG_URL + recipe.order[i].image}
+                    />
+                  </div>
+                </RecipeOrderImgArea>
+              ) : (
+                null
+              )
+            }
+            
           </RecipeOrder>
         );
       }
@@ -553,6 +560,7 @@ const RecipeOrderImgArea = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 10px;
+    object-fit: cover;
   }
 
   @media screen and (max-width: 767px) {

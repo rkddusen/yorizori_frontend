@@ -29,34 +29,39 @@ const RecipeWriting = () => {
   const [mainIngredient, setMainIngredient] = useState([{}]);
   const [semiIngredient, setSemiIngredient] = useState([{}]);
   const [recipeDetail, setRecipeDetail] = useState([{}]);
-  const [recipeImageHover, setRecipeImageHover] = useState([false]);
-  // const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
+  // [
+  //   {
+  //     details: '',
+  //     image: '',
+  //     template: [
+  //       {
+  //         condition: '',
+  //         ingredient: '',
+  //         size: '',
+  //         time: '',
+  //         tool: '',
+  //         action: '',
+  //       },
+  //       {
+  //         condition: '',
+  //         ingredient: '',
+  //         size: '',
+  //         time: '',
+  //         tool: '',
+  //         action: '',
+  //       },
+  //     ]
+  //   }
+  // ]
   const location = useLocation();
   const [referenceUser, setReferenceUser] = useState({
     id: null,
     profileImg: null,
     nickname: null,
   })
-
-  const [recipeTemplate, setRecipeTemplate] = useState({
-    0: [{}],
-  });
-  // {
-  //   1: [
-  //     {sentence: ''},
-  //     {
-  //       condition: '',
-  //       ingredient: '',
-  //     }
-  //   ],
-  //   2: [
-  //     {sentence: ''},
-  //     {
-  //       condition: '',
-  //       ingredient: '',
-  //     }
-  //   ],
-  // }
+  const thumbnailRef = useRef(null);
+  const navigate = useNavigate();
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -97,12 +102,6 @@ const RecipeWriting = () => {
     }
   }
   };
-
-  const thumbnailRef = useRef(null);
-  // const recipeImageRef = useRef([]);
-  const navigate = useNavigate();
-  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
-
 
 
   const handleThumbnailHover = (bool) => {
@@ -180,87 +179,11 @@ const RecipeWriting = () => {
       setSemiIngredient(_semiIngredient);
     }
   }
-  // const handleRecipeDetail = (index, e) => {
-  //   let _recipeDetail = [...recipeDetail];
-  //   _recipeDetail[index]['text'] = e.target.value;
-  //   setRecipeDetail(_recipeDetail);
-  // }
-  // const handleRecipeDetailDelete = (index) => {
-  //   let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
-  //   setRecipeDetail(_recipeDetail);
-  // }
-  // const handleRecipeImageHover = (index, bool) => {
-  //   let _recipeImageHover = [...recipeImageHover];
-  //   _recipeImageHover[index] = bool;
-  //   setRecipeImageHover(_recipeImageHover);
-  // }
-  // const handleRecipeImageClick = (index) => {
-  //   if(recipeDetail[index]['image']){
-  //     let _recipeDetail = [...recipeDetail];
-  //     serverImageDelete(_recipeDetail[index]['image']);
-  //     delete _recipeDetail[index]['image'];
-  //     setRecipeDetail(_recipeDetail);
-  //     recipeImageRef.current[index].value = null;
-  //   } else recipeImageRef.current[index].click();
-  // }
-  // const handleRecipeImageChange = (index, e) => {
-  //   const _recipeImg = e.target.files[0];
-  //   const fileExtension = _recipeImg.name.split('.').pop();
-  //   if(fileExtension.toLowerCase() === 'jpg' || fileExtension.toLowerCase() === 'jpeg' || fileExtension.toLowerCase() === 'png' ){
-  //     const formData = new FormData();
-  //   formData.append('recipeImage', _recipeImg);
-  //   const headers = {
-  //     "Content-Type": "multipart/form-data",
-  //   };
-  //   axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
-  //       .then((res) => {
-  //         let _recipeDetail = [...recipeDetail];
-  //         _recipeDetail[index]['image'] = res.data.data.url;
-  //         setRecipeDetail(_recipeDetail);
-  //         let _recipeImageHover = [...recipeImageHover];
-  //         _recipeImageHover[index] = false;
-  //         setRecipeImageHover(_recipeImageHover);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   } else{
-  //     alert('jpg, png 형식의 파일만 첨부하실 수 있습니다.');
-  //   }
-  // }
+
   const submitRecipeWriting = async () => {
     const filteredMainIngredient = mainIngredient.filter(obj => Object.keys(obj).length > 0);
     const filteredSemiIngredient = semiIngredient.filter(obj => Object.keys(obj).length > 0);
-
-    // step 뛰어 넘었을 때,
-     // 예) step 1을 쓰지 않고 step 2부터 작성했다면 step 1을 삭제 시켜야 함.
-     // filteredElements는 step 1을 삭제시킨 recipeDetail.
-     // filteredIndexes는 삭제시킨 recipeDetail의 인덱스.
-     const filteredRecipeDetail = recipeDetail.reduce((result, obj, index) => {
-      if (Object.keys(obj).length > 0) {
-        result.filteredElements.push(obj);
-      } else{
-        result.filteredIndexes.push(index);
-      }
-      return result;
-    }, { filteredElements: [], filteredIndexes: [] });
-
-    // recipeTemplate에서도 recipeDetail에서 삭제한 부분 삭제해야 함.
-    let _recipeTemplate = {...recipeTemplate}
-    for(let i = 0; i < filteredRecipeDetail.filteredIndexes.length; i++){
-      delete _recipeTemplate[filteredRecipeDetail.filteredIndexes[i]];
-    }
-    // recipeTemplate 재배치. key가 recipeDetail의 인덱스였는데, 삭제시키면서 달라짐.
-    let filteredRecipeTemplate = {};
-    let newIndex = 0;
-    for(const key in _recipeTemplate){
-      filteredRecipeTemplate[newIndex] = _recipeTemplate[key];
-      newIndex++;
-    }
-
-    for(let i = 0; i < filteredRecipeDetail.filteredElements.length; i++){
-      filteredRecipeDetail.filteredElements[i]['template'] = filteredRecipeTemplate[i];
-    }
+    const filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
 
     let paramsObject = {
       userId: user.id,
@@ -268,7 +191,7 @@ const RecipeWriting = () => {
       recipeInfo: {...recipeInfo, category: category},
       mainIngredient: filteredMainIngredient,
       semiIngredient: filteredSemiIngredient,
-      recipeDetail: filteredRecipeDetail.filteredElements,
+      recipeDetail: filteredRecipeDetail,
       referenceRecipe: referenceUser.id,
     };
     console.log(paramsObject);
@@ -318,15 +241,6 @@ const RecipeWriting = () => {
       navigate(-1);
     }
   }
-
-
-  // const handleTemplateOpen = (index) => {
-  //   let _isTemplateOpen = isTemplateOpen;
-  //   _isTemplateOpen[index] = true;
-  //   console.log(_isTemplateOpen);
-  //   setIsTemplateOpen(_isTemplateOpen);
-  // }
-
 
   return (
     <RecipeContents>
@@ -472,7 +386,7 @@ const RecipeWriting = () => {
           </IngredientPlus>
         </div>
       </RecipeDetailBox>
-      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} recipeImageHover={recipeImageHover} setRecipeImageHover={setRecipeImageHover} recipeTemplate={recipeTemplate} setRecipeTemplate={setRecipeTemplate} />
+      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} />
       <ButtonBox>
         <button onClick={submitRecipeWriting}>저장</button>
         <button onClick={cancelRecipeWriting}>취소</button>

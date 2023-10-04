@@ -11,7 +11,7 @@ const Svg = styled.svg`
 
 
 const RecipeOrderWriting = (props) => {
-  const {recipeDetail, setRecipeDetail,recipeImageHover, setRecipeImageHover, recipeTemplate, setRecipeTemplate} = props;
+  const {recipeDetail, setRecipeDetail} = props;
   const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
   const recipeImageRef = useRef([]);
   
@@ -27,24 +27,10 @@ const RecipeOrderWriting = (props) => {
   const handleRecipeDetailDelete = (index) => {
     let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
     setRecipeDetail(_recipeDetail);
-    
-    let _recipeTemplate = {...recipeTemplate};
-    delete _recipeTemplate[index];
-    let newRecipeTemplate = {};
-    for(let key in _recipeTemplate){
-      if(key > index){
-        newRecipeTemplate[key - 1] = _recipeTemplate[key];
-      } else{
-        newRecipeTemplate[key] = _recipeTemplate[key];
-      }
-    }
-    setRecipeTemplate(newRecipeTemplate);
+    let _isTemplateOpen = [...isTemplateOpen].filter((_, i) => i !== index);
+    setIsTemplateOpen(_isTemplateOpen);
   }
-  const handleRecipeImageHover = (index, bool) => {
-    let _recipeImageHover = [...recipeImageHover];
-    _recipeImageHover[index] = bool;
-    setRecipeImageHover(_recipeImageHover);
-  }
+
   const handleRecipeImageClick = (index) => {
     recipeImageRef.current[index].click();
   }
@@ -53,18 +39,17 @@ const RecipeOrderWriting = (props) => {
     serverImageDelete(_recipeDetail[index]['image']);
     delete _recipeDetail[index]['image'];
     setRecipeDetail(_recipeDetail);
-    
   }
   const handleRecipeImageChange = (index, e) => {
     const _recipeImg = e.target.files[0];
     const fileExtension = _recipeImg.name.split('.').pop();
     if(fileExtension.toLowerCase() === 'jpg' || fileExtension.toLowerCase() === 'jpeg' || fileExtension.toLowerCase() === 'png' ){
       const formData = new FormData();
-    formData.append('recipeImage', _recipeImg);
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
-    axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
+      formData.append('recipeImage', _recipeImg);
+      const headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
         .then((res) => {
           let _recipeDetail = [...recipeDetail];
           if(_recipeDetail[index]['image']){
@@ -83,18 +68,26 @@ const RecipeOrderWriting = (props) => {
       alert('jpg, png 형식의 파일만 첨부하실 수 있습니다.');
     }
   }
+
   const handleRecipeDetailPlus = () => {
     setRecipeDetail(prev => [...prev, {}]);
-    setRecipeImageHover(prev => [...prev, false]);
-    let _recipeTemplate = JSON.parse(JSON.stringify(recipeTemplate));
-    _recipeTemplate[recipeDetail.length] = [{}];
-    setRecipeTemplate(_recipeTemplate);
   }
 
   const handleTemplateOpen = (index) => {
     let _isTemplateOpen = [...isTemplateOpen];
     _isTemplateOpen[index] = true;
     setIsTemplateOpen(_isTemplateOpen);
+  }
+  const handleTemplateClose = (index) => {
+    let _isTemplateOpen = [...isTemplateOpen];
+    _isTemplateOpen[index] = false;
+    setIsTemplateOpen(_isTemplateOpen);
+  }
+
+  const handleSavingRecipeDetail = (index, newRecipeDetail) => {
+    let _recipeDetail = [...recipeDetail];
+    _recipeDetail[index] = newRecipeDetail;
+    setRecipeDetail(_recipeDetail);
   }
 
   return (
@@ -116,15 +109,12 @@ const RecipeOrderWriting = (props) => {
               {
                 isTemplateOpen[index] ? (
                   <Template
-                  index={index}
-                  isTemplateOpen={isTemplateOpen}
-                  setIsTemplateOpen={setIsTemplateOpen}
-                  recipeTemplate={recipeTemplate}
-                  setRecipeTemplate={setRecipeTemplate} 
-                  recipeDetail={recipeDetail}
-                  setRecipeDetail={setRecipeDetail} />
-                  ) : (
-                    <>
+                    index={index}
+                    handleTemplateClose={handleTemplateClose}
+                    thisRecipeDetail={value}
+                    handleSavingRecipeDetail={handleSavingRecipeDetail} />
+                ) : (
+                  <>
                     <RecipeOrderButton>
                       <button onClick={() => handleTemplateOpen(index)}>작성하기</button>
                       {value['image'] ? (
@@ -153,35 +143,7 @@ const RecipeOrderWriting = (props) => {
                         null
                       )}
                     </RecipeOrderDetail>
-                    
                   </>
-                  // <RecipeOrderContents>
-                  //   {
-                  //     recipeDetail[index]['detail'] ? (
-                  //       <div>
-                  //         <p>{recipeDetail[index]['detail']}</p>
-                  //         <button onClick={() => handleTemplateOpen(index)}>수정하기</button>
-                  //       </div>
-                  //     ) : (
-                  //       <div>
-                  //         <button onClick={() => handleTemplateOpen(index)}>작성하기</button>
-                  //       </div>
-                  //     )
-                  //   }
-                  //   <RecipeOrderImgArea onMouseEnter={() => handleRecipeImageHover(index, true)} onMouseLeave={() => handleRecipeImageHover(index, false)} onClick={() => handleRecipeImageClick(index)}>
-                  //     <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
-                  //     {value['image'] ? (
-                  //      <div>
-                  //         <ThumbnailDeleteSvg xmlns="http://www.w3.org/2000/svg" $thumbnailhover={recipeImageHover[index]} width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></ThumbnailDeleteSvg>
-                  //         <ThumbnailImg src={value['image']} $thumbnailhover={recipeImageHover[index]} />
-                  //       </div>
-                  //     ) : (
-                  //       <div>
-                  //         <ThumbnailSvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></ThumbnailSvg>
-                  //       </div>
-                  //     )}
-                  //   </RecipeOrderImgArea>
-                  // </RecipeOrderContents>
                 )
               }
               
@@ -197,27 +159,6 @@ const RecipeOrderWriting = (props) => {
   );
 };
 
-// const ThumbnailSvg = styled.svg`
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   border-radius: 10px;
-// `;
-// const ThumbnailDeleteSvg = styled(ThumbnailSvg)`
-//   display: ${props => props.$thumbnailhover ? 'block' : 'none'};
-//   z-index: 1;
-// `;
-const ThumbnailImg = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  object-fit: cover;
-  opacity: ${props => props.$thumbnailhover ? '30%' : '100%'};
-`;
 const RecipeDetailBox = styled.div`
   width: 100%;
   margin-top: 50px;
@@ -327,45 +268,7 @@ const RecipeOrderDetail = styled.div`
     border-radius: 10px;
   }
 `;
-// const RecipeOrderContents = styled.div`
-//   width: 100%;
-//   display: flex;
-//   justify-content: space-between;
-//   & button{
-//     border: 1px solid black;
-//     background-color: white;
-//     color: black;
-//     padding: 5px 10px;
-//     margin-right: 10px;
-//     &:hover{
-//       cursor: pointer;
-//     }
-//   }
-// `;
-// const RecipeOrderImgArea = styled.div`
-//   width: 40%;
-//   & > div {
-//     width: 100%;
-//     height: 0;
-//     padding-bottom: 100%;
-//     position: relative;
-//     border-radius: 10px;
-//     border: 1px solid #dfdfdf;
-//   }
-//   & > div > img {
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-//     border-radius: 10px;
-//   }
 
-//   @media screen and (max-width: 767px) {
-//     width: 100%;
-//     margin-top: 10px;
-//   }
-// `;
 const RecipePlusArea = styled.p`
   text-align: center;
   padding: 20px 0;
