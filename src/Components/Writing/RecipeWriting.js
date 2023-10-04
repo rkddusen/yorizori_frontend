@@ -181,8 +181,8 @@ const RecipeWriting = () => {
   }
 
   const submitRecipeWriting = async () => {
-    const filteredMainIngredient = mainIngredient.filter(obj => Object.keys(obj).length > 0);
-    const filteredSemiIngredient = semiIngredient.filter(obj => Object.keys(obj).length > 0);
+    const filteredMainIngredient = mainIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
+    const filteredSemiIngredient = semiIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
     const filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
 
     let paramsObject = {
@@ -195,7 +195,16 @@ const RecipeWriting = () => {
       referenceRecipe: referenceUser.id,
     };
     console.log(paramsObject);
-    let confirm = window.confirm('레시피를 등록하시겠습니까?');
+
+    let confirm;
+    if(filteredMainIngredient.length !== mainIngredient.length || filteredSemiIngredient.length !== semiIngredient.length){
+      confirm = window.confirm('재료명이 입력되지 않은 재료는 등록되지 않습니다.\n레시피를 등록하시겠습니까?');
+    } else if(recipeDetail.length !== filteredRecipeDetail.length){
+      confirm = window.confirm('레시피 내용이 비어 있는 Step은 자동으로 사라집니다.\n레시피를 등록하시겠습니까?');
+    } else {
+      confirm = window.confirm('레시피를 등록하시겠습니까?');
+    }
+    
     if(confirm){
       if(paramsObject.thumbnail.length < 1){
         alert('썸네일 사진을 등록해주세요.');
@@ -220,9 +229,6 @@ const RecipeWriting = () => {
       }
       else if(paramsObject.recipeDetail.length < 1){
         alert('레시피 내용을 입력해주세요.');
-      }
-      else if(paramsObject.recipeDetail.filter(obj => obj.detail.length < 1).length > 0){// 이미지만 있고 문장은 없는 경우
-        alert('레시피를 입력해주세요.');
       }
       else{axios
         .post(`${axiosUrl}/recipe/save/details`, paramsObject)
