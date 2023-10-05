@@ -128,11 +128,13 @@ const RecipeOrderWriting = (props) => {
                     </RecipeOrderButton>
                     <input type="file" accept="image/*" style={{display: 'none'}} ref={e => recipeImageRef.current[index] = e} onChange={(e) => handleRecipeImageChange(index, e)} />
                     <RecipeOrderDetail>
+                      <p>
                       {value['detail'] ? (
-                        <p>{value['detail']}</p>
+                        <>{value['detail']}</>
                       ) : (
                         null
                       )}
+                      </p>
                       {value['image'] ? (
                         <div>
                           <div>
@@ -240,8 +242,15 @@ const RecipeOrderButton = styled.div`
     padding: 8px 25px;
     margin-right: 10px;
     &:hover{
-      background-color: #efefef;
+      background-color: #FFA80020;
       cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    & button{
+      font-size: 12px;
+      padding: 8px 15px;
     }
   }
 `;
@@ -250,6 +259,10 @@ const RecipeOrderDetail = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  & > p{
+    width: 55%;
+    word-break: break-all;
+  }
   & > div{
     width: 40%;
   }
@@ -266,6 +279,19 @@ const RecipeOrderDetail = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 10px;
+  }
+
+
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+    justify-content: start;
+    & > p{
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    & > div{
+      width: 100%;
+    }
   }
 `;
 
