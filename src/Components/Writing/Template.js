@@ -87,7 +87,7 @@ const Template = (props) => {
     }
   }
   const handleTemplateDelete = () => {
-    const _newRecipeTemplate = JSON.parse(JSON.stringify(newRecipeTemplate));
+    const _newRecipeTemplate = [...newRecipeTemplate];
     _newRecipeTemplate.splice(checkedNum, 1);
     setNewRecipeTemplate(_newRecipeTemplate);
     if(checkedNum >= _newRecipeTemplate.length){
@@ -99,10 +99,24 @@ const Template = (props) => {
   }
   const handleTemplatePlus = () => {
     let _newRecipeTemplate = setTemplate();
-    _newRecipeTemplate.push({});
+    _newRecipeTemplate.splice(checkedNum+1, 0, {});
     setNewRecipeTemplate(_newRecipeTemplate);
-    setCheckedNum(_newRecipeTemplate.length - 1);
+    setCheckedNum(prev => prev + 1);
   }
+  const handleTemplateMove = (direction) => {
+    let _newRecipeTemplate = setTemplate();
+    if(checkedNum + direction >= 0 && checkedNum + direction <= _newRecipeTemplate.length - 1){
+      let temp = _newRecipeTemplate[checkedNum + direction];
+      _newRecipeTemplate[checkedNum + direction] = _newRecipeTemplate[checkedNum];
+      _newRecipeTemplate[checkedNum] = temp;
+      setNewRecipeTemplate(_newRecipeTemplate);
+
+      setCheckedNum(prev => prev + direction);
+    }
+  }
+
+
+
   const handleDirectWriting = () => {
     if(newRecipeTemplate && textareaRef.current?.value !== sentence){
       setNewRecipeTemplate([{}]);
@@ -129,23 +143,45 @@ const Template = (props) => {
           {
             newRecipeTemplate ? (
               newRecipeTemplate.map((_, i) => (
-                <NumBox key={i} $checked={checkedNum === i} onClick={() => handleCheckNum(i)}>
-                  {i+1}
-                </NumBox>
+                <TemplateNumBox key={i} $checked={checkedNum === i}>
+                  <TemplateNum $checked={checkedNum === i} onClick={() => handleCheckNum(i)}>
+                    {i+1}
+                  </TemplateNum>
+                  {
+                    checkedNum === i ? (
+                      <HandleNumBox> 
+                        <svg onClick={() => handleTemplateMove(-1)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
+                        { newRecipeTemplate.length < 3 ? (
+                          <svg onClick={handleTemplatePlus} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        ) : (
+                          null
+                        )}
+                        { newRecipeTemplate.length > 1 ? (
+                          <svg onClick={handleTemplateDelete} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        ) : (
+                          null
+                        )}
+                        <svg onClick={() => handleTemplateMove(1)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
+                      </HandleNumBox>
+                    ) : (
+                      null
+                    )
+                  }
+                </TemplateNumBox>
               ))
             ) : (
               null
             )
           }
         </TemplateTitle>
-        { newRecipeTemplate && newRecipeTemplate.length > 1 ? (
+        {/* { newRecipeTemplate && newRecipeTemplate.length > 1 ? (
             <DeleteTemplate>
               <button onClick={handleTemplateDelete}>현재 템플릿 삭제</button>
             </DeleteTemplate>
           ) : (
             null
           )
-        }
+        } */}
         <TemplateArea>
         <div>
           <Contents>
@@ -190,7 +226,7 @@ const Template = (props) => {
         </ConvertBtn>
         <Result>
           <textarea rows={5} ref={textareaRef} value={sentence || ""} onChange={handleDirectWriting} />
-          <button onClick={handleTemplatePlus}>이어붙이기 +</button>
+          {/* <button onClick={handleTemplatePlus}>이어붙이기 +</button> */}
         </Result>
         </TemplateArea>
         <ButtonBox>
@@ -209,6 +245,9 @@ const TemplateBox = styled.div`
   margin: 10px;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.25);
   border-radius: 10px;
+  @media screen and (max-width: 767px) {
+    padding: 10px;
+  }
 `;
 const TemplateArea = styled.div`
   display: flex;
@@ -228,11 +267,45 @@ const TemplateTitle = styled.div`
   margin-bottom: 20px;
   display: flex;
   justify-content: start;
-  align-items: end;
+  align-items: start;
 `;
-const NumBox = styled.div`
+
+const TemplateNumBox = styled.div`
   width: 35px;
+  ${props => props.$checked && css`
+    width: 90px;
+  `}
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
+`;
+const HandleNumBox = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+
+  & > svg{
+    width: 20px;
+    height: 20px;
+    margin: 0 2px;
+    stroke: #000;
+    stroke-width: 1.5px;
+    &:hover{
+      cursor: pointer;
+      stroke: #FFA800;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    & > svg{
+      stroke-width: 1px;
+    }
+  }
+`;
+const TemplateNum = styled.div`
   height: 25px;
+  box-sizing: border-box;
   border: 1px solid #dfdfdf;
   border-bottom: none;
   display: flex;
@@ -241,8 +314,6 @@ const NumBox = styled.div`
   color: black;
   border-radius: 10px 10px 0 0;
   ${props => props.$checked && css`
-    width: 50px;
-    height: 30px;
     border: 2px solid #FFA800;
     border-bottom: none;
     color: #FFA800;
