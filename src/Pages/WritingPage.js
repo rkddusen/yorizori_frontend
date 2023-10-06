@@ -5,8 +5,11 @@ import Footer from "../Components/Footer/Footer";
 import RecipeWriting from '../Components/Writing/RecipeWriting';
 import TipWriting from '../Components/Writing/TipWriting';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useUserContext } from '../contexts/UserContext';
+import NeedLoginPage from './NeedLoginPage';
 
 function WritingPage() {
+  const { user } = useUserContext();
   const [mode, setMode] = useState('recipe');
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,25 +25,32 @@ function WritingPage() {
   },[location]);
 
   return (
-    <div>
-      <Wrap>
-      <Header />
-      <StyledBody>
-        <Contents>
-          <SearchNavUl>
-            <SearchNavLi onClick={() => changeWriting('recipe')} checked={mode === 'recipe'}>레시피 작성</SearchNavLi>
-            <SearchNavLi onClick={() => changeWriting('tip')} checked={mode === 'tip'}>팁 작성</SearchNavLi>
-          </SearchNavUl>
-          {mode === 'recipe' ? (
-              <RecipeWriting />
-            ) : (
-              <TipWriting />
-            )}
-        </Contents>
-      </StyledBody>
-      </Wrap>
-      <Footer />
-    </div>
+    <>
+      {user.id ? (
+        <div>
+          <Wrap>
+            <Header />
+            <StyledBody>
+              <Contents>
+                <SearchNavUl>
+                  <SearchNavLi onClick={() => changeWriting('recipe')} checked={mode === 'recipe'}>레시피 작성</SearchNavLi>
+                  <SearchNavLi onClick={() => changeWriting('tip')} checked={mode === 'tip'}>팁 작성</SearchNavLi>
+                </SearchNavUl>
+                {mode === 'recipe' ? (
+                    <RecipeWriting />
+                  ) : (
+                    <TipWriting />
+                  )}
+              </Contents>
+            </StyledBody>
+          </Wrap>
+          <Footer />
+        </div>
+      ) : (
+        <NeedLoginPage />
+      )}
+    </>
+    
   );
 }
 
