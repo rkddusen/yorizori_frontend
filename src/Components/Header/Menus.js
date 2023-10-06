@@ -5,14 +5,16 @@ import ProfileBox from './ProfileBox';
 import { useUserContext } from '../../contexts/UserContext';
 import { ProfileImgClickable } from '../ProfileImg';
 import SearchBar from './SearchBar';
+import WritingBox from './WritingBox';
 
 function Menus(props){
   const { user } = useUserContext();
-  const { profileBoxOpen, setProfileBoxOpen, isOpen, setIsOpen } = props;
+  const { onProfileBoxClickHandler, onWritingBoxClickHandler, profileBoxOpen, setProfileBoxOpen, writingBoxOpen, setWritingBoxOpen, isOpen, setIsOpen } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const [nowPath, setNowPath] = useState(location.pathname);
-  const boxRef = useRef(null);
+  const profileBoxRef = useRef(null);
+  const writingBoxRef = useRef(null);
 
   const moveLoginPage = () => {
     navigate(`/login`);
@@ -30,23 +32,26 @@ function Menus(props){
     navigate(`/tip`);
   }
 
-
-
-  const OnBoxClickHandler = () => {
-    setProfileBoxOpen(!profileBoxOpen);
-  }
-
-  const onClickOutsideHandler = ({ target }) => {
-    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
-      if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
+  const onClickProfileOutsideHandler = ({ target }) => {
+    if (profileBoxRef.current && profileBoxOpen === true && !profileBoxRef.current.contains(target)) {
+      if(window.getComputedStyle(profileBoxRef.current).getPropertyValue('display') !== 'none')
         setProfileBoxOpen(false);
     }
   };
 
+  const onClickWritingOutsideHandler = ({ target }) => {
+    if (writingBoxRef.current && writingBoxOpen === true && !writingBoxRef.current.contains(target)) {
+      if(window.getComputedStyle(writingBoxRef.current).getPropertyValue('display') !== 'none')
+        setWritingBoxOpen(false);
+    }
+  };
+
   useEffect(() => {
-    window.addEventListener("click", onClickOutsideHandler);
+    window.addEventListener("click", onClickProfileOutsideHandler);
+    window.addEventListener("click", onClickWritingOutsideHandler);
     return () => {
-      window.removeEventListener("click", onClickOutsideHandler);
+      window.removeEventListener("click", onClickProfileOutsideHandler);
+      window.removeEventListener("click", onClickWritingOutsideHandler);
     };
   });
 
@@ -61,15 +66,18 @@ function Menus(props){
         <StyledList checked={nowPath === "/tip" ? true : false} onClick={moveTipPage}>쿠킹팁</StyledList>
         {user.id ?
           <>
-            <StyledProfileList  ref={boxRef}>
-              <ProfileImgClickable onClick={OnBoxClickHandler} src={user.profileImg} style={{width: '40px', height: '40px'}} />
+            <StyledProfileList ref={profileBoxRef}>
+              <ProfileImgClickable onClick={onProfileBoxClickHandler} src={user.profileImg} style={{width: '40px', height: '40px'}} />
               <ProfileBox user={user} profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
             </StyledProfileList>
-            
           </>
         :
           <StyledList onClick={moveLoginPage}>로그인</StyledList>
         }
+        <StyledWritingList ref={writingBoxRef} style={{marginLeft: !user.id ? '26px' : '10px'}}>
+          <button onClick={onWritingBoxClickHandler}>글쓰기 ▼</button>
+          <WritingBox writingBoxOpen={writingBoxOpen} setWritingBoxOpen={setWritingBoxOpen} />
+        </StyledWritingList>
       </StyledMenus>
     </>
   );
@@ -82,7 +90,7 @@ const StyledMenus = styled.ul`
   align-items: center;
 `;
 const StyledList = styled.li`
-  margin-left: 36px;
+  margin-left: 26px;
   font-size: 16px;
   color: ${props => props.checked ? "#FFA800" : "reset"};
   stroke: #000000;
@@ -98,10 +106,27 @@ const StyledList = styled.li`
   }
 `;
 const StyledProfileList = styled.li`
-  margin-left: 36px;
+  margin-left: 26px;
   font-size: 16px;
   &:hover{
     cursor: pointer;
+  }
+  @media screen and (max-width: 767px){
+    display: none;
+  }
+`;
+const StyledWritingList = styled.li`
+  /* margin-left: 10px; */
+  & > button{
+    font-size: 13px;
+    background-color: #FFA800;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    &:hover{
+      cursor: pointer;
+    }
   }
   @media screen and (max-width: 767px){
     display: none;

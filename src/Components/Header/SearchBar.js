@@ -112,7 +112,7 @@ function SearchBar(props) {
 }
 
 const SearchSvg = styled.svg`
-  margin: 0 10px;
+  /* margin: 0 10px; */
   &:hover {
     cursor: pointer;
     stroke: #FFA800;

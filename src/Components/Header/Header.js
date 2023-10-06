@@ -6,17 +6,20 @@ import SearchBar from "./SearchBar";
 import Menus from "./Menus";
 import ShortMenus from './ShortMenus';
 import ProfileBox from './ProfileBox';
+import WritingBox from './WritingBox';
 import { ProfileImgClickable } from '../ProfileImg'
 
 function Header() {
   const { user } = useUserContext();
   const [shortMenusOpen, setShortMenusOpen] = useState(false);
   const [profileBoxOpen, setProfileBoxOpen] = useState(false);
+  const [writingBoxOpen, setWritingBoxOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const boxRef = useRef(null);
+  const profileBoxRef = useRef(null);
+  const writingBoxRef = useRef(null);
 
   useEffect(()=>{
     setShortMenusOpen(false);
@@ -30,26 +33,35 @@ function Header() {
   const movePage = () => {
     navigate(`/`);
   }
-  const moveLoginPage = () => {
-    navigate(`/login`);
-  }
 
-
-  const OnBoxClickHandler = () => {
+  const onProfileBoxClickHandler = () => {
     setProfileBoxOpen(!profileBoxOpen);
   }
 
-  const onClickOutsideHandler = ({ target }) => {
-    if (boxRef.current && profileBoxOpen === true && !boxRef.current.contains(target)) {
-      if(window.getComputedStyle(boxRef.current).getPropertyValue('display') !== 'none')
+  const onClickProfileOutsideHandler = ({ target }) => {
+    if (profileBoxRef.current && profileBoxOpen === true && !profileBoxRef.current.contains(target)) {
+      if(window.getComputedStyle(profileBoxRef.current).getPropertyValue('display') !== 'none')
         setProfileBoxOpen(false);
     }
   };
 
+  const onWritingBoxClickHandler = () => {
+    setWritingBoxOpen(!writingBoxOpen);
+  }
+
+  const onClickWritingOutsideHandler = ({ target }) => {
+    if (writingBoxRef.current && writingBoxOpen === true && !writingBoxRef.current.contains(target)) {
+      if(window.getComputedStyle(writingBoxRef.current).getPropertyValue('display') !== 'none')
+        setWritingBoxOpen(false);
+    }
+  };
+
   useEffect(() => {
-    window.addEventListener("click", onClickOutsideHandler);
+    window.addEventListener("click", onClickProfileOutsideHandler);
+    window.addEventListener("click", onClickWritingOutsideHandler);
     return () => {
-      window.removeEventListener("click", onClickOutsideHandler);
+      window.removeEventListener("click", onClickProfileOutsideHandler);
+      window.removeEventListener("click", onClickWritingOutsideHandler);
     };
   });
 
@@ -61,7 +73,15 @@ function Header() {
         </a>
         <DesktopNav>
           {/* <SearchBar /> */}
-          <Menus profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} isOpen={isOpen} setIsOpen={setIsOpen} />
+          <Menus
+            onProfileBoxClickHandler={onProfileBoxClickHandler}
+            onWritingBoxClickHandler={onWritingBoxClickHandler}
+            profileBoxOpen={profileBoxOpen}
+            setProfileBoxOpen={setProfileBoxOpen}
+            writingBoxOpen={writingBoxOpen}
+            setWritingBoxOpen={setWritingBoxOpen}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen} />
         </DesktopNav>
       </StyledHeaderDesktop>
       <StyledHeaderPhone>
@@ -74,17 +94,21 @@ function Header() {
             {
               user.id ? 
               (
-                <StyledProfileList ref={boxRef}>
-                  <ProfileImgClickable src={user.profileImg} onClick={OnBoxClickHandler} style={{width:'32px', height:'32px', marginRight: '10px'}} />
+                <StyledProfileList ref={profileBoxRef}>
+                  <ProfileImgClickable src={user.profileImg} onClick={onProfileBoxClickHandler} style={{width:'32px', height:'32px'}} />
                   <ProfileBox profileBoxOpen={profileBoxOpen} setProfileBoxOpen={setProfileBoxOpen} />
                 </StyledProfileList>
               ) : 
               (
-                <LoginBtn onClick={moveLoginPage}>로그인</LoginBtn>
+                null
               )
             }
+            <StyledWritingList ref={writingBoxRef}>
+              <button onClick={onWritingBoxClickHandler}>글쓰기 ▼</button>
+              <WritingBox writingBoxOpen={writingBoxOpen} setWritingBoxOpen={setWritingBoxOpen} />
+            </StyledWritingList>
             <StyledSvg
-               xmlns="http://www.w3.org/2000/svg"
+              xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"
               viewBox="0 0 24 24"
@@ -181,6 +205,25 @@ const StyledProfileList = styled.div`
 //     cursor: pointer;
 //   }
 // `;
+const StyledWritingList = styled.div`
+  margin: 0 10px;
+  & > button{
+    background-color: #FFA800;
+    color: white;
+    font-size: 12px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 5px;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+
+  display: none;
+  @media screen and (max-width: 767px){
+    display: block;
+  }
+`;
 const LoginBtn = styled.button`
   font-size: 12px;
   padding: 5px 10px;

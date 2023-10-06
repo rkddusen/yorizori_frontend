@@ -13,11 +13,6 @@ const ProfileBox = (props) => {
     setProfileBoxOpen(false);
     navigate(`/mypage`);
   }
-  const moveWritingPage = () => {
-    setProfileBoxOpen(false);
-    navigate(`/writing`);
-  }
-
   const logout = () => {
     setUser({
       id: null,
@@ -42,15 +37,12 @@ const ProfileBox = (props) => {
           <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></StyledSvg>
             마이페이지
           </Visit>
-          <Visit onClick={moveWritingPage}>
-          <StyledSvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></StyledSvg>
-            게시글 등록
+          <Visit onClick={logout}>
+          <StyledSvg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5"/></StyledSvg>
+            로그아웃
           </Visit>
         </VisitArea>
       </MainArea>
-      <LogoutArea>
-        <Logout onClick={logout}>로그아웃</Logout>
-      </LogoutArea>
     </StyledProfileBox>
   );
 }
@@ -59,7 +51,6 @@ const StyledProfileBox = styled.div`
   right: 0;
   top: 90px;
   width: 250px;
-  height: 250px;
   z-index: 99;
   background-color: white;
   border-radius: 20px;
@@ -103,6 +94,10 @@ const Visit = styled.p`
   line-height: 40px;
   border-bottom: 1px solid #dfdfdf;
   stroke: black;
+
+  &:last-child{
+    border: none;
+  }
   &:hover{
     color: #FFA800;
     cursor: pointer;
@@ -111,17 +106,6 @@ const Visit = styled.p`
 `;
 const StyledSvg = styled.svg`
   margin-right: 5px;
-`;
-const LogoutArea = styled.div`
-  width: 100%;
-`;
-const Logout = styled.p`
-  width: 100%;
-  font-size: 14px;
-  &:hover{
-    cursor: pointer;
-    color: #FFA800;
-  }
 `;
 
 
