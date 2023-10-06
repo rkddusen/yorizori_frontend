@@ -250,6 +250,7 @@ const RecipeWriting = () => {
 
   return (
     <RecipeContents>
+      <WritingTitle>레시피 작성</WritingTitle>
       <RecipeTitle>
         <Thumbnail onMouseEnter={() => handleThumbnailHover(true)} onMouseLeave={() => handleThumbnailHover(false)} onClick={handleThumbnailClick}>
           <input type="file" accept="image/*" style={{display: 'none'}} ref={thumbnailRef} onChange={handleThumbnailChange} />
@@ -410,6 +411,10 @@ const RecipeContents = styled.div`
   @media screen and (max-width: 767px) {
     width: 100%;
   }
+`;
+const WritingTitle = styled.p`
+  font-size: 24px;
+  margin-bottom: 20px;
 `;
 const RecipeTitle = styled.div`
   width: 100%;

@@ -32,10 +32,6 @@ function WritingPage() {
             <Header />
             <StyledBody>
               <Contents>
-                <SearchNavUl>
-                  <SearchNavLi onClick={() => changeWriting('recipe')} checked={mode === 'recipe'}>레시피 작성</SearchNavLi>
-                  <SearchNavLi onClick={() => changeWriting('tip')} checked={mode === 'tip'}>팁 작성</SearchNavLi>
-                </SearchNavUl>
                 {mode === 'recipe' ? (
                     <RecipeWriting />
                   ) : (

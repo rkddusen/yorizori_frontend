@@ -214,6 +214,7 @@ const TipWriting = () => {
 
   return (
     <TipContents>
+      <WritingTitle>팁 작성</WritingTitle>
       <Thumbnail onMouseEnter={() => handleThumbnailHover(true)} onMouseLeave={() => handleThumbnailHover(false)} onClick={handleThumbnailClick}>
           <input type="file" accept="image/*" style={{display: 'none'}} ref={thumbnailRef} onChange={handleThumbnailChange} />
           { thumbnail.length > 0 ? (
@@ -260,6 +261,10 @@ const TipContents = styled.div`
     padding: 10px;
     margin: 20px 0;
   }
+`;
+const WritingTitle = styled.p`
+  font-size: 24px;
+  margin-bottom: 20px;
 `;
 
 const Thumbnail = styled.div`
