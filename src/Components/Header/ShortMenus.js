@@ -1,9 +1,11 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from '../../contexts/UserContext';
 
 function ShortMenus(props) {
   const { shortMenusOpen, setShortMenusOpen } = props;
+  const { user } = useUserContext();
   const navigate = useNavigate();
 
   const moveRecommendPage = () => {
@@ -17,6 +19,10 @@ function ShortMenus(props) {
   }
   const moveTipPage = () => {
     navigate(`/tip`);
+  }
+
+  const moveLoginPage = () => {
+    navigate(`/login`);
   }
   return (
     <StyledShortMenus $shortMenusOpen={shortMenusOpen}>
@@ -44,6 +50,13 @@ function ShortMenus(props) {
         <StyledList onClick={moveCategoryPage}>카테고리</StyledList>
         <StyledList onClick={moveRankingPage}>랭킹</StyledList>
         <StyledList onClick={moveTipPage}>쿠킹팁</StyledList>
+        {
+          !user.id ? (
+            <StyledList onClick={moveLoginPage}>로그인</StyledList>
+          ) : (
+            null
+          )
+        }
       </Content>
     </StyledShortMenus>
   );
