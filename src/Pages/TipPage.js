@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import React, { useRef, useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios';
 import Header from "../Components/Header/Header";
@@ -11,11 +11,13 @@ import PageExplain from '../Components/PageExplain';
 function TipPage() {
   const [result, setResult] = useState([]);
   const [totalTipCount, setTotalTipCount] = useState(0);
+  const navigate = useNavigate();
   const location = useLocation();
+  const searchRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
-  const getTip = async (page) => {
-    const res = await axios.get(`${axiosUrl}/tip/get/all?pageNo=${page}`);
+  const getTip = async (page, search) => {
+    const res = await axios.get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=tipViewCount`);
     try {
       let _result = [];
       for(let i = 0; i < res.data.content.length; i++){
@@ -46,8 +48,24 @@ function TipPage() {
   useEffect(() => {
     const search = new URLSearchParams(location.search);
     const _page = search.get("page") || 1;
-    getTip(_page - 1);
+    const _search = search.get("search") || "";
+    getTip(_page - 1, _search);
   }, [location]);
+
+  const handleEnterKey = (event) => {
+    if(event.key === 'Enter'){
+      search();
+    }
+  }
+  const search = () => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('search', searchRef.current.value);
+
+    navigate({
+      pathname: location.pathname,
+      search: queryParams.toString(),
+    });
+  }
 
   return (
     <div>
@@ -56,6 +74,13 @@ function TipPage() {
       <StyledBody>
         <Contents>
           <PageExplain title="COOKING TIP" explain="요리에 도움이 될 팁을 살펴보세요!"/>
+          <SearchBox>
+            <SearchInput type="text" placeholder="팁을 검색하세요." ref={searchRef} onKeyDown={handleEnterKey} />
+            <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </SearchSvg>
+          </SearchBox>
           <TipList>
             {result}
           </TipList>
@@ -84,6 +109,48 @@ const Contents = styled.div`
   @media screen and (max-width: 767px) {
     max-width: 400px;
     margin-top: 130px;
+  }
+`;
+const SearchBox = styled.div`
+  max-width: 600px;
+  width: 100%;
+  padding: 10px 0;
+  border: 2px solid #FFA800;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  @media screen and (max-width: 767px) {
+    max-width: 400px;
+    width: 90vw;
+    margin-top: 10px;
+    padding: 5px 0;
+  }
+`;
+const SearchInput = styled.input`
+  border: none;
+  padding: 0;
+  width: 100%;
+  margin-left: 5px;
+  font-size: 18px;
+  line-height: normal;
+  &:focus {
+    outline: none;
+  }
+  &::placeholder{
+    color: #cccccc;
+  }
+  @media screen and (max-width: 767px) {
+    font-size: 16px;
+  }
+`;
+const SearchSvg = styled.svg`
+  margin: 0 10px;
+  &:hover {
+    cursor: pointer;
+    stroke: #FFA800;
   }
 `;
 const TipList = styled.div`
