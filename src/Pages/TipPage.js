@@ -7,6 +7,7 @@ import Footer from "../Components/Footer/Footer";
 import TipView from "../Components/TipView"
 import Paging from '../Components/Paging'
 import PageExplain from '../Components/PageExplain';
+import SortingBox from '../Components/SortingBox';
 
 function TipPage() {
   const [result, setResult] = useState([]);
@@ -15,9 +16,15 @@ function TipPage() {
   const location = useLocation();
   const searchRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [sorting, setSorting] = useState('조회순');
 
   const getTip = async (page, search) => {
-    const res = await axios.get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=tipViewCount`);
+    let sortingName = 'recipeViewCount';
+    if(sorting === '조회순') sortingName = 'tipViewCount';
+    else if(sorting === '댓글순') sortingName = 'tipReviewCount';
+    else if(sorting === '좋아요순') sortingName = 'tipHeartCount';
+    else if(sorting === '최신순') sortingName = 'createdTime';
+    const res = await axios.get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=${sortingName}`);
     try {
       let _result = [];
       for(let i = 0; i < res.data.content.length; i++){
@@ -50,7 +57,7 @@ function TipPage() {
     const _page = search.get("page") || 1;
     const _search = search.get("search") || "";
     getTip(_page - 1, _search);
-  }, [location]);
+  }, [location, sorting]);
 
   const handleEnterKey = (event) => {
     if(event.key === 'Enter'){
@@ -81,6 +88,7 @@ function TipPage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </SearchSvg>
           </SearchBox>
+          <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['조회순', '댓글순', '좋아요순', '최신순']} />
           <TipList>
             {result}
           </TipList>
