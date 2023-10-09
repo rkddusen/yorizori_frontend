@@ -26,15 +26,20 @@ function CategoryPage() {
     setChecked(_checked);
     
     getRecipe(_checked, _page-1);
-  }, [location]);
+  }, [location, sorting]);
 
   const getRecipe = async (category, page) => {
+    let sortingName = 'recipeViewCount';
+    if(sorting === '요리조리 랭킹순') sortingName = 'recipeViewCount';
+    else if(sorting === '조회순') sortingName = 'recipeViewCount';
+    else if(sorting === '댓글순') sortingName = 'reviewCount';
+    else if(sorting === '별점순') sortingName = 'starCount';
+    else if(sorting === '최신순') sortingName = 'createdTime';
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/category/${category}?pageNo=${page}`
+      `${axiosUrl}/recipe/get/category/${category}?pageNo=${page}&orderBy=${sortingName}`
     );
     try {
       let _result = [];
-      console.log(res.data);
       for (let i = 0; i < res.data.content.length; i++) {
         _result.push(
           <RecipeView
@@ -61,7 +66,6 @@ function CategoryPage() {
       console.log("오류");
     }
   };
-  console.log(result);
 
   return (
     <div>
