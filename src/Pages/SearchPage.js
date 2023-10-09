@@ -8,6 +8,7 @@ import Paging from '../Components/Paging';
 import NoRecipe from '../Components/NoRecipe';
 import { useUserContext } from '../contexts/UserContext';
 import axios from 'axios';
+import SortingBox from '../Components/SortingBox';
 
 function SearchPage() {
   const { user } = useUserContext();
@@ -18,6 +19,7 @@ function SearchPage() {
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [sorting, setSorting] = useState('요리조리 랭킹순');
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -31,12 +33,17 @@ function SearchPage() {
     setNowMethod(_method);
     setNowSearch(_search);
 
-  },[location]);
+  },[location, sorting]);
 
   const getRecipe = async (search, page) => {
-    console.log(search)
+    let sortingName = 'recipeViewCount';
+    if(sorting === '요리조리 랭킹순') sortingName = 'recipeViewCount';
+    else if(sorting === '조회순') sortingName = 'recipeViewCount';
+    else if(sorting === '댓글순') sortingName = 'reviewCount';
+    else if(sorting === '별점순') sortingName = 'starCount';
+    else if(sorting === '최신순') sortingName = 'createdTime';
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}`
+      `${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
     );
     try {
       let _result = [];
@@ -110,8 +117,11 @@ function SearchPage() {
       <StyledBody>
         <Contents>
           <SearchNav>
-            <p>{nowMethod === 'food' ? '요리명' : '재료명'} 검색 결과</p>
-            <p>"{nowSearch}"</p>
+            <div>
+              <SearchTitle>{nowMethod === 'food' ? '요리명' : '재료명'} 검색 결과</SearchTitle>
+              <p>"{nowSearch}"</p>
+            </div>
+            <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
           </SearchNav>
           {result.length ? (
               <>
@@ -153,10 +163,12 @@ const SearchNav = styled.div`
   font-size: 25px;
   padding-bottom: 50px;
   padding-top: 50px;
-  & > p:first-child{
-    margin-bottom: 10px;
-    font-size: 20px;
-  }
+  display: flex;
+  justify-content: space-between;
+`;
+const SearchTitle = styled.p`
+  margin-bottom: 10px;
+  font-size: 20px;
 `;
 
 const RecipeList = styled.div`
