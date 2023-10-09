@@ -79,7 +79,7 @@ function SearchBar(props) {
                   </SearchType>
                   <SearchBox>
                     <SearchInput type="text" placeholder="요리명, 재료명" ref={searchRef} onKeyDown={handleEnterKey} />
-                    <SearchSvg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
+                    <SearchSvg xmlns="http://www.w3.org/2000/svg" style={{margin: '0 10px'}} width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFA800" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" onClick={search}>
                       <circle cx="11" cy="11" r="8"></circle>
                       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </SearchSvg>
@@ -112,10 +112,13 @@ function SearchBar(props) {
 }
 
 const SearchSvg = styled.svg`
-  /* margin: 0 10px; */
+  
   &:hover {
     cursor: pointer;
     stroke: #FFA800;
+  }
+  @media screen and (max-width: 767px){
+    margin: 0 10px;
   }
 `;
 const SearchArea = styled.div`
