@@ -9,6 +9,7 @@ import RecipeView from "../Components/RecipeView";
 import Paging from "../Components/Paging";
 import PageExplain from "../Components/PageExplain";
 import NoRecipe from '../Components/NoRecipe';
+import SortingBox from '../Components/SortingBox';
 
 function CategoryPage() {
   const [checked, setChecked] = useState(null);
@@ -16,6 +17,7 @@ function CategoryPage() {
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [sorting, setSorting] = useState('요리조리 랭킹순');
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -73,7 +75,10 @@ function CategoryPage() {
             />
             <CategoryList checked={checked} />
             <CategoryTitle>
-              <CategoryName>"{checked}"</CategoryName> 레시피
+              <div>
+                <CategoryName>"{checked}"</CategoryName> 레시피
+              </div>
+              <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
             </CategoryTitle>
             {result.length ? (
               <>
@@ -110,10 +115,13 @@ const Contents = styled.div`
     margin-top: 130px;
   }
 `;
-const CategoryTitle = styled.p`
+const CategoryTitle = styled.div`
   font-size: 20px;
   margin-top: 50px;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  
 `;
 const CategoryName = styled.span`
   font-size: 20px;
