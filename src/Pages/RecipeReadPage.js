@@ -24,11 +24,13 @@ const RecipeReadPage = () => {
 
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
+    console.log(res)
     try {
       let _recipe = {};
       _recipe.id = res.data.id;
       _recipe.thumbnail = res.data.thumbnail;
       _recipe.title = res.data.title;
+      _recipe.dishName = res.data.dishName;
       _recipe.level = res.data.level;
       _recipe.time = res.data.time;
       _recipe.profileImg = res.data.profileImg;
@@ -195,6 +197,20 @@ const RecipeReadPage = () => {
                   <img src={process.env.REACT_APP_IMG_URL + recipe?.thumbnail} />
                 </Thumbnail>
                 <Title>{recipe?.title}</Title>
+                {recipe?.dishName ? (
+                  <SubTitle>
+                    <SubTitleName>음식 이름</SubTitleName>
+                    <SubTitleContent>
+                      {recipe.dishName}
+                    </SubTitleContent>
+                    <RestaurantBtn>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+                      식당 조회
+                    </RestaurantBtn>
+                  </SubTitle>
+                ) : (
+                  null
+                )}
                 <SubTitleFirst>
                   <div>
                     <SubTitleName>난이도</SubTitleName>
@@ -391,7 +407,7 @@ const SubTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
-
+  align-items: center;
   & > svg {
     padding: 10px 0;
   }
@@ -421,6 +437,25 @@ const SubTitleContent = styled.p`
   color: ${(props) => (props.$level ? "white" : "#888888")};
   border-radius: 100%;
   padding: 10px;
+`;
+const RestaurantBtn = styled.button`
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #FFA800;
+  background-color: white;
+  color: #FFA800;
+  font-size: 12px;
+  font-weight: bold;
+
+  & > svg{
+    margin-right: 5px;
+    stroke: #FFA800;
+  }
+
+  &:hover{
+    cursor: pointer;
+  }
 `;
 
 const Explain = styled.div`

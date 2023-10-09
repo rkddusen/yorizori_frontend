@@ -21,6 +21,7 @@ const RecipeWriting = () => {
   const [thumbnailHover, setThumbnailHover] = useState(false);
   const [recipeInfo, setRecipeInfo] = useState({
     title: null,
+    dishName: null,
     level: null,
     time: null,
     explain: null,
@@ -77,6 +78,7 @@ const RecipeWriting = () => {
       let _thumbnail = process.env.REACT_APP_IMG_URL + res.data.thumbnail;
       let _recipeInfo = {};
       _recipeInfo.title = res.data.title;
+      _recipeInfo.dishName = res.data.dishName;
       _recipeInfo.level = res.data.level;
       _recipeInfo.time = res.data.time;
       _recipeInfo.explain = res.data.explain;
@@ -264,8 +266,20 @@ const RecipeWriting = () => {
           )}
         </Thumbnail>
         <Title>
-          <input type='text' value={recipeInfo?.title || ''} placeholder='요리 제목을 알려주세요.' onChange={(e) => handleInfoChange(e, 'title')}/>
+          <input type='text' value={recipeInfo?.title || ''} placeholder='레시피 제목을 알려주세요.' onChange={(e) => handleInfoChange(e, 'title')}/>
         </Title>
+        <DishName>
+          <div>
+            <SubTitleName>음식 이름</SubTitleName>
+            <SubTitleContent>
+              <input type='text' value={recipeInfo?.dishName || ''} placeholder='음식 이름' onChange={(e) => handleInfoChange(e, 'dishName')}/>
+            </SubTitleContent>
+          </div>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" style={{marginRight: '5px'}} width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            음식 이름을 입력하시면 해당 음식 이름으로 식당 조회가 가능해집니다.
+          </p>
+        </DishName>
         <SubTitleFirst>
           <div>
             <SubTitleName>난이도</SubTitleName>
@@ -455,7 +469,7 @@ const Title = styled.div`
   font-size: 22px;
   text-align: start;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   & > input{
     width: 100%;
     height: 100%;
@@ -471,10 +485,31 @@ const SubTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
-  align-items: start;
+  align-items: center;
 
   & > svg {
     padding: 10px 0;
+  }
+`;
+const DishName = styled(SubTitle)`
+  width: 100%;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  & > div{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    & input{
+      font-size: 14px;
+    }
+  }
+  & > p{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    color: #555555;
+    stroke: #555555;
   }
 `;
 const SubTitleFirst = styled(SubTitle)`
