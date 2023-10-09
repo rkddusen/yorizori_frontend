@@ -69,7 +69,7 @@ function Header() {
     <StyledHeader>
       <StyledHeaderDesktop>
         <a onClick={movePage}>
-          <img src={process.env.PUBLIC_URL + '/images/logo.png'} height="28px" alt="logo" />
+          <LogoImg src={process.env.PUBLIC_URL + '/images/logo.png'} height="28px" alt="logo" />
         </a>
         <DesktopNav>
           {/* <SearchBar /> */}
@@ -87,7 +87,7 @@ function Header() {
       <StyledHeaderPhone>
         <PhoneNav>
           <a onClick={movePage} style={{height: "25px"}}>
-            <img src={process.env.PUBLIC_URL + '/images/logo.png'} height="20px" alt="logo" />
+            <LogoImg src={process.env.PUBLIC_URL + '/images/logo.png'} height="20px" alt="logo" />
           </a>
           <PhoneDetail>
             <SearchBar strokeWidth={1} isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -152,6 +152,11 @@ const StyledHeaderDesktop = styled.div`
   position: relative;
   @media screen and (max-width: 767px){
     display: none;
+  }
+`;
+const LogoImg = styled.img`
+  &:hover{
+    cursor: pointer;
   }
 `;
 const DesktopNav = styled.div`

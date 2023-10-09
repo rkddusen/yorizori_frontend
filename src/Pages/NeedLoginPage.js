@@ -80,7 +80,7 @@ const ButtonDiv = styled.div`
   
 `;
 const NeedLoginButton = styled.button`
-  width: 100px;
+  min-width: 120px;
   background-color: #FFA800;
   border: 1px solid #FFA800;
   border-radius: 20px;
