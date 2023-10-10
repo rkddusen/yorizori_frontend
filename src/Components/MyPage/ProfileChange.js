@@ -53,7 +53,11 @@ const ProfileChange = () => {
   };
   const handleProfileImgDelete = () => {
     let defaultImgUrl = process.env.REACT_APP_IMG_URL + '/default/defaultProfile.png';
+    let oldImg = nowImg;
     setNowImg(defaultImgUrl);
+    if(oldImg !== user.profileImg && oldImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
+      deleteProfileImg(oldImg);
+    }
   }
 
   const uploadProfileImg = async (e) => {
@@ -84,7 +88,7 @@ const ProfileChange = () => {
   };
   const deleteProfileImg = async (img) => {
     axios
-      .get(`${axiosUrl}/image/remove/profile?imageAddress=${img}`)
+      .get(`${axiosUrl}/image/remove?imageAddress=${img}`)
       .catch((error) => {
         console.log(error);
       });
