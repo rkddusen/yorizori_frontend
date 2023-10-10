@@ -158,7 +158,7 @@ const TipWriting = () => {
         axios
           .post(`${axiosUrl}/tip/save/details`, paramsObject)
           .then((res) => {
-            navigate(`/tip/${res.data}`);
+            navigate(`/tip/${res.data}`, { replace: true});
           })
           .catch((error) => {
             console.log(error);
