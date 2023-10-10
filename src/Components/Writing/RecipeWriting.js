@@ -235,7 +235,7 @@ const RecipeWriting = () => {
       else{axios
         .post(`${axiosUrl}/recipe/save/details`, paramsObject)
         .then((res) => {
-          navigate(`/recipe/${res.data}`);
+          navigate(`/recipe/${res.data}`, { replace: true});
         })
         .catch((error) => {
           console.log(error);
