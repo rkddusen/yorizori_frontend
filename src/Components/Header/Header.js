@@ -198,6 +198,8 @@ const StyledSvg = styled.svg`
 `;
 const StyledProfileList = styled.div`
   display: none;
+  width: 34px;
+  height: 34px;
   @media screen and (max-width: 767px){
     display: block;
   }
