@@ -185,6 +185,17 @@ const RecipeReadPage = () => {
     navigate(`/writing?reference=${recipe.id}`);
   }
 
+  const moveRestaurant = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        navigate(`/restaurant?dish=${recipe.dishName || ""}`,{state: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
+      },
+      (error) => {
+        window.alert('위치정보를 사용할 수 없습니다.\n브라우저의 위치사용을 허용해 주세요.')
+      }
+    );
+  }
+
   return (
     <div>
       <Wrap>
@@ -197,20 +208,20 @@ const RecipeReadPage = () => {
                   <img src={process.env.REACT_APP_IMG_URL + recipe?.thumbnail} />
                 </Thumbnail>
                 <Title>{recipe?.title}</Title>
-                {recipe?.dishName ? (
                   <SubTitle>
                     <SubTitleName>음식 이름</SubTitleName>
                     <SubTitleContent>
-                      {recipe.dishName}
+                    {recipe?.dishName ? (
+                      <>{recipe.dishName}</>
+                    ) : (
+                      <>등록된 요리 이름이 없습니다.</>
+                    )}
                     </SubTitleContent>
-                    <RestaurantBtn>
+                    <RestaurantBtn onClick={moveRestaurant}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
                       식당 조회
                     </RestaurantBtn>
                   </SubTitle>
-                ) : (
-                  null
-                )}
                 <SubTitleFirst>
                   <div>
                     <SubTitleName>난이도</SubTitleName>
