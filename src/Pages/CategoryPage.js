@@ -29,8 +29,8 @@ function CategoryPage() {
   }, [location, sorting]);
 
   const getRecipe = async (category, page) => {
-    let sortingName = 'recipeViewCount';
-    if(sorting === '요리조리 랭킹순') sortingName = 'recipeViewCount';
+    let sortingName;
+    if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
     else if(sorting === '조회순') sortingName = 'recipeViewCount';
     else if(sorting === '댓글순') sortingName = 'reviewCount';
     else if(sorting === '별점순') sortingName = 'starCount';
