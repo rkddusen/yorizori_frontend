@@ -185,8 +185,10 @@ const RecipeWriting = () => {
   const submitRecipeWriting = async () => {
     const filteredMainIngredient = mainIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
     const filteredSemiIngredient = semiIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
-    const filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
-
+    let filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
+    // recipeDetail에 template이 없는 경우 -> 크롤링해서 가져온 데이터를 공유등록하는 경우에 한해
+    filteredRecipeDetail = filteredRecipeDetail.map(obj => obj.template ? obj : { ...obj, template: [{}] });
+    console.log(filteredRecipeDetail);
     let paramsObject = {
       userId: user.id,
       thumbnail: thumbnail,
