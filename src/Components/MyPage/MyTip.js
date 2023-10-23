@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import TipView from '../TipView'
-import NoRecipe from '../NoRecipe';
+import NoTip from '../NoTip';
 import Paging from '../Paging';
 
 const MyTip = () => {
@@ -71,7 +71,7 @@ const MyTip = () => {
               <Paging pagingCount={Math.ceil(totalTipCount / 12)} />
             </>
           ) : (
-            <NoRecipe />
+            <NoTip />
           )}
         </>
       ) : (
