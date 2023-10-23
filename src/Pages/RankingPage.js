@@ -5,10 +5,12 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import RecipeView from "../Components/RecipeView";
 import PageExplain from "../Components/PageExplain";
+import NoRecipe from '../Components/NoRecipe';
 
 function Ranking() {
   const [result, setResult] = useState([]);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [getEnd, setGetEnd] = useState(false);
 
   const getRankRecipe = async (page) => {
     const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
@@ -34,7 +36,9 @@ function Ranking() {
         _result.push(<RecipeView key={result.length + i} recipe={_recipe[i]} />);
       }
       setResult([...result].concat(_result));
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
@@ -72,7 +76,23 @@ function Ranking() {
               title="RECIPE RANKING"
               explain="레시피 랭킹을 살펴보세요!"
             />
-            <RecipeList>{result}</RecipeList>
+            { getEnd ? (
+              <>
+                {result.length ? (
+                  <>
+                    <RecipeList>{result}</RecipeList>
+                  </>
+                ) : (
+                  <NoRecipe />
+                )}
+              </>
+            ) : (
+              <>
+                <Loading>
+                  <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+                </Loading>
+              </>
+            )}
           </Contents>
         </StyledBody>
       </Wrap>
@@ -112,6 +132,20 @@ const RecipeList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 

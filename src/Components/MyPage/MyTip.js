@@ -13,6 +13,7 @@ const MyTip = () => {
   const [totalTipCount, setTotalTipCount] = useState(0);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [getEnd, setGetEnd] = useState(false);
 
   useEffect(() => {
     if(user !== null){
@@ -24,6 +25,7 @@ const MyTip = () => {
   }, [user, location]);
 
   const getTip = async (page) => {
+    setGetEnd(false);
     const res = await axios.get(
       `${axiosUrl}/user/get/${user.id}/tip?pageNo=${page}`
     );
@@ -50,22 +52,34 @@ const MyTip = () => {
       
       setResult(_result);
       setTotalTipCount(res.data.totalElements);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
 
   return (
     <>
-      {result.length ? (
+      { getEnd ? (
         <>
-          <TipList>
-            {result}
-          </TipList>
-          <Paging pagingCount={Math.ceil(totalTipCount / 12)} />
+          {result.length ? (
+            <>
+              <TipList>
+                {result}
+              </TipList>
+              <Paging pagingCount={Math.ceil(totalTipCount / 12)} />
+            </>
+          ) : (
+            <NoRecipe />
+          )}
         </>
       ) : (
-        <NoRecipe />
+        <>
+          <Loading>
+            <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+          </Loading>
+        </>
       )}
     </>
   );
@@ -84,6 +98,21 @@ const TipList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 

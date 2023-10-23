@@ -17,8 +17,10 @@ function TipPage() {
   const searchRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [sorting, setSorting] = useState('조회순');
+  const [getEnd, setGetEnd] = useState(false);
 
   const getTip = async (page, search) => {
+    setGetEnd(false);
     let sortingName = 'recipeViewCount';
     if(sorting === '조회순') sortingName = 'tipViewCount';
     else if(sorting === '댓글순') sortingName = 'tipReviewCount';
@@ -47,7 +49,9 @@ function TipPage() {
         }
       setResult(_result);
       setTotalTipCount(res.data.totalElements);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
@@ -89,9 +93,25 @@ function TipPage() {
             </SearchSvg>
           </SearchBox>
           <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['조회순', '댓글순', '좋아요순', '최신순']} />
-          <TipList>
-            {result}
-          </TipList>
+          {getEnd ? (
+            <>
+              { result.length ? (
+                <TipList>
+                  {result}
+                </TipList>
+              ) : (
+                <>
+                  {/* no Tip */}
+                </>
+              )}
+            </>
+          ):(
+            <>
+              <Loading>
+                <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+              </Loading>
+            </>
+          )}
           <Paging pagingCount={Math.ceil(totalTipCount/12)} />
         </Contents>
       </StyledBody>
@@ -174,6 +194,20 @@ const TipList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 

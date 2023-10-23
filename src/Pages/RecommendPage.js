@@ -16,6 +16,8 @@ function RecommendPage() {
   const [result, setResult] = useState([]);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_SERVER_URL;
+  const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
+  const [getEnd, setGetEnd] = useState(false);
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -30,6 +32,7 @@ function RecommendPage() {
   }, [location]);
 
   const getPRRecipe = async () => {
+    setGetEnd(false);
     const res = await axios.get(`${axiosUrl}/recipe/get/recommend/${user.id}`);
     
     try {
@@ -55,14 +58,44 @@ function RecommendPage() {
       }
       
       setResult(_result);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
   const getTRRecipe = async () => {
-    let _result = [];
+    setGetEnd(false);
+    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommendToday`);
     
-    setResult(_result);
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data[i].id,
+                title: res.data[i].title,
+                thumbnail: res.data[i].thumbnail,
+                reviewCount: res.data[i].reviewCount,
+                starCount: res.data[i].starCount,
+                profileImg: res.data[i].profileImg,
+                nickname: res.data[i].nickname,
+                viewCount: res.data[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+      setGetEnd(true);
+    } catch {
+      setGetEnd(true);
+      console.log("오류");
+    }
   }
 
   return (
@@ -73,10 +106,20 @@ function RecommendPage() {
         <Contents>
           <PageExplain title="RECOMMEND RECIPE" explain="추천되는 레시피를 살펴보세요!" />
           <RecommendNav mode={mode} />
-            {result.length ? (
-              <RecipeList>{result}</RecipeList>
+            {getEnd ? (
+              <>
+                {result.length ? (
+                  <RecipeList>{result}</RecipeList>
+                ) : (
+                  <NoRecipe />
+                )}
+              </>
             ) : (
-              <NoRecipe />
+              <>
+                <Loading>
+                  <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+                </Loading>
+              </>
             )}
         </Contents>
       </StyledBody>
@@ -118,6 +161,20 @@ const RecipeList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 
