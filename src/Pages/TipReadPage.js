@@ -93,11 +93,15 @@ const TipReadPage = () => {
     
   }
   const saveIsHeart = async (bool) => {
-    const res = await axios.post(`${axiosUrl}/user/save/tip/isHeart/${params.id}?userId=${user.id}&isHeart=${bool}`);
-    try {
-      getIsHeart();
-    } catch {
-      console.log("오류");
+    if(user.id){
+      const res = await axios.post(`${axiosUrl}/user/save/tip/isHeart/${params.id}?userId=${user.id}&isHeart=${bool}`);
+      try {
+        getIsHeart();
+      } catch {
+        console.log("오류");
+      }
+    } else{
+      window.alert('로그인이 필요한 기능입니다.');
     }
   }
 
