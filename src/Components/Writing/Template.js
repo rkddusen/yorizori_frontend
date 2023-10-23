@@ -14,6 +14,7 @@ const Template = (props) => {
   const inputRef = useRef([]);
   const textareaRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AI_AXIOS_URL;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     initTemplate();
@@ -69,6 +70,7 @@ const Template = (props) => {
 
   // 문장 + 템플릿 서버에 보내고 문장 받기
   const handleMakingSentence = async () => {
+    setLoading(true);
     let _newRecipeTemplate = setTemplate();
     if(isTemplateEmpty(_newRecipeTemplate)){
       alert('비어 있는 템플릿이 존재합니다.');
@@ -80,8 +82,10 @@ const Template = (props) => {
           setSentence(_sentence);
           setNewRecipeTemplate(_newRecipeTemplate);
           setSavingRecipeTemplate(_newRecipeTemplate);
+          setLoading(false);
         })
         .catch((error) => {
+          setLoading(false);
           console.log(error);
         })
     }
@@ -221,9 +225,17 @@ const Template = (props) => {
             </ContentsInput>
           </Contents>
         </div>
-        <ConvertBtn>
-           <button onClick={handleMakingSentence}>변환 ▼</button>
-        </ConvertBtn>
+        <ConvertBtnArea>
+          {loading ? (
+            <Loading>
+              <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+            </Loading>
+          ) : (
+            <ConvertBtn>
+              <button onClick={handleMakingSentence}>변환 ▼</button>
+            </ConvertBtn>
+          )}
+        </ConvertBtnArea>
         <Result>
           <textarea rows={5} ref={textareaRef} value={sentence || ""} onChange={handleDirectWriting} />
           {/* <button onClick={handleTemplatePlus}>이어붙이기 +</button> */}
@@ -278,7 +290,7 @@ const TemplateNumBox = styled.div`
   -webkit-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
-  user-select:none
+  user-select:none;
 `;
 const HandleNumBox = styled.div`
   display: flex;
@@ -366,6 +378,12 @@ const ContentsTitle = styled.div`
   }
 `;
 
+const ConvertBtnArea = styled.div`
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const ConvertBtn = styled.div`
   text-align: center;
   flex-shrink: 0;
@@ -376,7 +394,6 @@ const ConvertBtn = styled.div`
     padding: 5px 20px;
     font-size: 14px;
     border-radius: 15px;
-    margin: 20px 0;
     &:hover {
       cursor: pointer;
       color: #aaaaaa;
@@ -416,6 +433,17 @@ const ButtonBox = styled.div`
     background-color: white;
     border: 1px solid #cfcfcf;
     color: black;
+  }
+`;
+
+const Loading = styled.p`
+  height: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    height: 100%;
   }
 `;
 
