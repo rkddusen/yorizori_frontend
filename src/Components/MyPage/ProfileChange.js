@@ -88,7 +88,7 @@ const ProfileChange = () => {
   };
   const deleteProfileImg = async (img) => {
     axios
-      .get(`${axiosUrl}/image/remove?imageAddress=${img}`)
+      .delete(`${axiosUrl}/profileImage/remove?imageAddress=${img}`)
       .catch((error) => {
         console.log(error);
       });
