@@ -16,6 +16,7 @@ function RecommendPage() {
   const [result, setResult] = useState([]);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_SERVER_URL;
+  const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -60,9 +61,34 @@ function RecommendPage() {
     }
   };
   const getTRRecipe = async () => {
-    let _result = [];
+    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommendToday`);
     
-    setResult(_result);
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data[i].id,
+                title: res.data[i].title,
+                thumbnail: res.data[i].thumbnail,
+                reviewCount: res.data[i].reviewCount,
+                starCount: res.data[i].starCount,
+                profileImg: res.data[i].profileImg,
+                nickname: res.data[i].nickname,
+                viewCount: res.data[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+    } catch {
+      console.log("오류");
+    }
   }
 
   return (
