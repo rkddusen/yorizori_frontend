@@ -20,6 +20,7 @@ function SearchPage() {
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [sorting, setSorting] = useState('요리조리 랭킹순');
+  const [getEnd, setGetEnd] = useState(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -36,6 +37,7 @@ function SearchPage() {
   },[location, sorting]);
 
   const getRecipe = async (search, page) => {
+    setGetEnd(false);
     let sortingName;
     if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
     else if(sorting === '조회순') sortingName = 'recipeViewCount';
@@ -70,7 +72,9 @@ function SearchPage() {
       
       setResult(_result);
       setTotalRecipeCount(res.data.totalElements);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
@@ -123,14 +127,24 @@ function SearchPage() {
             </div>
             <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
           </SearchNav>
-          {result.length ? (
-              <>
-                <RecipeList>{result}</RecipeList>
-                <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
-              </>
-            ) : (
-              <NoRecipe />
-            )}
+          {getEnd ? (
+            <>
+              {result.length ? (
+                <>
+                  <RecipeList>{result}</RecipeList>
+                  <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+                </>
+              ) : (
+                <NoRecipe />
+              )}
+            </> 
+          ) : (
+            <>
+              <Loading>
+                <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+              </Loading>
+            </> 
+          )}
         </Contents>
       </StyledBody>
       </Wrap>
@@ -184,6 +198,20 @@ const RecipeList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 

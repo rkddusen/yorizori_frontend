@@ -17,6 +17,7 @@ function RecommendPage() {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_SERVER_URL;
   const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
+  const [getEnd, setGetEnd] = useState(false);
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -31,6 +32,7 @@ function RecommendPage() {
   }, [location]);
 
   const getPRRecipe = async () => {
+    setGetEnd(false);
     const res = await axios.get(`${axiosUrl}/recipe/get/recommend/${user.id}`);
     
     try {
@@ -56,11 +58,14 @@ function RecommendPage() {
       }
       
       setResult(_result);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
   const getTRRecipe = async () => {
+    setGetEnd(false);
     const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommendToday`);
     
     try {
@@ -86,7 +91,9 @@ function RecommendPage() {
       }
       
       setResult(_result);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   }
@@ -99,10 +106,20 @@ function RecommendPage() {
         <Contents>
           <PageExplain title="RECOMMEND RECIPE" explain="추천되는 레시피를 살펴보세요!" />
           <RecommendNav mode={mode} />
-            {result.length ? (
-              <RecipeList>{result}</RecipeList>
+            {getEnd ? (
+              <>
+                {result.length ? (
+                  <RecipeList>{result}</RecipeList>
+                ) : (
+                  <NoRecipe />
+                )}
+              </>
             ) : (
-              <NoRecipe />
+              <>
+                <Loading>
+                  <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+                </Loading>
+              </>
             )}
         </Contents>
       </StyledBody>
@@ -144,6 +161,20 @@ const RecipeList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 
