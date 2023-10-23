@@ -4,9 +4,18 @@ import axios from "axios";
 import Template from './Template';
 
 const PlusCircle = ({size=16, color="#000000", clickEvent}) => (<Svg onClick={clickEvent} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></Svg>);
-const Trash = ({size=16, color="#000000", clickEvent}) => (<Svg onClick={clickEvent} style={{flexShrink: '0'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></Svg>);
+const MoveDown = ({size=16, clickEvent}) => (<InnerSvg onClick={clickEvent} style={{marginRight: '5px'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></InnerSvg>);
+const MoveUp = ({size=16, clickEvent}) => (<InnerSvg onClick={clickEvent} style={{marginRight: '5px'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></InnerSvg>);
+const Plus = ({size=16, clickEvent}) => (<InnerSvg onClick={clickEvent} style={{marginRight: '5px'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></InnerSvg>);
+const Trash = ({size=16, clickEvent}) => (<InnerSvg onClick={clickEvent} style={{marginRight: '5px'}} xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></InnerSvg>);
 const Svg = styled.svg`
   cursor: pointer;
+`;
+const InnerSvg = styled(Svg)`
+  stroke: black;
+  &:hover{
+    stroke: #FFA800;
+  }
 `;
 
 
@@ -24,12 +33,6 @@ const RecipeOrderWriting = (props) => {
   //       console.log(error);
   //     });
   // };
-  const handleRecipeDetailDelete = (index) => {
-    let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
-    setRecipeDetail(_recipeDetail);
-    let _isTemplateOpen = [...isTemplateOpen].filter((_, i) => i !== index);
-    setIsTemplateOpen(_isTemplateOpen);
-  }
 
   const handleRecipeImageClick = (index) => {
     recipeImageRef.current[index].click();
@@ -71,6 +74,7 @@ const RecipeOrderWriting = (props) => {
 
   const handleRecipeDetailPlus = () => {
     setRecipeDetail(prev => [...prev, {}]);
+    setIsTemplateOpen(prev => [...prev, false]);
   }
 
   const handleTemplateOpen = (index) => {
@@ -90,6 +94,56 @@ const RecipeOrderWriting = (props) => {
     setRecipeDetail(_recipeDetail);
   }
 
+
+  const handleRecipeDetailMoveUp = (index) => {
+    if(index > 0){
+      let _recipeDetail = [...recipeDetail];
+      let temp = _recipeDetail[index - 1];
+      _recipeDetail[index - 1] = _recipeDetail[index];
+      _recipeDetail[index] = temp;
+      
+      let _isTemplateOpen = [...isTemplateOpen];
+      let temp2 = _isTemplateOpen[index - 1];
+      _isTemplateOpen[index - 1] = _isTemplateOpen[index];
+      _isTemplateOpen[index] = temp2;
+
+      setRecipeDetail(_recipeDetail);
+      setIsTemplateOpen(_isTemplateOpen);
+    }
+  }
+  const handleRecipeDetailMoveDown = (index) => {
+    if(index < recipeDetail.length - 1){
+      let _recipeDetail = [...recipeDetail];
+      let temp = _recipeDetail[index + 1];
+      _recipeDetail[index + 1] = _recipeDetail[index];
+      _recipeDetail[index] = temp;
+
+      let _isTemplateOpen = [...isTemplateOpen];
+      let temp2 = _isTemplateOpen[index + 1];
+      _isTemplateOpen[index + 1] = _isTemplateOpen[index];
+      _isTemplateOpen[index] = temp2;
+
+      setRecipeDetail(_recipeDetail);
+      setIsTemplateOpen(_isTemplateOpen);
+    }
+  }
+  const handleRecipeDetailPlusAfter = (index) => {
+    let _recipeDetail = [...recipeDetail];
+    _recipeDetail.splice(index, 0, {});
+    
+    let _isTemplateOpen = [...isTemplateOpen];
+    _isTemplateOpen.splice(index, 0, false);
+
+    setRecipeDetail(_recipeDetail);
+    setIsTemplateOpen(_isTemplateOpen);
+  }
+  const handleRecipeDetailDelete = (index) => {
+    let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
+    setRecipeDetail(_recipeDetail);
+    let _isTemplateOpen = [...isTemplateOpen].filter((_, i) => i !== index);
+    setIsTemplateOpen(_isTemplateOpen);
+  }
+
   return (
       <RecipeDetailBox>
         <BoxTitle>
@@ -98,7 +152,10 @@ const RecipeOrderWriting = (props) => {
         {recipeDetail.map((value, index) => (
           <RecipeOrderBox key={index} $first={index ? false : true}>
             <RecipeNav $only={recipeDetail.length === 1 ? true : false}>
+              <MoveUp size={20} clickEvent={() => handleRecipeDetailMoveUp(index)} />
+              <Plus size={20} clickEvent={() => handleRecipeDetailPlusAfter(index)} />
               <Trash size={20} clickEvent={() => handleRecipeDetailDelete(index)} />
+              <MoveDown size={20} clickEvent={() => handleRecipeDetailMoveDown(index)} />
             </RecipeNav>
             <RecipeOrder>
               <RecipeOrderDetailArea>
