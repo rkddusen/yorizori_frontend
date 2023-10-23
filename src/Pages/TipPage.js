@@ -8,6 +8,7 @@ import TipView from "../Components/TipView"
 import Paging from '../Components/Paging'
 import PageExplain from '../Components/PageExplain';
 import SortingBox from '../Components/SortingBox';
+import NoTip from '../Components/NoTip';
 
 function TipPage() {
   const [result, setResult] = useState([]);
@@ -101,7 +102,7 @@ function TipPage() {
                 </TipList>
               ) : (
                 <>
-                  {/* no Tip */}
+                  <NoTip />
                 </>
               )}
             </>
