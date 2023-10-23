@@ -128,10 +128,9 @@ const RecipeWriting = () => {
     } else thumbnailRef.current.click();
   };
   const serverImageDelete = async (image) => {
-    console.log(originImage);
-    if(originImage.indexOf(image) !== -1){ 
+    if(originImage.indexOf(image) === -1){ 
     axios
-      .get(`${axiosUrl}/image/remove?imageAddress=${image}`)
+      .delete(`${axiosUrl}/image/remove?imageAddress=${image}`)
       .catch((error) => {
         console.log(error);
       });
@@ -436,7 +435,7 @@ const RecipeWriting = () => {
           </IngredientPlus>
         </div>
       </RecipeDetailBox>
-      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} serverImageDelete={serverImageDelete} />
+      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} serverImageDelete={(image) => serverImageDelete(image)} />
       <ButtonBox>
         <button onClick={submitRecipeWriting}>저장</button>
         <button onClick={cancelRecipeWriting}>취소</button>
