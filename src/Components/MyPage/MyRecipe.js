@@ -13,8 +13,10 @@ const MyRecipe = () => {
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [getEnd, setGetEnd] = useState(false);
 
   const getRecipe = async (page) => {
+    setGetEnd(false);
     const res = await axios.get(
       `${axiosUrl}/user/get/${user.id}/recipe?pageNo=${page}`
     );
@@ -42,7 +44,9 @@ const MyRecipe = () => {
       
       setResult(_result);
       setTotalRecipeCount(res.data.totalElements);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
       console.log("오류");
     }
   };
@@ -57,15 +61,25 @@ const MyRecipe = () => {
 
   return (
     <>
-      {result.length ? (
+      { getEnd ? (
         <>
-          <RecipeList>
-            {result}
-          </RecipeList>
-          <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+          {result.length ? (
+            <>
+              <RecipeList>
+                {result}
+              </RecipeList>
+              <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+            </>
+          ) : (
+            <NoRecipe />
+          )}
         </>
       ) : (
-        <NoRecipe />
+        <>
+          <Loading>
+            <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+          </Loading>
+        </> 
       )}
     </>
   );
@@ -84,6 +98,21 @@ const RecipeList = styled.div`
   }
   @media screen and (max-width: 767px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+`;
+
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
   }
 `;
 
