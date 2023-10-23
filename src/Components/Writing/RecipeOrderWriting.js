@@ -11,19 +11,19 @@ const Svg = styled.svg`
 
 
 const RecipeOrderWriting = (props) => {
-  const {recipeDetail, setRecipeDetail} = props;
+  const {recipeDetail, setRecipeDetail, serverImageDelete} = props;
   const [isTemplateOpen, setIsTemplateOpen] = useState([false]);
   const recipeImageRef = useRef([]);
   
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
-  const serverImageDelete = async (image) => {
-    axios
-      .get(`${axiosUrl}/image/remove?imageAddress=${image}`)
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // const serverImageDelete = async (image) => {
+  //   axios
+  //     .get(`${axiosUrl}/image/remove?imageAddress=${image}`)
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
   const handleRecipeDetailDelete = (index) => {
     let _recipeDetail = [...recipeDetail].filter((_, i) => i !== index);
     setRecipeDetail(_recipeDetail);
@@ -56,7 +56,7 @@ const RecipeOrderWriting = (props) => {
             serverImageDelete(_recipeDetail[index]['image']);
             delete _recipeDetail[index]['image'];
           }
-          _recipeDetail[index]['image'] = res.data.data.url;
+          _recipeDetail[index]['image'] = res.data.data.fileName;
           setRecipeDetail(_recipeDetail);
           
           recipeImageRef.current[index].value = null;
@@ -138,7 +138,7 @@ const RecipeOrderWriting = (props) => {
                       {value['image'] ? (
                         <div>
                           <div>
-                            <img src={value['image']} />
+                            <img src={process.env.REACT_APP_IMG_URL + value['image']} />
                           </div>
                         </div>
                       ) : (

@@ -182,7 +182,10 @@ const RecipeReadPage = () => {
     }
   }
   const handleReferenceWriting = () => {
-    navigate(`/writing?reference=${recipe.id}`);
+    navigate(`/writing?mode=recipe&method=reference&origin=${recipe.id}`);
+  }
+  const handleEditing = () => {
+    navigate(`/writing?mode=recipe&method=edit&origin=${recipe.id}`);
   }
 
   const moveRestaurant = () => {
@@ -258,7 +261,7 @@ const RecipeReadPage = () => {
                       <ProfileImg src={recipe?.profileImg} style={{width: '35px', height: '35px', marginRight: '10px'}} />
                       <ProfileNickname>{recipe?.nickname}</ProfileNickname>
                     </div>
-                    <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} handleReferenceWriting={handleReferenceWriting} />
+                    <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} handleReferenceWriting={handleReferenceWriting} handleEditing={handleEditing} />
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
                   <ExplainMain>{recipe?.referenceRecipe ? '원작 레시피 ' + recipe?.referenceRecipe : null}</ExplainMain>
