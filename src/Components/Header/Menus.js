@@ -108,6 +108,8 @@ const StyledList = styled.li`
 const StyledProfileList = styled.li`
   margin-left: 26px;
   font-size: 16px;
+  width: 42px;
+  height: 42px;
   &:hover{
     cursor: pointer;
   }

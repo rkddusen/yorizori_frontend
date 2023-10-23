@@ -18,6 +18,7 @@ import SearchPage from './Pages/SearchPage';
 import WritingPage from './Pages/WritingPage';
 import Redirection from './Components/Login/Redirection';
 import TipReadPage from './Pages/TipReadPage';
+import RestaurantPage from './Pages/RestaurantPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -78,6 +79,7 @@ function App() {
             <Route exact path='/user/kakao/callback' element={<Redirection login="kakao" />} />
             <Route exact path='/user/naver/callback' element={<Redirection login="naver" />} />
             <Route exact path='/user/google/callback' element={<Redirection login="google" />} />
+            <Route path='/restaurant' element={<RestaurantPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

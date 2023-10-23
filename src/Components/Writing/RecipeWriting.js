@@ -55,27 +55,47 @@ const RecipeWriting = () => {
   //   }
   // ]
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  let method = queryParams.get('method');
+  let origin = queryParams.get('origin');
   const [referenceUser, setReferenceUser] = useState({
     id: null,
     profileImg: null,
     nickname: null,
   })
+  const [originImage, setOriginImage] = useState([]);
   const thumbnailRef = useRef(null);
   const navigate = useNavigate();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    let _reference = queryParams.get('reference');
-    if(_reference){
-      getReferenceRecipe(_reference);
-    }
-  },[]);
-  const getReferenceRecipe = async (reference) => {
-    if(reference){
-    const res = await axios.get(`${axiosUrl}/recipe/get/writing/reference?recipeId=${reference}`);
+    if(method && origin){
+      getRecipe();
+    } 
+  },[location]);
+  const getRecipe = async () => {
+    if(origin){
+    const res = await axios.get(`${axiosUrl}/recipe/get/writing/reference?recipeId=${origin}`);
     try {
-      let _thumbnail = process.env.REACT_APP_IMG_URL + res.data.thumbnail;
+      if(method === 'edit'){
+        let _thumbnail = res.data.thumbnail;
+        let _recipeDetail = res.data.order;
+        let _recipeImage = _recipeDetail.map(order => order.image);
+        setThumbnail(_thumbnail);
+        setRecipeDetail(_recipeDetail);
+        _recipeImage.push(_thumbnail)
+        setOriginImage(_recipeImage)
+      } else{
+        let _referenceUser = {};
+        _referenceUser.id = res.data.id;
+        _referenceUser.profileImg = res.data.profileImg;
+        _referenceUser.nickname = res.data.nickname;
+        let _recipeDetail = res.data.order;
+        _recipeDetail.map(order => delete order.image);
+
+        setReferenceUser(_referenceUser);
+        setRecipeDetail(_recipeDetail);
+      }
       let _recipeInfo = {};
       _recipeInfo.title = res.data.title;
       _recipeInfo.dishName = res.data.dishName;
@@ -83,22 +103,13 @@ const RecipeWriting = () => {
       _recipeInfo.time = res.data.time;
       _recipeInfo.explain = res.data.explain;
       let _category = res.data.category;
-      let _referenceUser = {};
-      _referenceUser.id = res.data.id;
-      _referenceUser.profileImg = res.data.profileImg;
-      _referenceUser.nickname = res.data.nickname;
       let _mainIngredient = res.data.mainIngredient;
       let _semiIngredient = res.data.semiIngredient;
-      let _recipeDetail = res.data.order;
-      _recipeDetail.map(order => order.image = process.env.REACT_APP_IMG_URL + order.image);
 
-      setThumbnail(_thumbnail);
       setRecipeInfo(_recipeInfo);
       setCategory(_category);
-      setReferenceUser(_referenceUser);
       setMainIngredient(_mainIngredient);
       setSemiIngredient(_semiIngredient);
-      setRecipeDetail(_recipeDetail);
     } catch {
       console.log("오류");
     }
@@ -117,11 +128,14 @@ const RecipeWriting = () => {
     } else thumbnailRef.current.click();
   };
   const serverImageDelete = async (image) => {
+    console.log(originImage);
+    if(originImage.indexOf(image) !== -1){ 
     axios
       .get(`${axiosUrl}/image/remove?imageAddress=${image}`)
       .catch((error) => {
         console.log(error);
       });
+    }
   };
   const handleThumbnailChange = async (e) => {
     const _recipeImg = e.target.files[0];
@@ -134,7 +148,7 @@ const RecipeWriting = () => {
       };
       axios.post(`${axiosUrl}/image/upload/recipe`, formData, { headers })
         .then((res) => {
-          setThumbnail(res.data.data.url);
+          setThumbnail(res.data.data.fileName);
           setThumbnailHover(false);
         })
         .catch((error) => {
@@ -185,8 +199,10 @@ const RecipeWriting = () => {
   const submitRecipeWriting = async () => {
     const filteredMainIngredient = mainIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
     const filteredSemiIngredient = semiIngredient.filter(obj => obj['name'] && obj['name'].length > 0);
-    const filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
-
+    let filteredRecipeDetail = recipeDetail.filter(obj => obj['image'] || (obj['detail'] && obj['detail'].length > 0));
+    // recipeDetail에 template이 없는 경우 -> 크롤링해서 가져온 데이터를 공유등록하는 경우에 한해
+    filteredRecipeDetail = filteredRecipeDetail.map(obj => obj.template ? obj : { ...obj, template: [{}] });
+    
     let paramsObject = {
       userId: user.id,
       thumbnail: thumbnail,
@@ -194,7 +210,7 @@ const RecipeWriting = () => {
       mainIngredient: filteredMainIngredient,
       semiIngredient: filteredSemiIngredient,
       recipeDetail: filteredRecipeDetail,
-      referenceRecipe: referenceUser.id,
+      originRecipe: origin,
     };
     console.log(paramsObject);
 
@@ -232,14 +248,27 @@ const RecipeWriting = () => {
       else if(paramsObject.recipeDetail.length < 1){
         alert('레시피 내용을 입력해주세요.');
       }
-      else{axios
-        .post(`${axiosUrl}/recipe/save/details`, paramsObject)
-        .then((res) => {
-          navigate(`/recipe/${res.data}`, { replace: true});
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      else{
+        if(method === 'edit'){
+          axios
+            .post(`${axiosUrl}/recipe/update/details`, paramsObject)
+            .then((res) => {
+              navigate(`/recipe/${res.data}`, { replace: true});
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else{
+          axios
+            .post(`${axiosUrl}/recipe/save/details`, paramsObject)
+            .then((res) => {
+              navigate(`/recipe/${res.data}`, { replace: true});
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        
       }
     }
   }
@@ -259,7 +288,7 @@ const RecipeWriting = () => {
           { thumbnail.length > 0 ? (
             <>
               <ThumbnailDeleteSvg xmlns="http://www.w3.org/2000/svg" $thumbnailhover={thumbnailHover} width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></ThumbnailDeleteSvg>
-              <ThumbnailImg src={thumbnail} $thumbnailhover={thumbnailHover} />
+              <ThumbnailImg src={process.env.REACT_APP_IMG_URL + thumbnail} $thumbnailhover={thumbnailHover} />
             </>
           ) : (
               <ThumbnailSvg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></ThumbnailSvg>
@@ -407,7 +436,7 @@ const RecipeWriting = () => {
           </IngredientPlus>
         </div>
       </RecipeDetailBox>
-      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} />
+      <RecipeOrderWriting recipeDetail={recipeDetail} setRecipeDetail={setRecipeDetail} serverImageDelete={serverImageDelete} />
       <ButtonBox>
         <button onClick={submitRecipeWriting}>저장</button>
         <button onClick={cancelRecipeWriting}>취소</button>
