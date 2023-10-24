@@ -9,6 +9,7 @@ import NoRecipe from '../Components/NoRecipe';
 import { useUserContext } from '../contexts/UserContext';
 import axios from 'axios';
 import SortingBox from '../Components/SortingBox';
+import Error from '../Components/Error';
 
 function SearchPage() {
   const { user } = useUserContext();
@@ -21,8 +22,10 @@ function SearchPage() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [sorting, setSorting] = useState('요리조리 랭킹순');
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   useEffect(() => {
+    setGetEnd(false);
     const queryParams = new URLSearchParams(location.search);
     let _method = queryParams.get('method');
     let _search = queryParams.get('search');
@@ -37,7 +40,7 @@ function SearchPage() {
   },[location, sorting]);
 
   const getRecipe = async (search, page) => {
-    setGetEnd(false);
+    
     let sortingName;
     if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
     else if(sorting === '조회순') sortingName = 'recipeViewCount';
@@ -75,6 +78,7 @@ function SearchPage() {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
@@ -109,7 +113,10 @@ function SearchPage() {
       
       setResult(_result);
       setTotalRecipeCount(res.data.totalElements);
+      setGetEnd(true);
     } catch {
+      setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
@@ -129,14 +136,20 @@ function SearchPage() {
           </SearchNav>
           {getEnd ? (
             <>
-              {result.length ? (
-                <>
-                  <RecipeList>{result}</RecipeList>
-                  <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
-                </>
-              ) : (
-                <NoRecipe />
-              )}
+              {!getFail ? (
+                  <>
+                  {result.length ? (
+                    <>
+                      <RecipeList>{result}</RecipeList>
+                      <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+                    </>
+                  ) : (
+                    <NoRecipe />
+                  )}
+                  </>
+                ) : (
+                  <Error />
+                )}
             </> 
           ) : (
             <>

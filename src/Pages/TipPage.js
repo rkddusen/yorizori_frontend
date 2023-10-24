@@ -9,6 +9,7 @@ import Paging from '../Components/Paging'
 import PageExplain from '../Components/PageExplain';
 import SortingBox from '../Components/SortingBox';
 import NoTip from '../Components/NoTip';
+import Error from '../Components/Error';
 
 function TipPage() {
   const [result, setResult] = useState([]);
@@ -19,9 +20,9 @@ function TipPage() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [sorting, setSorting] = useState('조회순');
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   const getTip = async (page, search) => {
-    setGetEnd(false);
     let sortingName = 'recipeViewCount';
     if(sorting === '조회순') sortingName = 'tipViewCount';
     else if(sorting === '댓글순') sortingName = 'tipReviewCount';
@@ -53,11 +54,13 @@ function TipPage() {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
 
   useEffect(() => {
+    setGetEnd(false);
     const search = new URLSearchParams(location.search);
     const _page = search.get("page") || 1;
     const _search = search.get("search") || "";
@@ -96,14 +99,20 @@ function TipPage() {
           <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['조회순', '댓글순', '좋아요순', '최신순']} />
           {getEnd ? (
             <>
-              { result.length ? (
-                <TipList>
-                  {result}
-                </TipList>
-              ) : (
+              {!getFail ? (
                 <>
-                  <NoTip />
+                {result.length ? (
+                  <TipList>
+                    {result}
+                  </TipList>
+                ) : (
+                  <>
+                    <NoTip />
+                  </>
+                )}
                 </>
+              ) : (
+                <Error />
               )}
             </>
           ):(

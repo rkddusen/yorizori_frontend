@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import TipView from '../TipView'
 import NoTip from '../NoTip';
 import Paging from '../Paging';
+import Error from '../Error';
 
 const MyTip = () => {
   const { user } = useUserContext();
@@ -14,6 +15,7 @@ const MyTip = () => {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   useEffect(() => {
     if(user !== null){
@@ -56,6 +58,7 @@ const MyTip = () => {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
@@ -64,17 +67,21 @@ const MyTip = () => {
     <>
       { getEnd ? (
         <>
+        {!getFail ? (
+          <>
           {result.length ? (
             <>
-              <TipList>
-                {result}
-              </TipList>
+              <TipList>{result}</TipList>
               <Paging pagingCount={Math.ceil(totalTipCount / 12)} />
             </>
           ) : (
             <NoTip />
           )}
-        </>
+          </>
+        ) : (
+          <Error />
+        )}
+      </>
       ) : (
         <>
           <Loading>

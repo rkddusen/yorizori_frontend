@@ -9,6 +9,7 @@ import RecommendNav from '../Components/Recommend/RecommendNav';
 import { useUserContext } from '../contexts/UserContext';
 import axios from 'axios';
 import NoRecipe from '../Components/NoRecipe';
+import Error from '../Components/Error';
 
 function RecommendPage() {
   const { user } = useUserContext();
@@ -18,8 +19,10 @@ function RecommendPage() {
   const axiosUrl = process.env.REACT_APP_SERVER_URL;
   const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   useEffect(() => {
+    setGetEnd(false);
     const search = new URLSearchParams(location.search);
     const _mode = search.get('mode') || 'TR';
     setMode(_mode);
@@ -61,6 +64,7 @@ function RecommendPage() {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
@@ -94,6 +98,7 @@ function RecommendPage() {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   }
@@ -108,12 +113,20 @@ function RecommendPage() {
           <RecommendNav mode={mode} />
             {getEnd ? (
               <>
+              {!getFail ? (
+                <>
                 {result.length ? (
-                  <RecipeList>{result}</RecipeList>
+                  <>
+                    <RecipeList>{result}</RecipeList>
+                  </>
                 ) : (
                   <NoRecipe />
                 )}
-              </>
+                </>
+              ) : (
+                <Error />
+              )}
+            </>
             ) : (
               <>
                 <Loading>
