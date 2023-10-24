@@ -6,11 +6,13 @@ import Footer from "../Components/Footer/Footer";
 import RecipeView from "../Components/RecipeView";
 import PageExplain from "../Components/PageExplain";
 import NoRecipe from '../Components/NoRecipe';
+import Error from '../Components/Error';
 
 function Ranking() {
   const [result, setResult] = useState([]);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   const getRankRecipe = async (page) => {
     const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
@@ -39,10 +41,12 @@ function Ranking() {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
   useEffect(() => {
+    setGetEnd(false);
     getRankRecipe(0);
   }, []);
 
@@ -76,8 +80,10 @@ function Ranking() {
               title="RECIPE RANKING"
               explain="레시피 랭킹을 살펴보세요!"
             />
-            { getEnd ? (
+            {getEnd ? (
               <>
+              {!getFail ? (
+                <>
                 {result.length ? (
                   <>
                     <RecipeList>{result}</RecipeList>
@@ -85,7 +91,11 @@ function Ranking() {
                 ) : (
                   <NoRecipe />
                 )}
-              </>
+                </>
+              ) : (
+                <Error />
+              )}
+            </>
             ) : (
               <>
                 <Loading>

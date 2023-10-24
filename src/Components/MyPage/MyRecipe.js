@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import RecipeView from '../RecipeView';
 import NoRecipe from '../NoRecipe';
 import Paging from '../Paging';
+import Error from '../Error';
 
 const MyRecipe = () => {
   const { user } = useUserContext();
@@ -14,9 +15,9 @@ const MyRecipe = () => {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   const getRecipe = async (page) => {
-    setGetEnd(false);
     const res = await axios.get(
       `${axiosUrl}/user/get/${user.id}/recipe?pageNo=${page}`
     );
@@ -47,11 +48,13 @@ const MyRecipe = () => {
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
   useEffect(() => {
     if(user !== null){
+      setGetEnd(false);
       const search = new URLSearchParams(location.search);
       const _page = search.get("page") || 1;
       getRecipe(_page-1);
@@ -61,19 +64,23 @@ const MyRecipe = () => {
 
   return (
     <>
-      { getEnd ? (
+      {getEnd ? (
         <>
+        {!getFail ? (
+          <>
           {result.length ? (
             <>
-              <RecipeList>
-                {result}
-              </RecipeList>
+              <RecipeList>{result}</RecipeList>
               <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
             </>
           ) : (
             <NoRecipe />
           )}
-        </>
+          </>
+        ) : (
+          <Error />
+        )}
+      </>
       ) : (
         <>
           <Loading>

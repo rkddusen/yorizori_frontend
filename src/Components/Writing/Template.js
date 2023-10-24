@@ -15,6 +15,7 @@ const Template = (props) => {
   const textareaRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AI_AXIOS_URL;
   const [loading, setLoading] = useState(false);
+  const [loadingFail, setLoadingFail] = useState(false);
 
   useEffect(() => {
     initTemplate();
@@ -74,6 +75,7 @@ const Template = (props) => {
     let _newRecipeTemplate = setTemplate();
     if(isTemplateEmpty(_newRecipeTemplate)){
       alert('비어 있는 템플릿이 존재합니다.');
+      setLoading(false);
     } else{
       let paramsObject = {template: _newRecipeTemplate}
       axios.post(`${axiosUrl}/template`, paramsObject)
@@ -86,6 +88,7 @@ const Template = (props) => {
         })
         .catch((error) => {
           setLoading(false);
+          setLoadingFail(true);
           console.log(error);
         })
     }
@@ -235,6 +238,11 @@ const Template = (props) => {
               <button onClick={handleMakingSentence}>변환 ▼</button>
             </ConvertBtn>
           )}
+          {loadingFail ? (
+            null
+          ) : (
+            <p>변환에 실패하였습니다. 다시 시도해주세요:(</p>
+          )}
         </ConvertBtnArea>
         <Result>
           <textarea rows={5} ref={textareaRef} value={sentence || ""} onChange={handleDirectWriting} />
@@ -381,8 +389,14 @@ const ContentsTitle = styled.div`
 const ConvertBtnArea = styled.div`
   height: 80px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  & > p{
+    font-size: 14px;
+    color: red;
+    margin-top: 10px;
+  }
 `;
 const ConvertBtn = styled.div`
   text-align: center;

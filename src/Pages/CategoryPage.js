@@ -10,6 +10,7 @@ import Paging from "../Components/Paging";
 import PageExplain from "../Components/PageExplain";
 import NoRecipe from '../Components/NoRecipe';
 import SortingBox from '../Components/SortingBox';
+import Error from '../Components/Error';
 
 function CategoryPage() {
   const [checked, setChecked] = useState(null);
@@ -19,8 +20,10 @@ function CategoryPage() {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [sorting, setSorting] = useState('요리조리 랭킹순');
   const [getEnd, setGetEnd] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   useEffect(() => {
+    setGetEnd(false);
     const search = new URLSearchParams(location.search);
     const _checked = search.get("category");
     const _page = search.get("page") || 1;
@@ -30,7 +33,6 @@ function CategoryPage() {
   }, [location, sorting]);
 
   const getRecipe = async (category, page) => {
-    setGetEnd(false);
     let sortingName;
     if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
     else if(sorting === '조회순') sortingName = 'recipeViewCount';
@@ -61,12 +63,14 @@ function CategoryPage() {
           />
         );
       }
+
       
       setResult(_result);
       setTotalRecipeCount(res.data.totalElements);
       setGetEnd(true);
     } catch {
       setGetEnd(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
@@ -90,13 +94,19 @@ function CategoryPage() {
             </CategoryTitle>
             {getEnd ? (
               <>
-                {result.length ? (
+                {!getFail ? (
                   <>
-                    <RecipeList>{result}</RecipeList>
-                    <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+                  {result.length ? (
+                    <>
+                      <RecipeList>{result}</RecipeList>
+                      <Paging pagingCount={Math.ceil(totalRecipeCount / 12)} />
+                    </>
+                  ) : (
+                    <NoRecipe />
+                  )}
                   </>
                 ) : (
-                  <NoRecipe />
+                  <Error />
                 )}
               </>
             ) : (
