@@ -139,7 +139,7 @@ const RecipeReadPage = () => {
     content['text'] = textRef.current.value;
     content['userTokenId'] = user.id;
     if(content['userTokenId']){
-      if(content['starCount'] > -1 && content['text'].length > 0 && content['text'].length <= 255){
+      if(content['starCount'] > 0 && content['text'].length > 0 && content['text'].length <= 255){
         axios.post(`${axiosUrl}/user/save/review/${params.id}`, content)
         .then(() => {
           let _star = [0,0,0,0,0];
@@ -150,7 +150,7 @@ const RecipeReadPage = () => {
         .catch(() => {
           console.log('오류');
         });
-      } else if(content['starCount'] > -1 && content['text'].length > 255){
+      } else if(content['starCount'] > 0 && content['text'].length > 255){
         window.alert('댓글은 최대 255자입니다.');
       } else {
         window.alert('평가가 덜 됐습니다. 별점과 댓글 둘 다 입력해주세요.');
