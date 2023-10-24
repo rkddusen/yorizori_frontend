@@ -336,7 +336,7 @@ const RecipeWriting = () => {
             </SubTitleContent>
           </div>
         </SubTitleFirst>
-        <SubTitle>
+        <SubTitleCategory>
           <SubTitleName>카테고리</SubTitleName>
           <SubTitleContent>
             <div>
@@ -363,7 +363,7 @@ const RecipeWriting = () => {
               <option>기타</option>
             </select>
           </SubTitleContent>
-        </SubTitle>
+        </SubTitleCategory>
         <SubTitle>
           <Star />
           <SubTitleContent>
@@ -514,7 +514,8 @@ const SubTitle = styled.div`
   flex-direction: row;
   justify-content: start;
   align-items: center;
-
+  height: auto;
+  margin: 15px 0;
   & > svg {
     padding: 10px 0;
   }
@@ -544,28 +545,38 @@ const SubTitleFirst = styled(SubTitle)`
   
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    align-items: start;
+    & > div:first-child{
+      margin-bottom: 15px;
+    }
   }
   & > div{
     display: flex;
     flex-direction: row;
     justify-content: start;
-    align-items: center;
+    align-items: baseline;
+    margin-right: 15px;
   }
+`;
+const SubTitleCategory = styled(SubTitle)`
+  align-items: baseline;
 `;
 const SubTitleName = styled.p`
   margin-left: 20px;
   margin-right: 10px;
-  padding: 10px 0;
+  padding: 5px 0;
   &:first-child {
     margin-left: 0px;
   }
 `;
 const SubTitleContent = styled.div`
   margin-right: 5px;
+  margin-left: 5px;
   background-color: ${(props) => (props.$level ? "#FFA800" : "white")};
   color: ${(props) => (props.$level ? "white" : "#888888")};
   border-radius: 100%;
-  padding: 10px;
+  /* padding: 10px; */
+  /* height: 100%; */
   & > div > p{
     margin-bottom: 10px;
     display: flex;
