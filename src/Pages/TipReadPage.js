@@ -81,7 +81,6 @@ const TipReadPage = () => {
     isHeart ? saveIsHeart(false) : saveIsHeart(true);
   }
   const getIsHeart = async () => {
-    if(user.id){
       const res = await axios.get(`${axiosUrl}/user/get/tip/isHeart/${params.id}?userId=${user.id}`);
     try {
       setIsHeart(res.data.heart);
@@ -89,8 +88,6 @@ const TipReadPage = () => {
     } catch {
       console.log("오류");
     }
-    }
-    
   }
   const saveIsHeart = async (bool) => {
     if(user.id){
