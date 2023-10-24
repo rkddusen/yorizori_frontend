@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import Header from "../Components/Header/Header";
@@ -20,7 +20,9 @@ const RecipeReadPage = () => {
   const textRef = useRef(null);
   const { user } = useUserContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [referenceOpen, setReferenceOpen] = useState(false);
 
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
@@ -52,7 +54,7 @@ const RecipeReadPage = () => {
   useEffect(() => {
     getRecipe();
     getReview();
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     if (recipe) {
@@ -198,6 +200,9 @@ const RecipeReadPage = () => {
       }
     );
   }
+  const moveOtherRecipe = (recipeId) => {
+    navigate(`/recipe/${recipeId}`);
+  }
 
   return (
     <div>
@@ -264,7 +269,44 @@ const RecipeReadPage = () => {
                     <EditButton mode='recipe' isSelf={user.id === recipe?.recipeUserTokenId} handleDelete={handleDelete} handleReferenceWriting={handleReferenceWriting} handleEditing={handleEditing} />
                   </Profile>
                   <ExplainMain>{recipe?.explain}</ExplainMain>
-                  <ExplainMain>{recipe?.referenceRecipe ? '원작 레시피 ' + recipe?.referenceRecipe : null}</ExplainMain>
+                  <ExplainMain>
+                    {recipe?.referenceRecipe.length ? (
+                      <>
+                        <ReferenceTitle>
+                          <p>Recipe by <span onClick={() => moveOtherRecipe(recipe.referenceRecipe[0].recipeId)}>'{recipe.referenceRecipe[0].nickname}'의 레시피</span></p>
+                          <svg onClick={() => setReferenceOpen((prev) => !prev)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                            {!referenceOpen ? <path d="M6 9l6 6 6-6"/> : <path d="M18 15l-6-6-6 6"/>}
+                          </svg>
+                        </ReferenceTitle>
+                        { referenceOpen ? (
+                          <ReferenceArea>
+                            { recipe.referenceRecipe.map((v, i) => 
+                              <div key={i}>
+                                { i !== 0 ? (
+                                  <p style={{display: 'inline-block', marginLeft: '2.5px'}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+                                  </p>
+                                ) : (
+                                  null
+                                )}
+                                <ReferenceBox>
+                                  <ReferenceProfile>
+                                    <ProfileImg src={v.profileImage} style={{width: '25px', height: '25px', marginRight: '10px'}} />
+                                    <ReferenceNickname onClick={() => moveOtherRecipe(v.recipeId)}>{v.nickname}</ReferenceNickname>
+                                  </ReferenceProfile>
+                                  <div>{v.recipeTitle}</div>
+                                </ReferenceBox>
+                              </div>
+                            )}
+                          </ReferenceArea>
+                        ) : (
+                          null
+                        )}
+                      </>
+                    ) : (
+                      null
+                    )}
+                  </ExplainMain>
                   <ExplainSemi>
                     <p>조회수 {recipe?.viewCount}회</p>
                     <p>{recipe?.date}</p>
@@ -498,10 +540,51 @@ const Profile = styled.div`
 const ProfileNickname = styled.p`
   font-size: 18px;
 `;
-const ExplainMain = styled.p`
+const ExplainMain = styled.div`
   margin-top: 10px;
   font-size: 14px;
   line-height: 1.2;
+`;
+
+const ReferenceTitle = styled.div`
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-top: 20px;
+  & > p > span:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-position: below;
+  }
+  & > svg{
+    margin-left: 5px;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+`;
+const ReferenceArea = styled.div`
+  margin: 0 5px 20px 5px;
+`;
+const ReferenceBox = styled.div`
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 10px 0;
+  &:hover{
+    cursor: pointer;
+    background-color: #fef8f0;
+  }
+`;
+const ReferenceProfile = styled.div`
+  width: 100%;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+`;
+const ReferenceNickname = styled.p`
+  font-size: 14px;
 `;
 const ExplainSemi = styled.div`
   margin-top: 10px;
