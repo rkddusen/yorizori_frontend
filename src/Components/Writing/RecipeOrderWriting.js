@@ -129,7 +129,7 @@ const RecipeOrderWriting = (props) => {
   }
   const handleRecipeDetailPlusAfter = (index) => {
     let _recipeDetail = [...recipeDetail];
-    _recipeDetail.splice(index, 0, {});
+    _recipeDetail.splice(index + 1, 0, {});
     
     let _isTemplateOpen = [...isTemplateOpen];
     _isTemplateOpen.splice(index, 0, false);
