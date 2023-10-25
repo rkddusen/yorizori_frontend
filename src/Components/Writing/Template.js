@@ -20,7 +20,8 @@ const Template = (props) => {
   useEffect(() => {
     initTemplate();
     // 기존 데이터가 있는 경우
-    if(newRecipeTemplate)
+    console.log(newRecipeTemplate);
+    if(newRecipeTemplate && newRecipeTemplate.length > 0)
       getTemplate(newRecipeTemplate[checkedNum]);
   },[checkedNum]);
 
