@@ -19,6 +19,7 @@ import WritingPage from './Pages/WritingPage';
 import Redirection from './Components/Login/Redirection';
 import TipReadPage from './Pages/TipReadPage';
 import RestaurantPage from './Pages/RestaurantPage';
+import NotFoundPage from './Pages/NotFountPage';
 
 function App() {
   const [user, setUser] = useState({
@@ -80,6 +81,7 @@ function App() {
             <Route exact path='/user/naver/callback' element={<Redirection login="naver" />} />
             <Route exact path='/user/google/callback' element={<Redirection login="google" />} />
             <Route path='/restaurant' element={<RestaurantPage />} />
+            <Route path='*' element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>
