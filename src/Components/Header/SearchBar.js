@@ -32,11 +32,11 @@ function SearchBar(props) {
   }
   useEffect(() => {
     if (isOpen) {
-      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      // const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
-      if(scrollBarWidth > 0){
-        document.body.style.paddingRight = `${scrollBarWidth}px`;
-      }
+      // if(scrollBarWidth > 0){
+      //   document.body.style.paddingRight = `${scrollBarWidth}px`;
+      // }
       setIsRemoveModal(false);
     } else {
       const timer = setTimeout(() => {
@@ -47,7 +47,7 @@ function SearchBar(props) {
 
     return () => {
       document.body.style.overflow = 'auto';
-      document.body.style.paddingRight = '0';
+      // document.body.style.paddingRight = '0';
       setType('food');
     };
   }, [isOpen]);
@@ -128,7 +128,7 @@ const SearchArea = styled.div`
   width: 100%;
   height: 100%;
   background-color: #00000099;
-  overflow-y: ${props => props.$isopen ? 'scroll' : 'hidden'};
+  overflow-y: ${props => props.$isopen ? 'none' : null};
   visibility: ${props => props.$isopen ? 'visible' : 'hidden'};
   ${props => !props.$isopen ? `
     transition-property: visibility;
