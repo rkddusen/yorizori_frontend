@@ -221,13 +221,18 @@ const RecipeWriting = () => {
     } else {
       confirm = window.confirm('레시피를 등록하시겠습니까?');
     }
-    
     if(confirm){
       if(paramsObject.thumbnail.length < 1){
         alert('썸네일 사진을 등록해주세요.');
       }
       else if(!paramsObject.recipeInfo.title){
         alert('레시피 제목을 입력해주세요.');
+      }
+      else if(paramsObject.recipeInfo.title.length > 255){
+        alert('(레시피 제목) 최대 길이는 255자입니다.');
+      }
+      else if(paramsObject.recipeInfo.dishName.length > 255){
+        alert('(음식 이름) 최대 길이는 255자입니다.');
       }
       else if(!paramsObject.recipeInfo.level){
         alert('레시피의 난이도를 설정해주세요.');
@@ -239,10 +244,25 @@ const RecipeWriting = () => {
         alert('레시피의 카테고리를 설정해주세요.');
       }
       else if(!paramsObject.recipeInfo.explain){
-        alert('요리 설명을 해주세요.');
+        alert('요리를 소개 해주세요.');
+      }
+      else if(paramsObject.recipeInfo.explain.length > 255){
+        alert('(요리 소개) 최대 길이는 255자입니다.');
       }
       else if(paramsObject.mainIngredient.length === 0 && paramsObject.semiIngredient.length === 0){
         alert('1개 이상의 재료가 필요합니다.');
+      }
+      else if(paramsObject.mainIngredient.filter(v => v['name']?.length > 255).length > 0){
+        alert('(주재료) 최대 길이는 255자입니다.');
+      }
+      else if(paramsObject.mainIngredient.filter(v => v['size']?.length > 255).length > 0){
+        alert('(주재료 크기) 최대 길이는 255자입니다.');
+      }
+      else if(paramsObject.semiIngredient.filter(v => v['name']?.length > 255).length > 0){
+        alert('(부재료) 최대 길이는 255자입니다.');
+      }
+      else if(paramsObject.semiIngredient.filter(v => v['size']?.length > 255).length > 0){
+        alert('(부재료 크기) 최대 길이는 255자입니다.');
       }
       else if(paramsObject.recipeDetail.length < 1){
         alert('레시피 내용을 입력해주세요.');
