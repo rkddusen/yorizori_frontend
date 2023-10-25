@@ -510,6 +510,7 @@ const SubTitle = styled.div`
 const SubTitleFirst = styled(SubTitle)`
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    align-items: start;
   }
   & > div{
     display: flex;
@@ -696,7 +697,7 @@ const RecipeOrder = styled.div`
   }
 `;
 const RecipeOrderDetailArea = styled.div`
-  width: 60%;
+  width: 100%;
   box-sizing: border-box;
   padding-right: 20px;
 

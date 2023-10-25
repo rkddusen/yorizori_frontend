@@ -317,7 +317,7 @@ const RecipeOrderDetail = styled.div`
   display: flex;
   justify-content: space-between;
   & > p{
-    width: 55%;
+    width: 100%;
     word-break: break-all;
   }
   & > div{

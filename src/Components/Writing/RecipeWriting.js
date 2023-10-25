@@ -400,16 +400,16 @@ const RecipeWriting = () => {
           </Profile>
           <ExplainMain>
             <ExplainTextArea value={recipeInfo?.explain || ''} rows={5} placeholder='요리를 소개해주세요.' onChange={(e) => handleInfoChange(e, 'explain')} />
+            {referenceUser?.id ? (
+              <div>
+                <p>
+                  Recipe by '{referenceUser.nickname}'의 레시피
+               </p>
+              </div>
+            ) : (
+              null
+            )}
           </ExplainMain>
-          {referenceUser?.id ? (
-            <div>
-              <p>
-                Recipe by {referenceUser.id}
-              </p>
-            </div>
-          ) : (
-            null
-          )}
         </Explain>
       </RecipeTitle>
       <RecipeDetailBox>
@@ -647,6 +647,9 @@ const ExplainTextArea = styled.textarea`
   resize: none;
   padding: 10px;
   box-sizing: border-box;
+`;
+const ReferenceTitle = styled.div`
+  font-size: 14px;
 `;
 const RecipeDetailBox = styled.div`
   width: 100%;
