@@ -8,21 +8,28 @@ const CheckCircle = ({size=16, color="#000000"}) => (<svg xmlns="http://www.w3.o
 function SearchBar(props) {
   const { strokeWidth, isOpen, setIsOpen } = props;
   const [isRemoveModal, setIsRemoveModal] = useState(true);
-  const [type, setType] = useState('food');
   const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef(null);
+  const [type, setType] = useState('food');
 
   const openSearch = () => setIsOpen(true);
   const closeSearch = () => setIsOpen(false);
   const changeType = (str) => setType(str);
 
   const search = () => {
-    navigate(`/search?search=${searchRef.current.value}&method=${type}`);
+    let value = searchRef.current.value;
+    if(value.split(',').length > 5){
+      alert('재료가 너무 많습니다. 재료는 5개까지 가능합니다.');
+    } else {
+      navigate(`/search?search=${value}&method=${type}`);
+    }
   };
   useEffect(() => {
     setIsOpen(false);
     setIsRemoveModal(true);
+    changeType(new URLSearchParams(location.search).get('method') || 'food');
+    
   }, [location]);
 
   const handleEnterKey = (event) => {
@@ -32,11 +39,7 @@ function SearchBar(props) {
   }
   useEffect(() => {
     if (isOpen) {
-      // const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = 'hidden';
-      // if(scrollBarWidth > 0){
-      //   document.body.style.paddingRight = `${scrollBarWidth}px`;
-      // }
       setIsRemoveModal(false);
     } else {
       const timer = setTimeout(() => {
@@ -44,11 +47,10 @@ function SearchBar(props) {
       }, 500)
       return () => clearTimeout(timer);
     }
+    
 
     return () => {
       document.body.style.overflow = 'auto';
-      // document.body.style.paddingRight = '0';
-      setType('food');
     };
   }, [isOpen]);
 
