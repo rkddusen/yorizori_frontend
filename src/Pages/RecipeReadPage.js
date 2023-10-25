@@ -306,11 +306,23 @@ const RecipeReadPage = () => {
                                   null
                                 )}
                                 <ReferenceBox>
-                                  <ReferenceProfile>
-                                    <ProfileImg src={v.profileImage} style={{width: '25px', height: '25px', marginRight: '10px'}} />
-                                    <ReferenceNickname onClick={() => moveOtherRecipe(v.recipeId)}>{v.nickname}</ReferenceNickname>
-                                  </ReferenceProfile>
-                                  <div>{v.recipeTitle}</div>
+                                  {v.recipeId > -1 ? (
+                                    <>
+                                      <ReferenceProfile>
+                                        <ProfileImg src={v.profileImage} style={{width: '25px', height: '25px', marginRight: '10px'}} />
+                                        <ReferenceNickname onClick={() => moveOtherRecipe(v.recipeId)}>{v.nickname}</ReferenceNickname>
+                                      </ReferenceProfile>
+                                      <div>{v.recipeTitle}</div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ReferenceProfile>
+                                        <ProfileImg src={process.env.REACT_APP_IMG_URL + '/default/defaultProfile.png'} style={{width: '25px', height: '25px', marginRight: '10px'}} />
+                                        <ReferenceNickname>알 수 없음</ReferenceNickname>
+                                      </ReferenceProfile>
+                                      <div>{v.recipeTitle}</div>
+                                    </>
+                                  )}
                                 </ReferenceBox>
                               </div>
                             )}
