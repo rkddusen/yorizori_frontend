@@ -100,30 +100,34 @@ const ProfileChange = () => {
     if(confirm){
       let _age = age === '연령대' ? null : age;
       let _gender = gender === '성별' ? null : gender;
-      axios
-        .get(`${axiosUrl}/profile/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}&age=${_age}&gender=${_gender}`)
-        .then((res) => {
-          if(img !== user.profileImg && user.profileImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
-            deleteProfileImg(user.profileImg);
-          }
-  
-          let _user = { ...user };
-          _user.id = res.data.userTokenId;
-          _user.nickName = res.data.nickname;
-          _user.age = res.data.age;
-          _user.gender = res.data.gender;
-          _user.profileImg = res.data.imageAddress;
-          setUser(_user);
-  
-          search.delete('ischange');
-          navigate({
-            pathname: location.pathname,
-            search: search.toString(),
+      if((_age === null && _gender !== null) || (_age !== null && _gender === null)){
+        alert('성별과 나이는 항상 같이 입력되어야 합니다.');
+      } else{
+        axios
+          .get(`${axiosUrl}/profile/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}&age=${_age}&gender=${_gender}`)
+          .then((res) => {
+            if(img !== user.profileImg && user.profileImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
+              deleteProfileImg(user.profileImg);
+            }
+    
+            let _user = { ...user };
+            _user.id = res.data.userTokenId;
+            _user.nickName = res.data.nickname;
+            _user.age = res.data.age;
+            _user.gender = res.data.gender;
+            _user.profileImg = res.data.imageAddress;
+            setUser(_user);
+    
+            search.delete('ischange');
+            navigate({
+              pathname: location.pathname,
+              search: search.toString(),
+            });
+          })
+          .catch((error) => {
+            console.log(error);
           });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     }
   };
   const handleGenderChange = (event) => {
