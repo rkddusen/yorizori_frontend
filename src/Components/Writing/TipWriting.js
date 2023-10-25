@@ -114,55 +114,69 @@ const TipWriting = () => {
     setTipContents(contents);
   }
   const handleOnSubmit = () => {
-
     let confirm = window.confirm('팁을 등록하시겠습니까?');
+    
     if(confirm){
-      // 적용할 때 전송되는 이미지
-      let submitImages = seperateImage(tipContents);
-      // 이미지를 등록했지만 적용할 때 삭제된 이미지
-      let deletedImages = images.filter(v => submitImages.indexOf(v) < 0);
-      const deleteObject = {
-        images: deletedImages,
-      }
-      axios
-        .post(`${axiosUrl}/image/remove/all`, deleteObject)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-
       let paramsObject = {
         userId: user.id,
         tipThumbnail: thumbnail,
         tipTitle: titleRef.current.value,
         tipDetail: tipContents,
       }
-      
-      const search = new URLSearchParams(location.search);
-      const _updateId = search.get('updateId');
-      if(_updateId){
-        axios
-          .post(`${axiosUrl}/tip/update/details?tipId=${_updateId}`, paramsObject)
-          .then((res) => {
-            console.log(res);
-            navigate(`/tip/${_updateId}`);
-          })
-         .catch((error) => {
-          console.log(error);
-        });
+
+      if(paramsObject.tipThumbnail < 1){
+        alert('썸네일 사진을 등록해주세요.');
+      }
+      else if(!paramsObject.tipTitle){
+        alert('팁 제목을 입력해주세요.');
+      }
+      else if(paramsObject.tipTitle.length > 255){
+        alert('(팁 제목) 최대 길이는 255자입니다.');
+      }
+      else if(!paramsObject.tipDetail){
+        alert('팁 내용을 입력해주세요.');
       }
       else{
+
+        // 적용할 때 전송되는 이미지
+        let submitImages = seperateImage(tipContents);
+        // 이미지를 등록했지만 적용할 때 삭제된 이미지
+        let deletedImages = images.filter(v => submitImages.indexOf(v) < 0);
+        const deleteObject = {
+          images: deletedImages,
+        }
         axios
-          .post(`${axiosUrl}/tip/save/details`, paramsObject)
+          .post(`${axiosUrl}/image/remove/all`, deleteObject)
           .then((res) => {
-            navigate(`/tip/${res.data}`, { replace: true});
+            console.log(res);
           })
           .catch((error) => {
             console.log(error);
           });
+  
+        const search = new URLSearchParams(location.search);
+        const _updateId = search.get('updateId');
+        if(_updateId){
+          axios
+            .post(`${axiosUrl}/tip/update/details?tipId=${_updateId}`, paramsObject)
+            .then((res) => {
+              console.log(res);
+              navigate(`/tip/${_updateId}`);
+            })
+           .catch((error) => {
+            console.log(error);
+          });
+        }
+        else{
+          axios
+            .post(`${axiosUrl}/tip/save/details`, paramsObject)
+            .then((res) => {
+              navigate(`/tip/${res.data}`, { replace: true});
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
       }
       
     }
