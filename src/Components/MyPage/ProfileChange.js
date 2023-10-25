@@ -30,6 +30,8 @@ const ProfileChange = () => {
 
     if(nowNickname.length < 1){
       alert("닉네임을 입력하세요.");
+    } else if(nowNickname.length > 9){
+      alert("(닉네임) 최대 길이는 9자입니다.");
     } else if(pattern1.test(nowNickname)){
       alert("닉네임은 한글, 영어, 숫자만 가능합니다.");
     } else{
@@ -94,32 +96,35 @@ const ProfileChange = () => {
       });
   }
   const applyProfileChange = async (img, nickname) => {
-    let _age = age === '연령대' ? null : age;
-    let _gender = gender === '성별' ? null : gender;
-    axios
-      .get(`${axiosUrl}/image/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}&age=${_age}&gender=${_gender}`)
-      .then((res) => {
-        if(img !== user.profileImg && user.profileImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
-          deleteProfileImg(user.profileImg);
-        }
-
-        let _user = { ...user };
-        _user.id = res.data.userTokenId;
-        _user.nickName = res.data.nickname;
-        _user.age = res.data.age;
-        _user.gender = res.data.gender;
-        _user.profileImg = res.data.imageAddress;
-        setUser(_user);
-
-        search.delete('ischange');
-        navigate({
-          pathname: location.pathname,
-          search: search.toString(),
+    let confirm = window.confirm('프로필을 적용하시겠습니까?');
+    if(confirm){
+      let _age = age === '연령대' ? null : age;
+      let _gender = gender === '성별' ? null : gender;
+      axios
+        .get(`${axiosUrl}/profile/apply?userId=${user.id}&postImage=${img}&postNickname=${nickname}&age=${_age}&gender=${_gender}`)
+        .then((res) => {
+          if(img !== user.profileImg && user.profileImg !== `${process.env.REACT_APP_IMG_URL}/default/defaultProfile.png`){
+            deleteProfileImg(user.profileImg);
+          }
+  
+          let _user = { ...user };
+          _user.id = res.data.userTokenId;
+          _user.nickName = res.data.nickname;
+          _user.age = res.data.age;
+          _user.gender = res.data.gender;
+          _user.profileImg = res.data.imageAddress;
+          setUser(_user);
+  
+          search.delete('ischange');
+          navigate({
+            pathname: location.pathname,
+            search: search.toString(),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    }
   };
   const handleGenderChange = (event) => {
     console.log(event);
