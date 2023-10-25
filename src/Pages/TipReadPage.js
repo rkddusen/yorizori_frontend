@@ -8,6 +8,7 @@ import { Heart } from "../Components/Evaluation";
 import { useUserContext } from '../contexts/UserContext';
 import { ProfileImg } from '../Components/ProfileImg';
 import EditButton from '../Components/EditButton';
+import Error from '../Components/Error';
 
 const TipReadPage = () => {
   const { user } = useUserContext();
@@ -19,6 +20,9 @@ const TipReadPage = () => {
   const navigate = useNavigate();
   const textRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
+  const [getEndMain, setGetEndMain] = useState(false);
+  const [getEndReview, setGetEndReview] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   const getTip = async () => {
     const res = await axios.get(`${axiosUrl}/tip/get/details?tipId=${params.id}`);
@@ -34,11 +38,16 @@ const TipReadPage = () => {
       _tip.tipDetail = res.data.tipDetail;
       _tip.viewCount = res.data.tipViewCount;
       setTip(_tip);
+      setGetEndMain(true);
     } catch {
+      setGetEndMain(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
   useEffect(() => {
+    setGetEndMain(false);
+    setGetEndReview(false);
     getTip();
     getReview();
     getIsHeart();
@@ -73,7 +82,10 @@ const TipReadPage = () => {
       _review.reviewCount = res.data.reviewCount;
       _review.reviews = res.data.reviews;
       setReview(_review);
+      setGetEndReview(true);
     } catch {
+      setGetEndReview(true);
+      setGetFail(true);
       console.log("오류");
     }
   }
@@ -86,6 +98,7 @@ const TipReadPage = () => {
       setIsHeart(res.data.heart);
       setHeartCount(res.data.tipHeartCount);
     } catch {
+      setIsHeart('-');
       console.log("오류");
     }
   }
@@ -135,6 +148,9 @@ const TipReadPage = () => {
         <Header />
         <StyledBody>
           <Contents>
+            {getEndMain && getEndReview ? (
+              <>
+              {!getFail ? (
             <RecipeContents>
               <RecipeTitle>
                 <Thumbnail>
@@ -193,6 +209,17 @@ const TipReadPage = () => {
                 </div>
               </RecipeDetailBox>
             </RecipeContents>
+            ) : (
+            <Error />
+            )}
+            </>
+            ) : (
+              <>
+                <Loading>
+                  <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+                </Loading>
+              </>
+            )}
           </Contents>
         </StyledBody>
       </Wrap>
@@ -466,4 +493,17 @@ const ReviewListDate = styled.p`
   color: #aaaaaa;
 `;
 
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
+  }
+`;
 export default TipReadPage;

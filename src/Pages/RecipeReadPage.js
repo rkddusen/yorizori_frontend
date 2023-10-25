@@ -8,6 +8,7 @@ import { Star } from "../Components/Evaluation";
 import { useUserContext } from '../contexts/UserContext';
 import { ProfileImg } from '../Components/ProfileImg';
 import EditButton from '../Components/EditButton';
+import Error from '../Components/Error';
 
 const RecipeReadPage = () => {
   const [recipe, setRecipe] = useState(null);
@@ -23,6 +24,9 @@ const RecipeReadPage = () => {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const [referenceOpen, setReferenceOpen] = useState(false);
+  const [getEndMain, setGetEndMain] = useState(false);
+  const [getEndReview, setGetEndReview] = useState(false);
+  const [getFail, setGetFail] = useState(false);
 
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
@@ -47,11 +51,16 @@ const RecipeReadPage = () => {
       _recipe.viewCount = res.data.viewCount;
       _recipe.referenceRecipe = res.data.referenceRecipe;
       setRecipe(_recipe);
+      setGetEndMain(true);
     } catch {
+      setGetEndMain(true);
+      setGetFail(true);
       console.log("오류");
     }
   };
   useEffect(() => {
+    setGetEndMain(false);
+    setGetEndReview(false);
     getRecipe();
     getReview();
   }, [location]);
@@ -168,7 +177,10 @@ const RecipeReadPage = () => {
       _review.reviewCount = res.data.reviewCount;
       _review.reviews = res.data.reviews;
       setReview(_review);
+      setGetEndReview(true);
     } catch {
+      setGetEndReview(true);
+      setGetFail(true);
       console.log("오류");
     }
   }
@@ -211,6 +223,9 @@ const RecipeReadPage = () => {
         <Header />
         <StyledBody>
           <Contents>
+            {getEndMain && getEndReview ? (
+              <>
+              {!getFail ? (
             <RecipeContents>
               <RecipeTitle>
                 <Thumbnail>
@@ -392,6 +407,17 @@ const RecipeReadPage = () => {
                 </div>
               </RecipeDetailBox>
             </RecipeContents>
+            ) : (
+            <Error />
+            )}
+            </>
+            ) : (
+              <>
+                <Loading>
+                  <img src={process.env.REACT_APP_PUBLIC_URL + '/images/loading.svg'} />
+                </Loading>
+              </>
+            )}
           </Contents>
         </StyledBody>
       </Wrap>
@@ -848,4 +874,19 @@ const ReviewListDate = styled.p`
   font-size: 12px;
   color: #aaaaaa;
 `;
+
+const Loading = styled.p`
+  width: 15%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img{
+    width: 100%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 30%;
+  }
+`;
+
 export default RecipeReadPage;
