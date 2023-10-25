@@ -159,7 +159,9 @@ const RecipeWriting = () => {
   }
   const handleInfoChange = (e, info) =>{
     let _recipeInfo = {...recipeInfo};
-    _recipeInfo[info] = e.target.value || '';
+    if(e.target.value !== '난이도' && e.target.value !== '시간'){
+      _recipeInfo[info] = e.target.value;
+    } else _recipeInfo[info] = null;
     setRecipeInfo(_recipeInfo);
   }
   const handleCategoryChange = (e) => {
@@ -211,7 +213,7 @@ const RecipeWriting = () => {
       recipeDetail: filteredRecipeDetail,
       originRecipe: origin,
     };
-    console.log(paramsObject);
+    console.log(paramsObject.recipeInfo.level);
 
     let confirm;
     if(filteredMainIngredient.length !== mainIngredient.length || filteredSemiIngredient.length !== semiIngredient.length){
