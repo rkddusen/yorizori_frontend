@@ -136,11 +136,15 @@ const Template = (props) => {
 
 
   const handleApplyTemplate = () => {
-    let _thisRecipeDetail = {...thisRecipeDetail};
-    _thisRecipeDetail['detail'] = sentence;
-    _thisRecipeDetail['template'] = savingRecipeTemplate;
-    handleSavingRecipeDetail(index, _thisRecipeDetail);
-    handleTemplateClose(index);
+    if(sentence.length <= 255){
+      let _thisRecipeDetail = {...thisRecipeDetail};
+      _thisRecipeDetail['detail'] = sentence;
+      _thisRecipeDetail['template'] = savingRecipeTemplate;
+      handleSavingRecipeDetail(index, _thisRecipeDetail);
+      handleTemplateClose(index);
+    } else{
+      window.alert('최대 길이는 255자입니다.');
+    }
   }
 
   return (
@@ -239,9 +243,9 @@ const Template = (props) => {
             </ConvertBtn>
           )}
           {loadingFail ? (
-            null
-          ) : (
             <p>변환에 실패하였습니다. 다시 시도해주세요:(</p>
+          ) : (
+            null
           )}
         </ConvertBtnArea>
         <Result>
