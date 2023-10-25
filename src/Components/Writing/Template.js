@@ -72,6 +72,7 @@ const Template = (props) => {
   // 문장 + 템플릿 서버에 보내고 문장 받기
   const handleMakingSentence = async () => {
     setLoading(true);
+    setLoadingFail(false);
     let _newRecipeTemplate = setTemplate();
     if(isTemplateEmpty(_newRecipeTemplate)){
       alert('비어 있는 템플릿이 존재합니다.');
