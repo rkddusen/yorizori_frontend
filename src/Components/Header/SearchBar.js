@@ -128,7 +128,7 @@ const SearchArea = styled.div`
   width: 100%;
   height: 100%;
   background-color: #00000099;
-  overflow-y: ${props => props.$isopen ? 'none' : null};
+  overflow-y: ${props => props.$isopen ? 'auto' : null};
   visibility: ${props => props.$isopen ? 'visible' : 'hidden'};
   ${props => !props.$isopen ? `
     transition-property: visibility;
