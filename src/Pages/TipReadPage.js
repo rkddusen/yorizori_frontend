@@ -58,7 +58,7 @@ const TipReadPage = () => {
     content['text'] = textRef.current.value;
     content['userTokenId'] = user.id;
     if(content['userTokenId']){
-      if(content['text'].length > 0){
+      if(content['text'].length > 0 && content['text'].length <= 255){
         axios.post(`${axiosUrl}/user/save/tip/review/${params.id}`, content)
         .then(() => {
           textRef.current.value = null;
@@ -67,12 +67,11 @@ const TipReadPage = () => {
         .catch(() => {
           console.log('오류');
         });
-      }
-      else {
-        window.alert('평가가 덜 됐음.')
+      } else if(content['text'].length > 255){
+        window.alert('댓글은 최대 255자입니다.');
       }
     } else {
-      window.alert('로그인 필요');
+      window.alert('로그인이 필요한 기능입니다.');
     }
   }
   const getReview = async () => {
