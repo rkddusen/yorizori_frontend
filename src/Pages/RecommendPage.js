@@ -16,7 +16,7 @@ function RecommendPage() {
   const [mode, setMode] = useState('TR');
   const [result, setResult] = useState([]);
   const location = useLocation();
-  const axiosUrl = process.env.REACT_APP_SERVER_URL;
+  const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
@@ -36,7 +36,7 @@ function RecommendPage() {
 
   const getPRRecipe = async () => {
     setGetEnd(false);
-    const res = await axios.get(`${axiosUrl}/recipe/get/recommend/${user.id}`);
+    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommend/${user.id}`);
     
     try {
       let _result = [];
@@ -103,6 +103,41 @@ function RecommendPage() {
     }
   }
 
+  const test = async (arr, bool) => {
+    setGetEnd(false);
+    const res = await axios.get(`${axiosUrl}/recipe/get/recommendToday/test?month=${arr[0]}&day=${arr[1]}&rain=${bool}`);
+    console.log(res);
+    try {
+      let _result = [];
+      for (let i = 0; i < res.data.length; i++) {
+        _result.push(
+          <RecipeView
+            key={i}
+            recipe={
+              {
+                id: res.data[i].id,
+                title: res.data[i].title,
+                thumbnail: res.data[i].thumbnail,
+                reviewCount: res.data[i].reviewCount,
+                starCount: res.data[i].starCount,
+                profileImg: res.data[i].profileImg,
+                nickname: res.data[i].nickname,
+                viewCount: res.data[i].viewCount,
+              }
+            }
+          />
+        );
+      }
+      
+      setResult(_result);
+      setGetEnd(true);
+    } catch {
+      setGetEnd(true);
+      setGetFail(true);
+      console.log("오류");
+    }
+  }
+
   return (
     <div>
       <Wrap>
@@ -117,6 +152,17 @@ function RecommendPage() {
                 <>
                 {result.length ? (
                   <>
+                    {mode === 'TR' ? (
+                      <div>
+                        <button onClick={() => test([1,23], 'off')}>설날</button>
+                        <button onClick={() => test([7,11], 'off')}>초복</button>
+                        <button onClick={() => test([2,14], 'off')}>발렌타인데이</button>
+                        <button onClick={() => test([12,25], 'off')}>크리스마스</button>
+                        <button onClick={() => test([2,14], 'on')}>비 오는 날</button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                     <RecipeList>{result}</RecipeList>
                   </>
                 ) : (
