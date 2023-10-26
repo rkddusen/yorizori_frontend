@@ -84,7 +84,8 @@ const RecipeWriting = () => {
         setThumbnail(_thumbnail);
         setRecipeDetail(_recipeDetail);
         _recipeImage.push(_thumbnail)
-        setOriginImage(_recipeImage)
+        let _originImage = _recipeImage.filter(v => v !== null);
+        setOriginImage(_originImage);
       } else{
         let _referenceUser = {};
         _referenceUser.id = res.data.id;
@@ -135,6 +136,13 @@ const RecipeWriting = () => {
         console.log(error);
       });
     }
+  };
+  const serverOriginImageDelete = async (image) => {
+    axios
+      .delete(`${axiosUrl}/image/remove?imageAddress=${image}`)
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handleThumbnailChange = async (e) => {
     const _recipeImg = e.target.files[0];
@@ -213,7 +221,6 @@ const RecipeWriting = () => {
       recipeDetail: filteredRecipeDetail,
       originRecipe: origin,
     };
-    console.log(paramsObject.recipeInfo.level);
 
     let confirm;
     if(filteredMainIngredient.length !== mainIngredient.length || filteredSemiIngredient.length !== semiIngredient.length){
@@ -274,6 +281,10 @@ const RecipeWriting = () => {
           axios
             .post(`${axiosUrl}/recipe/update/details`, paramsObject)
             .then((res) => {
+              let deletingImage = paramsObject.recipeDetail.map(order => order.image);
+              deletingImage.push(paramsObject.thumbnail);
+              console.log(deletingImage);
+              deleteOriginImage(deletingImage);
               navigate(`/recipe/${res.data}`, { replace: true});
             })
             .catch((error) => {
@@ -297,6 +308,16 @@ const RecipeWriting = () => {
     let confirm = window.confirm('정말 취소하시겠습니까?');
     if(confirm){
       navigate(-1);
+    }
+  }
+
+  const deleteOriginImage = (image) => {
+    console.log(image);
+    let _originImage = originImage.filter(v => image.indexOf(v) === -1);
+    console.log(_originImage);
+    console.log(originImage);
+    for(let i = 0; i < _originImage.length; i++){
+      serverOriginImageDelete(_originImage[i]);
     }
   }
 
