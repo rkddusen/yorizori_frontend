@@ -190,7 +190,7 @@ const RecipeReadPage = () => {
       const res = await axios.delete(`${axiosUrl}/recipe/delete/${params.id}`);
       try {
         alert('삭제가 완료되었습니다.');
-        navigate(-1);
+        navigate(`/mypage`);
       } catch {
         console.log("오류");
       }
