@@ -27,18 +27,23 @@ const TipReadPage = () => {
   const getTip = async () => {
     const res = await axios.get(`${axiosUrl}/tip/get/details?tipId=${params.id}`);
     try {
-      let _tip = {};
-      _tip.id = res.data.tipId;
-      _tip.thumbnail = res.data.tipThumbnail;
-      _tip.title = res.data.tipTitle;
-      _tip.profileImg = res.data.profileImg;
-      _tip.nickname = res.data.nickname;
-      _tip.tipUserTokenId = res.data.tipUserTokenId;
-      _tip.date = res.data.date;
-      _tip.tipDetail = res.data.tipDetail;
-      _tip.viewCount = res.data.tipViewCount;
-      setTip(_tip);
-      setGetEndMain(true);
+      if(res.data){
+        let _tip = {};
+        _tip.id = res.data.tipId;
+        _tip.thumbnail = res.data.tipThumbnail;
+        _tip.title = res.data.tipTitle;
+        _tip.profileImg = res.data.profileImg;
+        _tip.nickname = res.data.nickname;
+        _tip.tipUserTokenId = res.data.tipUserTokenId;
+        _tip.date = res.data.date;
+        _tip.tipDetail = res.data.tipDetail;
+        _tip.viewCount = res.data.tipViewCount;
+        setTip(_tip);
+        setGetEndMain(true);
+      } else{
+        alert('팁이 존재하지 않습니다.');
+        navigate(`/`);
+      }
     } catch {
       setGetEndMain(true);
       setGetFail(true);
@@ -48,9 +53,13 @@ const TipReadPage = () => {
   useEffect(() => {
     setGetEndMain(false);
     setGetEndReview(false);
-    getTip();
-    getReview();
-    getIsHeart();
+    if(Number(params.id)){
+      getTip();
+      getReview();
+      getIsHeart();
+    } else{
+      navigate(`/error`, {replace: true})
+    }
   }, [user]);
 
   const saveReview = () => {
@@ -77,11 +86,13 @@ const TipReadPage = () => {
   const getReview = async () => {
     const res = await axios.get(`${axiosUrl}/tip/get/reviews/${params.id}`);
     try {
-      let _review = {};
-      _review.reviewCount = res.data.reviewCount;
-      _review.reviews = res.data.reviews;
-      setReview(_review);
-      setGetEndReview(true);
+      if(res.data){
+        let _review = {};
+        _review.reviewCount = res.data.reviewCount;
+        _review.reviews = res.data.reviews;
+        setReview(_review);
+        setGetEndReview(true);
+      }
     } catch {
       setGetEndReview(true);
       setGetFail(true);
@@ -92,10 +103,12 @@ const TipReadPage = () => {
     isHeart ? saveIsHeart(false) : saveIsHeart(true);
   }
   const getIsHeart = async () => {
-      const res = await axios.get(`${axiosUrl}/user/get/tip/isHeart/${params.id}?userId=${user.id}`);
+    const res = await axios.get(`${axiosUrl}/user/get/tip/isHeart/${params.id}?userId=${user.id}`);
     try {
-      setIsHeart(res.data.heart);
-      setHeartCount(res.data.tipHeartCount);
+      if(res.data){
+        setIsHeart(res.data.heart);
+        setHeartCount(res.data.tipHeartCount);
+      }
     } catch {
       setIsHeart('-');
       console.log("오류");

@@ -30,28 +30,32 @@ const RecipeReadPage = () => {
 
   const getRecipe = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
-    console.log(res)
     try {
-      let _recipe = {};
-      _recipe.id = res.data.id;
-      _recipe.thumbnail = res.data.thumbnail;
-      _recipe.title = res.data.title;
-      _recipe.dishName = res.data.dishName;
-      _recipe.level = res.data.level;
-      _recipe.time = res.data.time;
-      _recipe.profileImg = res.data.profileImg;
-      _recipe.recipeUserTokenId = res.data.recipeUserTokenId;
-      _recipe.nickname = res.data.nickname;
-      _recipe.date = res.data.date;
-      _recipe.explain = res.data.explain;
-      _recipe.mainIngredient = res.data.mainIngredient;
-      _recipe.semiIngredient = res.data.semiIngredient;
-      _recipe.order = res.data.order;
-      _recipe.category = res.data.category;
-      _recipe.viewCount = res.data.viewCount;
-      _recipe.referenceRecipe = res.data.referenceRecipe;
-      setRecipe(_recipe);
-      setGetEndMain(true);
+      if(res.data){
+        let _recipe = {};
+        _recipe.id = res.data.id;
+        _recipe.thumbnail = res.data.thumbnail;
+        _recipe.title = res.data.title;
+        _recipe.dishName = res.data.dishName;
+        _recipe.level = res.data.level;
+        _recipe.time = res.data.time;
+        _recipe.profileImg = res.data.profileImg;
+        _recipe.recipeUserTokenId = res.data.recipeUserTokenId;
+        _recipe.nickname = res.data.nickname;
+        _recipe.date = res.data.date;
+        _recipe.explain = res.data.explain;
+        _recipe.mainIngredient = res.data.mainIngredient;
+        _recipe.semiIngredient = res.data.semiIngredient;
+        _recipe.order = res.data.order;
+        _recipe.category = res.data.category;
+        _recipe.viewCount = res.data.viewCount;
+        _recipe.referenceRecipe = res.data.referenceRecipe;
+        setRecipe(_recipe);
+        setGetEndMain(true);
+      } else{
+        alert('레시피가 존재하지 않습니다.');
+        navigate(`/`);
+      }
     } catch {
       setGetEndMain(true);
       setGetFail(true);
@@ -61,8 +65,12 @@ const RecipeReadPage = () => {
   useEffect(() => {
     setGetEndMain(false);
     setGetEndReview(false);
-    getRecipe();
-    getReview();
+    if(Number(params.id)){
+      getRecipe();
+      getReview();
+    } else{
+      navigate(`/error`, {replace: true})
+    }
   }, [location]);
 
   useEffect(() => {
@@ -171,13 +179,15 @@ const RecipeReadPage = () => {
   const getReview = async () => {
     const res = await axios.get(`${axiosUrl}/recipe/get/reviews/${params.id}`);
     try {
-      let _review = {};
-      _review.recipeStarCount = res.data.recipeStarCount;
-      _review.userStarCount = res.data.userStarCount;
-      _review.reviewCount = res.data.reviewCount;
-      _review.reviews = res.data.reviews;
-      setReview(_review);
-      setGetEndReview(true);
+      if(res.data){
+        let _review = {};
+        _review.recipeStarCount = res.data.recipeStarCount;
+        _review.userStarCount = res.data.userStarCount;
+        _review.reviewCount = res.data.reviewCount;
+        _review.reviews = res.data.reviews;
+        setReview(_review);
+        setGetEndReview(true);
+      }
     } catch {
       setGetEndReview(true);
       setGetFail(true);
