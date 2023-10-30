@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
@@ -18,6 +18,7 @@ function RecommendPage() {
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
   const serverAxiosUrl = process.env.REACT_APP_SERVER_URL;
+  const navigate = useNavigate();
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
 
@@ -25,6 +26,7 @@ function RecommendPage() {
     setGetEnd(false);
     const search = new URLSearchParams(location.search);
     const _mode = search.get('mode') || 'TR';
+    if(_mode !== 'TR' && _mode !== 'PR') navigate(`/recommend?mode=TR`, {replace: true});
     setMode(_mode);
 
     if(user.id && _mode === 'PR'){
