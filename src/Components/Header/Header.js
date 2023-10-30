@@ -29,8 +29,11 @@ function Header() {
       behavior: "auto", // Optional if you want to skip the scrolling animation
     });
   },[location]);
-
+  
   const movePage = () => {
+    if(location.pathname === '/'){
+      window.location.reload();
+    }
     navigate(`/`);
   }
 
