@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from 'axios';
 import Header from "../Components/Header/Header";
@@ -21,11 +21,14 @@ function CategoryPage() {
   const [sorting, setSorting] = useState('요리조리 랭킹순');
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
+  const navigate = useNavigate();
+  const category = ['전체','한식','중식','일식','양식','아시안','분식','안주','퓨전','카페','편의점','기타'];
 
   useEffect(() => {
     setGetEnd(false);
     const search = new URLSearchParams(location.search);
-    const _checked = search.get("category");
+    let _checked = search.get("category");
+    if(category.indexOf(_checked) === -1) navigate(`/category?category=전체`, {replace: true});
     const _page = search.get("page") || 1;
     setChecked(_checked);
     
@@ -42,6 +45,7 @@ function CategoryPage() {
     const res = await axios.get(
       `${axiosUrl}/recipe/get/category/${category}?pageNo=${page}&orderBy=${sortingName}`
     );
+    console.log(res);
     try {
       let _result = [];
       for (let i = 0; i < res.data.content.length; i++) {

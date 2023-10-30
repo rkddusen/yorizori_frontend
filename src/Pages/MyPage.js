@@ -17,7 +17,11 @@ function MyPage() {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     let _nowPage = '';
-    if(queryParams.get('view') === 'myrecipe') {
+    if(queryParams.get('view') === 'mypage') {
+      _nowPage = <MyProfile />;
+      setNowQuery('mypage');
+    }
+    else if(queryParams.get('view') === 'myrecipe') {
       _nowPage = <MyRecipe />;
       setNowQuery('myrecipe');
     }
@@ -26,8 +30,7 @@ function MyPage() {
       setNowQuery('mytip');
     }
     else {
-      _nowPage = <MyProfile />;
-      setNowQuery('mypage');
+      navigate(`/mypage?view=mypage`, {replace: true});
     }
 
     setNowPage(_nowPage);
