@@ -18,16 +18,29 @@ function TipPage() {
   const location = useLocation();
   const searchRef = useRef(null);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
-  const [sorting, setSorting] = useState('조회순');
+  const [sorting, setSorting] = useState(1);
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
 
-  const getTip = async (page, search) => {
-    let sortingName = 'recipeViewCount';
-    if(sorting === '조회순') sortingName = 'tipViewCount';
-    else if(sorting === '댓글순') sortingName = 'tipReviewCount';
-    else if(sorting === '좋아요순') sortingName = 'tipHeartCount';
-    else if(sorting === '최신순') sortingName = 'createdTime';
+  useEffect(() => {
+    setGetEnd(false);
+    const search = new URLSearchParams(location.search);
+    const _page = search.get("page") || 1;
+    const _search = search.get("search") || "";
+    const _sort = search.get("sort") || '1';
+    if(_sort !== '1' && _sort !== '2' && _sort !== '3' && _sort !== '4'){
+      moveSort(1);
+    }
+    setSorting(Number(_sort));
+    getTip(_page - 1, _search, Number(_sort));
+  }, [location]);
+
+  const getTip = async (page, search, sort) => {
+    let sortingName = 'tipViewCount';
+    if(sort === 1) sortingName = 'tipViewCount';
+    else if(sort === 2) sortingName = 'tipReviewCount';
+    else if(sort === 3) sortingName = 'tipHeartCount';
+    else if(sort === 4) sortingName = 'createdTime';
     const res = await axios.get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=${sortingName}`);
     try {
       let _result = [];
@@ -59,14 +72,6 @@ function TipPage() {
     }
   };
 
-  useEffect(() => {
-    setGetEnd(false);
-    const search = new URLSearchParams(location.search);
-    const _page = search.get("page") || 1;
-    const _search = search.get("search") || "";
-    getTip(_page - 1, _search);
-  }, [location, sorting]);
-
   const handleEnterKey = (event) => {
     if(event.key === 'Enter'){
       search();
@@ -76,6 +81,16 @@ function TipPage() {
     const queryParams = new URLSearchParams(location.search);
     queryParams.set('search', searchRef.current.value);
 
+    navigate({
+      pathname: location.pathname,
+      search: queryParams.toString(),
+    });
+  }
+
+  const moveSort = (num) => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('sort', num);
+    queryParams.set('page', 1);
     navigate({
       pathname: location.pathname,
       search: queryParams.toString(),
@@ -96,7 +111,7 @@ function TipPage() {
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </SearchSvg>
           </SearchBox>
-          <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['조회순', '댓글순', '좋아요순', '최신순']} />
+          <SortingBox moveSort={(num) => moveSort(num)} sorting={sorting} sortMenu={['조회순', '댓글순', '좋아요순', '최신순']} />
           {getEnd ? (
             <>
               {!getFail ? (

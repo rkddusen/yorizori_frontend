@@ -18,7 +18,7 @@ function CategoryPage() {
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const location = useLocation();
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
-  const [sorting, setSorting] = useState('요리조리 랭킹순');
+  const [sorting, setSorting] = useState(1);
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
   const navigate = useNavigate();
@@ -31,21 +31,24 @@ function CategoryPage() {
     if(category.indexOf(_checked) === -1) navigate(`/category?category=전체`, {replace: true});
     const _page = search.get("page") || 1;
     setChecked(_checked);
-    
-    getRecipe(_checked, _page-1);
-  }, [location, sorting]);
+    const _sort = search.get("sort") || '1';
+    if(_sort !== '1' && _sort !== '2' && _sort !== '3' && _sort !== '4' && _sort !== '5'){
+      moveSort(1);
+    }
+    setSorting(Number(_sort));
+    getRecipe(_checked, _page-1, Number(_sort));
+  }, [location]);
 
-  const getRecipe = async (category, page) => {
-    let sortingName;
-    if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
-    else if(sorting === '조회순') sortingName = 'recipeViewCount';
-    else if(sorting === '댓글순') sortingName = 'reviewCount';
-    else if(sorting === '별점순') sortingName = 'starCount';
-    else if(sorting === '최신순') sortingName = 'createdTime';
+  const getRecipe = async (category, page, sort) => {
+    let sortingName = 'yorizori';
+    if(sort === 1) sortingName = 'yorizori';
+    else if(sort === 2) sortingName = 'recipeViewCount';
+    else if(sort === 3) sortingName = 'reviewCount';
+    else if(sort === 4) sortingName = 'starCount';
+    else if(sort === 5) sortingName = 'createdTime';
     const res = await axios.get(
       `${axiosUrl}/recipe/get/category/${category}?pageNo=${page}&orderBy=${sortingName}`
     );
-    console.log(res);
     try {
       let _result = [];
       for (let i = 0; i < res.data.content.length; i++) {
@@ -79,6 +82,16 @@ function CategoryPage() {
     }
   };
 
+  const moveSort = (num) => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('sort', num);
+    queryParams.set('page', 1);
+    navigate({
+      pathname: location.pathname,
+      search: queryParams.toString(),
+    });
+  }
+
   return (
     <div>
       <Wrap>
@@ -94,7 +107,7 @@ function CategoryPage() {
               <div>
                 <CategoryName>"{checked}"</CategoryName> 레시피
               </div>
-              <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
+              <SortingBox moveSort={(num) => moveSort(num)} sorting={sorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
             </CategoryTitle>
             {getEnd ? (
               <>
