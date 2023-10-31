@@ -20,7 +20,7 @@ function SearchPage() {
   const [result, setResult] = useState([]);
   const [totalRecipeCount, setTotalRecipeCount] = useState(0);
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
-  const [sorting, setSorting] = useState('요리조리 랭킹순');
+  const [sorting, setSorting] = useState(1);
   const [getEnd, setGetEnd] = useState(false);
   const [getFail, setGetFail] = useState(false);
 
@@ -30,29 +30,32 @@ function SearchPage() {
     let _method = queryParams.get('method');
     let _search = queryParams.get('search');
     const _page = queryParams.get("page") || 1;
+    const _sort = queryParams.get("sort") || '1';
+    if(_sort !== '1' && _sort !== '2' && _sort !== '3' && _sort !== '4' && _sort !== '5'){
+      moveSort(1);
+    }
 
-    if(_method === 'food')
-    getRecipe(_search, _page - 1);
-  else{getIRecipe(_search, _page - 1);}
+    if(_method === 'food') getRecipe(_search, _page - 1, Number(_sort));
+    else getIRecipe(_search, _page - 1, Number(_sort));
+
     setNowMethod(_method);
     setNowSearch(_search);
+    setSorting(Number(_sort));
+  },[location]);
 
-  },[location, sorting]);
-
-  const getRecipe = async (search, page) => {
+  const getRecipe = async (search, page, sort) => {
     
-    let sortingName;
-    if(sorting === '요리조리 랭킹순') sortingName = 'yorizori';
-    else if(sorting === '조회순') sortingName = 'recipeViewCount';
-    else if(sorting === '댓글순') sortingName = 'reviewCount';
-    else if(sorting === '별점순') sortingName = 'starCount';
-    else if(sorting === '최신순') sortingName = 'createdTime';
+    let sortingName = 'yorizori';
+    if(sort === 1) sortingName = 'yorizori';
+    else if(sort === 2) sortingName = 'recipeViewCount';
+    else if(sort === 3) sortingName = 'reviewCount';
+    else if(sort === 4) sortingName = 'starCount';
+    else if(sort === 5) sortingName = 'createdTime';
     const res = await axios.get(
       `${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
     );
     try {
       let _result = [];
-      console.log(res.data);
       for (let i = 0; i < res.data.content.length; i++) {
         _result.push(
           <RecipeView
@@ -83,14 +86,18 @@ function SearchPage() {
     }
   };
 
-  const getIRecipe = async (search, page) => {
-    console.log(search)
+  const getIRecipe = async (search, page, sort) => {
+    let sortingName = 'yorizori';
+    if(sort === 1) sortingName = 'yorizori';
+    else if(sort === 2) sortingName = 'recipeViewCount';
+    else if(sort === 3) sortingName = 'reviewCount';
+    else if(sort === 4) sortingName = 'starCount';
+    else if(sort === 5) sortingName = 'createdTime';
     const res = await axios.get(
-      `${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}`
+      `${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
     );
     try {
       let _result = [];
-      console.log(res.data);
       for (let i = 0; i < res.data.length; i++) {
         _result.push(
           <RecipeView
@@ -121,6 +128,16 @@ function SearchPage() {
     }
   };
 
+  const moveSort = (num) => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set('sort', num);
+    queryParams.set('page', 1);
+    navigate({
+      pathname: location.pathname,
+      search: queryParams.toString(),
+    });
+  }
+
   return (
     <div>
       <Wrap>
@@ -132,7 +149,7 @@ function SearchPage() {
               <SearchTitle>{nowMethod === 'food' ? '요리명' : '재료명'} 검색 결과</SearchTitle>
               <p>"{nowSearch}"</p>
             </div>
-            <SortingBox sorting={sorting} setSorting={setSorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
+            <SortingBox moveSort={(num) => moveSort(num)} sorting={sorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />
           </SearchNav>
           {getEnd ? (
             <>

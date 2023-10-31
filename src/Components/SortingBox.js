@@ -2,18 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const SortingBox = (props) => {
-  const { sorting, setSorting, sortMenu } = props;
+  const { moveSort, sorting, sortMenu } = props;
   const [openDropDown, setOpenDropDown] = useState(false);
   const divRef = useRef(null);
-
-  
 
   const handleDropDown = () => {
     setOpenDropDown(!openDropDown);
   }
-  const handleChangeSelect = (select) => {
+  const handleChangeSelect = (index) => {
     setOpenDropDown(!openDropDown);
-    setSorting(select);
+    //setSorting(select);
+    moveSort(index + 1);
   }
   const handleOutsideClick = ({ target }) => {
     if (divRef.current && openDropDown === true && !divRef.current.contains(target)) {
@@ -31,12 +30,12 @@ const SortingBox = (props) => {
   return (
     <StyledSortingBox ref={divRef}>
       <NowSelectBox onClick={handleDropDown}>
-        <p>{sorting}</p>
+        <p>{sortMenu[sorting-1]}</p>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </NowSelectBox>
       <SortingDropDown $openDropDown={openDropDown}>
         {sortMenu.map((v,i) => 
-          <SortingItem key={i} onClick={() => handleChangeSelect(v)} $nowChecked={v===sorting}>{v}</SortingItem>
+          <SortingItem key={i} onClick={() => handleChangeSelect(i)} $nowChecked={i+1===sorting}>{v}</SortingItem>
         )}
       </SortingDropDown>
     </StyledSortingBox>
