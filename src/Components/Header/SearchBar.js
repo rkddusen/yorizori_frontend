@@ -165,6 +165,7 @@ const SearchModal = styled.div`
   left: 0;
   width: 100%;
   height: 400px;
+  background-color: #FFEAC2;
   background-image: url("./images/background.png");
   background-size: cover;
   background-position: center;
