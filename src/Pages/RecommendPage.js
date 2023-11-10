@@ -36,9 +36,9 @@ function RecommendPage() {
     }
   }, [location]);
 
-  const getPRRecipe = async () => {
+  const getPRRecipe = async (userId = user.id) => {
     setGetEnd(false);
-    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommend/${user.id}`);
+    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommend/${userId}`);
     
     try {
       let _result = [];
@@ -163,7 +163,13 @@ function RecommendPage() {
                         <button onClick={() => test([2,14], 'on')}>비 오는 날</button>
                       </div>
                     ) : (
-                      <></>
+                      <div>
+                        <button onClick={() => getPRRecipe('test-d50-k30-w20')}>d50-k30-w20</button>
+                        <button onClick={() => getPRRecipe('test-d80-w20-k10')}>d80-w20-k10</button>
+                        <button onClick={() => getPRRecipe('test-j70-k30')}>j70-k30</button>
+                        <button onClick={() => getPRRecipe('test-w65-k45')}>w65-k45</button>
+                        <button onClick={() => getPRRecipe('test-k60-w20-f20')}>k60-w20-f20</button>
+                      </div>
                     )}
                     <RecipeList>{result}</RecipeList>
                   </>
