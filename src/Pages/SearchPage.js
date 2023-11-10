@@ -93,25 +93,27 @@ function SearchPage() {
     else if(sort === 3) sortingName = 'reviewCount';
     else if(sort === 4) sortingName = 'starCount';
     else if(sort === 5) sortingName = 'createdTime';
+    console.log(search);
     const res = await axios.get(
       `${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
     );
     try {
+      console.log(res);
       let _result = [];
-      for (let i = 0; i < res.data.length; i++) {
+      for (let i = 0; i < res.data.content.length; i++) {
         _result.push(
           <RecipeView
             key={i}
             recipe={
               {
-                id: res.data[i].id,
-                title: res.data[i].title,
-                thumbnail: res.data[i].thumbnail,
-                reviewCount: res.data[i].reviewCount,
-                starCount: res.data[i].starCount,
-                profileImg: res.data[i].profileImg,
-                nickname: res.data[i].nickname,
-                viewCount: res.data[i].viewCount,
+                id: res.data.content[i].id,
+                title: res.data.content[i].title,
+                thumbnail: res.data.content[i].thumbnail,
+                reviewCount: res.data.content[i].reviewCount,
+                starCount: res.data.content[i].starCount,
+                profileImg: res.data.content[i].profileImg,
+                nickname: res.data.content[i].nickname,
+                viewCount: res.data.content[i].viewCount,
               }
             }
           />
