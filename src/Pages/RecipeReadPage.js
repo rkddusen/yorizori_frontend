@@ -318,7 +318,7 @@ const RecipeReadPage = () => {
                                 <ReferenceBox>
                                   {v.recipeId > -1 ? (
                                     <>
-                                      <ReferenceProfile>
+                                      <ReferenceProfile onClick={() => moveOtherRecipe(recipe.referenceRecipe[i].recipeId)}>
                                         <ProfileImg src={v.profileImage} style={{width: '25px', height: '25px', marginRight: '10px'}} />
                                         <ReferenceNickname onClick={() => moveOtherRecipe(v.recipeId)}>{v.nickname}</ReferenceNickname>
                                       </ReferenceProfile>
