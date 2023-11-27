@@ -75,46 +75,50 @@ const RecipeWriting = () => {
   },[location]);
   const getRecipe = async () => {
     if(origin){
-    const res = await axios.get(`${axiosUrl}/recipe/get/writing/reference?recipeId=${origin}`);
-    try {
-      if(method === 'edit'){
-        let _thumbnail = res.data.thumbnail;
-        let _recipeDetail = res.data.order;
-        let _recipeImage = _recipeDetail.map(order => order.image);
-        setThumbnail(_thumbnail);
-        setRecipeDetail(_recipeDetail);
-        _recipeImage.push(_thumbnail)
-        let _originImage = _recipeImage.filter(v => v !== null);
-        setOriginImage(_originImage);
-      } else{
-        let _referenceUser = {};
-        _referenceUser.id = res.data.id;
-        _referenceUser.profileImg = res.data.profileImg;
-        _referenceUser.nickname = res.data.nickname;
-        let _recipeDetail = res.data.order;
-        _recipeDetail.map(order => delete order.image);
+      axios
+        .get(`${axiosUrl}/recipe/get/writing/reference?recipeId=${origin}`)
+        .then((res) => {
+          if(method === 'edit'){
+            let _thumbnail = res.data.thumbnail;
+            let _recipeDetail = res.data.order;
+            let _recipeImage = _recipeDetail.map(order => order.image);
+            setThumbnail(_thumbnail);
+            setRecipeDetail(_recipeDetail);
+            _recipeImage.push(_thumbnail)
+            let _originImage = _recipeImage.filter(v => v !== null);
+            setOriginImage(_originImage);
+          } else{
+            let _referenceUser = {};
+            _referenceUser.id = res.data.id;
+            _referenceUser.profileImg = res.data.profileImg;
+            _referenceUser.nickname = res.data.nickname;
+            let _recipeDetail = res.data.order;
+            _recipeDetail.map(order => delete order.image);
+      
+            setReferenceUser(_referenceUser);
+            setRecipeDetail(_recipeDetail);
+          }
+          let _recipeInfo = {};
+          _recipeInfo.title = res.data.title;
+          _recipeInfo.dishName = res.data.dishName;
+          _recipeInfo.level = res.data.level;
+          _recipeInfo.time = res.data.time;
+          _recipeInfo.explain = res.data.explain;
+          let _category = res.data.category;
+          let _mainIngredient = res.data.mainIngredient;
+          let _semiIngredient = res.data.semiIngredient;
+      
+          setRecipeInfo(_recipeInfo);
+          setCategory(_category);
+          setMainIngredient(_mainIngredient);
+          setSemiIngredient(_semiIngredient);
 
-        setReferenceUser(_referenceUser);
-        setRecipeDetail(_recipeDetail);
-      }
-      let _recipeInfo = {};
-      _recipeInfo.title = res.data.title;
-      _recipeInfo.dishName = res.data.dishName;
-      _recipeInfo.level = res.data.level;
-      _recipeInfo.time = res.data.time;
-      _recipeInfo.explain = res.data.explain;
-      let _category = res.data.category;
-      let _mainIngredient = res.data.mainIngredient;
-      let _semiIngredient = res.data.semiIngredient;
-
-      setRecipeInfo(_recipeInfo);
-      setCategory(_category);
-      setMainIngredient(_mainIngredient);
-      setSemiIngredient(_semiIngredient);
-    } catch {
-      console.log("오류");
+        })
+        .catch((error) => {
+          console.log(error);
+        
+        })
     }
-  }
   };
 
 
@@ -312,10 +316,8 @@ const RecipeWriting = () => {
   }
 
   const deleteOriginImage = (image) => {
-    console.log(image);
     let _originImage = originImage.filter(v => image.indexOf(v) === -1);
-    console.log(_originImage);
-    console.log(originImage);
+
     for(let i = 0; i < _originImage.length; i++){
       serverOriginImageDelete(_originImage[i]);
     }

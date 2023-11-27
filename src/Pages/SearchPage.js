@@ -36,7 +36,15 @@ function SearchPage() {
     }
 
     if(_method === 'food') getRecipe(_search, _page - 1, Number(_sort));
-    else getIRecipe(_search, _page - 1, Number(_sort));
+    else if(_method === 'ingredient') getIRecipe(_search, _page - 1, Number(_sort));
+    else {
+      const queryParams = new URLSearchParams(location.search);
+      queryParams.set('method', 'food');
+      navigate({
+        pathname: location.pathname,
+        search: queryParams.toString(),
+      });
+    }
 
     setNowMethod(_method);
     setNowSearch(_search);
@@ -51,39 +59,39 @@ function SearchPage() {
     else if(sort === 3) sortingName = 'reviewCount';
     else if(sort === 4) sortingName = 'starCount';
     else if(sort === 5) sortingName = 'createdTime';
-    const res = await axios.get(
-      `${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
-    );
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.content.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data.content[i].id,
-                title: res.data.content[i].title,
-                thumbnail: res.data.content[i].thumbnail,
-                reviewCount: res.data.content[i].reviewCount,
-                starCount: res.data.content[i].starCount,
-                profileImg: res.data.content[i].profileImg,
-                nickname: res.data.content[i].nickname,
-                viewCount: res.data.content[i].viewCount,
+    axios
+      .get(`${axiosUrl}/recipe/get/search/food?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.content.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data.content[i].id,
+                  title: res.data.content[i].title,
+                  thumbnail: res.data.content[i].thumbnail,
+                  reviewCount: res.data.content[i].reviewCount,
+                  starCount: res.data.content[i].starCount,
+                  profileImg: res.data.content[i].profileImg,
+                  nickname: res.data.content[i].nickname,
+                  viewCount: res.data.content[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setTotalRecipeCount(res.data.totalElements);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setTotalRecipeCount(res.data.totalElements);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
 
   const getIRecipe = async (search, page, sort) => {
@@ -93,41 +101,40 @@ function SearchPage() {
     else if(sort === 3) sortingName = 'reviewCount';
     else if(sort === 4) sortingName = 'starCount';
     else if(sort === 5) sortingName = 'createdTime';
-    console.log(search);
-    const res = await axios.get(
-      `${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`
-    );
-    try {
-      console.log(res);
-      let _result = [];
-      for (let i = 0; i < res.data.content.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data.content[i].id,
-                title: res.data.content[i].title,
-                thumbnail: res.data.content[i].thumbnail,
-                reviewCount: res.data.content[i].reviewCount,
-                starCount: res.data.content[i].starCount,
-                profileImg: res.data.content[i].profileImg,
-                nickname: res.data.content[i].nickname,
-                viewCount: res.data.content[i].viewCount,
+    
+    axios
+      .get(`${axiosUrl}/recipe/get/search/ingredient?userId=${user.id}&search=${search}&pageNo=${page}&orderBy=${sortingName}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.content.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data.content[i].id,
+                  title: res.data.content[i].title,
+                  thumbnail: res.data.content[i].thumbnail,
+                  reviewCount: res.data.content[i].reviewCount,
+                  starCount: res.data.content[i].starCount,
+                  profileImg: res.data.content[i].profileImg,
+                  nickname: res.data.content[i].nickname,
+                  viewCount: res.data.content[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setTotalRecipeCount(res.data.totalElements);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setTotalRecipeCount(res.data.totalElements);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
 
   const moveSort = (num) => {
@@ -148,7 +155,7 @@ function SearchPage() {
         <Contents>
           <SearchNav>
             <div>
-              <SearchTitle>{nowMethod === 'food' ? '요리명' : '재료명'} 검색 결과</SearchTitle>
+              <SearchTitle>{nowMethod === 'ingredient' ? '재료명' : '요리명'} 검색 결과</SearchTitle>
               <p>"{nowSearch}"</p>
             </div>
             <SortingBox moveSort={(num) => moveSort(num)} sorting={sorting} sortMenu={['요리조리 랭킹순', '조회순', '댓글순', '별점순', '최신순']} />

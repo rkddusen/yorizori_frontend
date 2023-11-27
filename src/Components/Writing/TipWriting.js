@@ -27,14 +27,17 @@ const TipWriting = () => {
   },[]);
 
   const handleEditWriting = async (_updateId) => {
-    const res = await axios.get(`${axiosUrl}/tip/get/edit/${_updateId}`);
-    try {
-      setThumbnail(process.env.REACT_APP_IMG_URL + res.data.tipThumbnail);
-      titleRef.current.value = res.data.tipTitle;
-      setTipContents(res.data.tipDetail);
-    } catch {
-      console.log("오류");
-      }
+    axios
+      .get(`${axiosUrl}/tip/get/edit/${_updateId}`)
+      .then((res) => {
+        setThumbnail(process.env.REACT_APP_IMG_URL + res.data.tipThumbnail);
+        titleRef.current.value = res.data.tipTitle;
+        setTipContents(res.data.tipDetail);
+      })
+      .catch((error) => {
+        console.log(error);
+        
+      })
   }
 
   const handleThumbnailHover = (bool) => {
@@ -52,7 +55,7 @@ const TipWriting = () => {
       .get(`${axiosUrl}/image/remove?imageAddress=${image}`)
       .catch((error) => {
         console.log(error);
-      });
+      })
   };
   const handleThumbnailChange = async (e) => {
     const _recipeImg = e.target.files[0];

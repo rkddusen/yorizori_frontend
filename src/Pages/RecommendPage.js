@@ -38,106 +38,109 @@ function RecommendPage() {
 
   const getPRRecipe = async (userId = user.id) => {
     setGetEnd(false);
-    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommend/${userId}`);
-    
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data[i].id,
-                title: res.data[i].title,
-                thumbnail: res.data[i].thumbnail,
-                reviewCount: res.data[i].reviewCount,
-                starCount: res.data[i].starCount,
-                profileImg: res.data[i].profileImg,
-                nickname: res.data[i].nickname,
-                viewCount: res.data[i].viewCount,
+    axios
+      .get(`${serverAxiosUrl}/recipe/get/recommend/${userId}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data[i].id,
+                  title: res.data[i].title,
+                  thumbnail: res.data[i].thumbnail,
+                  reviewCount: res.data[i].reviewCount,
+                  starCount: res.data[i].starCount,
+                  profileImg: res.data[i].profileImg,
+                  nickname: res.data[i].nickname,
+                  viewCount: res.data[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
   const getTRRecipe = async () => {
     setGetEnd(false);
-    const res = await axios.get(`${serverAxiosUrl}/recipe/get/recommendToday`);
-    
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data[i].id,
-                title: res.data[i].title,
-                thumbnail: res.data[i].thumbnail,
-                reviewCount: res.data[i].reviewCount,
-                starCount: res.data[i].starCount,
-                profileImg: res.data[i].profileImg,
-                nickname: res.data[i].nickname,
-                viewCount: res.data[i].viewCount,
+    axios
+      .get(`${serverAxiosUrl}/recipe/get/recommendToday`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data[i].id,
+                  title: res.data[i].title,
+                  thumbnail: res.data[i].thumbnail,
+                  reviewCount: res.data[i].reviewCount,
+                  starCount: res.data[i].starCount,
+                  profileImg: res.data[i].profileImg,
+                  nickname: res.data[i].nickname,
+                  viewCount: res.data[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   }
 
   const test = async (arr, bool) => {
     setGetEnd(false);
-    const res = await axios.get(`${axiosUrl}/recipe/get/recommendToday/test?month=${arr[0]}&day=${arr[1]}&rain=${bool}`);
-    console.log(res);
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data[i].id,
-                title: res.data[i].title,
-                thumbnail: res.data[i].thumbnail,
-                reviewCount: res.data[i].reviewCount,
-                starCount: res.data[i].starCount,
-                profileImg: res.data[i].profileImg,
-                nickname: res.data[i].nickname,
-                viewCount: res.data[i].viewCount,
+    axios
+      .get(`${axiosUrl}/recipe/get/recommendToday/test?month=${arr[0]}&day=${arr[1]}&rain=${bool}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data[i].id,
+                  title: res.data[i].title,
+                  thumbnail: res.data[i].thumbnail,
+                  reviewCount: res.data[i].reviewCount,
+                  starCount: res.data[i].starCount,
+                  profileImg: res.data[i].profileImg,
+                  nickname: res.data[i].nickname,
+                  viewCount: res.data[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   }
 
   return (
