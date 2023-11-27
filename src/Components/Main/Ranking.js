@@ -10,33 +10,35 @@ function Ranking(){
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getRankRecipe = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/rank/part`);
-    try {
-      let _result = [];
-      for(let i = 0; i < 9; i++){
-          _result.push(
-            <RecipeView
-              key={i}
-              recipe={
-                {
-                  id: res.data[i].id,
-                  title: res.data[i].title,
-                  thumbnail: res.data[i].thumbnail,
-                  reviewCount: res.data[i].reviewCount,
-                  starCount: res.data[i].starCount,
-                  profileImg: res.data[i].profileImg,
-                  nickname: res.data[i].nickname,
-                  viewCount: res.data[i].viewCount,
-                  rank: i+1,
+    axios
+      .get(`${axiosUrl}/recipe/get/rank/part`)
+      .then((res) => {
+        let _result = [];
+        for(let i = 0; i < 9; i++){
+            _result.push(
+              <RecipeView
+                key={i}
+                recipe={
+                  {
+                    id: res.data[i].id,
+                    title: res.data[i].title,
+                    thumbnail: res.data[i].thumbnail,
+                    reviewCount: res.data[i].reviewCount,
+                    starCount: res.data[i].starCount,
+                    profileImg: res.data[i].profileImg,
+                    nickname: res.data[i].nickname,
+                    viewCount: res.data[i].viewCount,
+                    rank: i+1,
+                  }
                 }
-              }
-            />
-          )
-        }
-      setResult(_result);
-    } catch {
-      console.log("오류");
-    }
+              />
+            )
+          }
+        setResult(_result);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   useEffect(() => {

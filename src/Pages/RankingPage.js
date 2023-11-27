@@ -15,35 +15,36 @@ function Ranking() {
   const [getFail, setGetFail] = useState(false);
 
   const getRankRecipe = async (page) => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/rank?page=${page}`);
-    
-    try {
-      let _recipe = [];
-      for (let i = 0; i < res.data.content.length; i++) {
-        _recipe.push({
-          id: res.data.content[i].id,
-          title: res.data.content[i].title,
-          thumbnail: res.data.content[i].thumbnail,
-          starCount: res.data.content[i].starCount,
-          reviewCount: res.data.content[i].reviewCount,
-          profileImg: res.data.content[i].profileImg,
-          nickname: res.data.content[i].nickname,
-          viewCount: res.data.content[i].viewCount,
-          rank: result.length + i + 1,
-        });
-      }
-
-      let _result = [];
-      for (let i = 0; i < 20; i++) {
-        _result.push(<RecipeView key={result.length + i} recipe={_recipe[i]} />);
-      }
-      setResult([...result].concat(_result));
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+    axios
+      .get(`${axiosUrl}/recipe/get/rank?page=${page}`)
+      .then((res) => {
+        let _recipe = [];
+        for (let i = 0; i < res.data.content.length; i++) {
+          _recipe.push({
+            id: res.data.content[i].id,
+            title: res.data.content[i].title,
+            thumbnail: res.data.content[i].thumbnail,
+            starCount: res.data.content[i].starCount,
+            reviewCount: res.data.content[i].reviewCount,
+            profileImg: res.data.content[i].profileImg,
+            nickname: res.data.content[i].nickname,
+            viewCount: res.data.content[i].viewCount,
+            rank: result.length + i + 1,
+          });
+        }
+  
+        let _result = [];
+        for (let i = 0; i < 20; i++) {
+          _result.push(<RecipeView key={result.length + i} recipe={_recipe[i]} />);
+        }
+        setResult([...result].concat(_result));
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
   useEffect(() => {
     setGetEnd(false);

@@ -17,12 +17,14 @@ const RestaurantPage = () => {
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const viewRestaurant = async () => {
-    const res = await axios.post(`${axiosUrl}/recipe/map/get/api`,{latitude: geoLocation.latitude, longitude: geoLocation.longitude, foodName: dishName});
-      try {
+    axios
+      .post(`${axiosUrl}/recipe/map/get/api`,{latitude: geoLocation.latitude, longitude: geoLocation.longitude, foodName: dishName})
+      .then((res) => {
         setRestaurant(res.data);
-      } catch {
+      })
+      .catch((error) => {
         console.log("오류");
-      }
+      })
   }
 
   useEffect(() => {

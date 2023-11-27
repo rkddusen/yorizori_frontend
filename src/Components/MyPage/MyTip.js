@@ -28,39 +28,38 @@ const MyTip = () => {
 
   const getTip = async (page) => {
     setGetEnd(false);
-    const res = await axios.get(
-      `${axiosUrl}/user/get/${user.id}/tip?pageNo=${page}`
-    );
-    console.log(res);
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.content.length; i++) {
-        _result.push(
-          <TipView
-            key={i}
-            tip={
-              {
-                id: res.data.content[i].tipId,
-                title: res.data.content[i].tipTitle,
-                thumbnail: res.data.content[i].tipThumbnail,
-                heartCount: res.data.content[i].tipHeartCount,
-                profileImg: res.data.content[i].profileImg,
-                nickname: res.data.content[i].nickname,
-                viewCount: res.data.content[i].tipViewCount,
+    axios
+      .get(`${axiosUrl}/user/get/${user.id}/tip?pageNo=${page}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.content.length; i++) {
+          _result.push(
+            <TipView
+              key={i}
+              tip={
+                {
+                  id: res.data.content[i].tipId,
+                  title: res.data.content[i].tipTitle,
+                  thumbnail: res.data.content[i].tipThumbnail,
+                  heartCount: res.data.content[i].tipHeartCount,
+                  profileImg: res.data.content[i].profileImg,
+                  nickname: res.data.content[i].nickname,
+                  viewCount: res.data.content[i].tipViewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setTotalTipCount(res.data.totalElements);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setTotalTipCount(res.data.totalElements);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
 
   return (

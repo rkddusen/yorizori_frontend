@@ -18,39 +18,39 @@ const MyRecipe = () => {
   const [getFail, setGetFail] = useState(false);
 
   const getRecipe = async (page) => {
-    const res = await axios.get(
-      `${axiosUrl}/user/get/${user.id}/recipe?pageNo=${page}`
-    );
-    try {
-      let _result = [];
-      for (let i = 0; i < res.data.content.length; i++) {
-        _result.push(
-          <RecipeView
-            key={i}
-            recipe={
-              {
-                id: res.data.content[i].id,
-                title: res.data.content[i].title,
-                thumbnail: res.data.content[i].thumbnail,
-                reviewCount: res.data.content[i].reviewCount,
-                starCount: res.data.content[i].starCount,
-                profileImg: res.data.content[i].profileImg,
-                nickname: res.data.content[i].nickname,
-                viewCount: res.data.content[i].viewCount,
+    axios
+      .get(`${axiosUrl}/user/get/${user.id}/recipe?pageNo=${page}`)
+      .then((res) => {
+        let _result = [];
+        for (let i = 0; i < res.data.content.length; i++) {
+          _result.push(
+            <RecipeView
+              key={i}
+              recipe={
+                {
+                  id: res.data.content[i].id,
+                  title: res.data.content[i].title,
+                  thumbnail: res.data.content[i].thumbnail,
+                  reviewCount: res.data.content[i].reviewCount,
+                  starCount: res.data.content[i].starCount,
+                  profileImg: res.data.content[i].profileImg,
+                  nickname: res.data.content[i].nickname,
+                  viewCount: res.data.content[i].viewCount,
+                }
               }
-            }
-          />
-        );
-      }
-      
-      setResult(_result);
-      setTotalRecipeCount(res.data.totalElements);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+            />
+          );
+        }
+        
+        setResult(_result);
+        setTotalRecipeCount(res.data.totalElements);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
   useEffect(() => {
     if(user !== null){

@@ -10,31 +10,33 @@ function CookingTip(){
   const axiosUrl = process.env.REACT_APP_AXIOS_URL;
 
   const getTip = async () => {
-    const res = await axios.get(`${axiosUrl}/tip/get/part`);
-    try {
-      let _result = [];
-      for(let i = 0; i < res.data.length; i++){
-          _result.push(
-            <TipView
-              key={i}
-              tip={
-                {
-                  id: res.data[i].tipId,
-                  title: res.data[i].tipTitle,
-                  thumbnail: res.data[i].tipThumbnail,
-                  heartCount: res.data[i].tipHeartCount,
-                  profileImg: res.data[i].profileImg,
-                  nickname: res.data[i].nickname,
-                  viewCount: res.data[i].tipViewCount,
+    axios
+      .get(`${axiosUrl}/tip/get/part`)
+      .then((res) => {
+        let _result = [];
+        for(let i = 0; i < res.data.length; i++){
+            _result.push(
+              <TipView
+                key={i}
+                tip={
+                  {
+                    id: res.data[i].tipId,
+                    title: res.data[i].tipTitle,
+                    thumbnail: res.data[i].tipThumbnail,
+                    heartCount: res.data[i].tipHeartCount,
+                    profileImg: res.data[i].profileImg,
+                    nickname: res.data[i].nickname,
+                    viewCount: res.data[i].tipViewCount,
+                  }
                 }
-              }
-            />
-          )
-        }
-      setResult(_result);
-    } catch {
-      console.log("오류");
-    }
+              />
+            )
+          }
+        setResult(_result);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   useEffect(() => {

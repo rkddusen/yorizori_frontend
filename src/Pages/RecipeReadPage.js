@@ -29,38 +29,40 @@ const RecipeReadPage = () => {
   const [getFail, setGetFail] = useState(false);
 
   const getRecipe = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`);
-    try {
-      if(res.data){
-        let _recipe = {};
-        _recipe.id = res.data.id;
-        _recipe.thumbnail = res.data.thumbnail;
-        _recipe.title = res.data.title;
-        _recipe.dishName = res.data.dishName;
-        _recipe.level = res.data.level;
-        _recipe.time = res.data.time;
-        _recipe.profileImg = res.data.profileImg;
-        _recipe.recipeUserTokenId = res.data.recipeUserTokenId;
-        _recipe.nickname = res.data.nickname;
-        _recipe.date = res.data.date;
-        _recipe.explain = res.data.explain;
-        _recipe.mainIngredient = res.data.mainIngredient;
-        _recipe.semiIngredient = res.data.semiIngredient;
-        _recipe.order = res.data.order;
-        _recipe.category = res.data.category;
-        _recipe.viewCount = res.data.viewCount;
-        _recipe.referenceRecipe = res.data.referenceRecipe;
-        setRecipe(_recipe);
+    axios
+      .get(`${axiosUrl}/recipe/get/details?recipeId=${params.id}&userId=${user.id}`)
+      .then((res) => {
+        if(res.data){
+          let _recipe = {};
+          _recipe.id = res.data.id;
+          _recipe.thumbnail = res.data.thumbnail;
+          _recipe.title = res.data.title;
+          _recipe.dishName = res.data.dishName;
+          _recipe.level = res.data.level;
+          _recipe.time = res.data.time;
+          _recipe.profileImg = res.data.profileImg;
+          _recipe.recipeUserTokenId = res.data.recipeUserTokenId;
+          _recipe.nickname = res.data.nickname;
+          _recipe.date = res.data.date;
+          _recipe.explain = res.data.explain;
+          _recipe.mainIngredient = res.data.mainIngredient;
+          _recipe.semiIngredient = res.data.semiIngredient;
+          _recipe.order = res.data.order;
+          _recipe.category = res.data.category;
+          _recipe.viewCount = res.data.viewCount;
+          _recipe.referenceRecipe = res.data.referenceRecipe;
+          setRecipe(_recipe);
+          setGetEndMain(true);
+        } else{
+          alert('레시피가 존재하지 않습니다.');
+          navigate(`/`);
+        }
+      })
+      .catch((error) => {
         setGetEndMain(true);
-      } else{
-        alert('레시피가 존재하지 않습니다.');
-        navigate(`/`);
-      }
-    } catch {
-      setGetEndMain(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+        setGetFail(true);
+        console.log(error);
+      })
   };
   useEffect(() => {
     setGetEndMain(false);
@@ -177,33 +179,40 @@ const RecipeReadPage = () => {
     }
   }
   const getReview = async () => {
-    const res = await axios.get(`${axiosUrl}/recipe/get/reviews/${params.id}`);
-    try {
-      if(res.data){
-        let _review = {};
-        _review.recipeStarCount = res.data.recipeStarCount;
-        _review.userStarCount = res.data.userStarCount;
-        _review.reviewCount = res.data.reviewCount;
-        _review.reviews = res.data.reviews;
-        setReview(_review);
+    axios
+      .get(`${axiosUrl}/recipe/get/reviews/${params.id}`)
+      .then((res) => {
+        if(res.data){
+          let _review = {};
+          _review.recipeStarCount = res.data.recipeStarCount;
+          _review.userStarCount = res.data.userStarCount;
+          _review.reviewCount = res.data.reviewCount;
+          _review.reviews = res.data.reviews;
+          setReview(_review);
+          setGetEndReview(true);
+        }
+      })
+      .catch((error) => {
         setGetEndReview(true);
-      }
+        setGetFail(true);
+        console.log(error);
+      })
+    try {
     } catch {
-      setGetEndReview(true);
-      setGetFail(true);
-      console.log("오류");
     }
   }
 
   const handleDelete = async () => {
     if(window.confirm('레시피를 삭제하시겠습니까?')){
-      const res = await axios.delete(`${axiosUrl}/recipe/delete/${params.id}`);
-      try {
+      axios
+      .delete(`${axiosUrl}/recipe/delete/${params.id}`)
+      .then((res) => {
         alert('삭제가 완료되었습니다.');
         navigate(`/mypage`);
-      } catch {
-        console.log("오류");
-      }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
     }
   }
   const handleReferenceWriting = () => {

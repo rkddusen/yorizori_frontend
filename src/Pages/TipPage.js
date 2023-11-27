@@ -41,35 +41,38 @@ function TipPage() {
     else if(sort === 2) sortingName = 'tipReviewCount';
     else if(sort === 3) sortingName = 'tipHeartCount';
     else if(sort === 4) sortingName = 'createdTime';
-    const res = await axios.get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=${sortingName}`);
-    try {
-      let _result = [];
-      for(let i = 0; i < res.data.content.length; i++){
-          _result.push(
-            <TipView
-              key={i}
-              tip={
-                {
-                  id: res.data.content[i].tipId,
-                  title: res.data.content[i].tipTitle,
-                  thumbnail: res.data.content[i].tipThumbnail,
-                  heartCount: res.data.content[i].tipHeartCount,
-                  profileImg: res.data.content[i].profileImg,
-                  nickname: res.data.content[i].nickname,
-                  viewCount: res.data.content[i].tipViewCount,
+
+    axios
+      .get(`${axiosUrl}/tip/get/all?search=${search}&pageNo=${page}&orderBy=${sortingName}`)
+      .then((res) => {
+        let _result = [];
+        for(let i = 0; i < res.data.content.length; i++){
+            _result.push(
+              <TipView
+                key={i}
+                tip={
+                  {
+                    id: res.data.content[i].tipId,
+                    title: res.data.content[i].tipTitle,
+                    thumbnail: res.data.content[i].tipThumbnail,
+                    heartCount: res.data.content[i].tipHeartCount,
+                    profileImg: res.data.content[i].profileImg,
+                    nickname: res.data.content[i].nickname,
+                    viewCount: res.data.content[i].tipViewCount,
+                  }
                 }
-              }
-            />
-          )
-        }
-      setResult(_result);
-      setTotalTipCount(res.data.totalElements);
-      setGetEnd(true);
-    } catch {
-      setGetEnd(true);
-      setGetFail(true);
-      console.log("오류");
-    }
+              />
+            )
+          }
+        setResult(_result);
+        setTotalTipCount(res.data.totalElements);
+        setGetEnd(true);
+      })
+      .catch((error) => {
+        setGetEnd(true);
+        setGetFail(true);
+        console.log(error);
+      })
   };
 
   const handleEnterKey = (event) => {
