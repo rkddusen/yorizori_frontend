@@ -186,8 +186,8 @@ const TipWriting = () => {
   }
   // 본문에서 이미지 url만 분리
   const seperateImage = (str) => {
-    const match1 = /<img src="(https:\/\/yorizori-s3.s3.ap-northeast-2.amazonaws.com\/tip\/\d{8}\/[a-zA-Z0-9\-\.]+)">/g;
-    const match2 = /https:\/\/yorizori-s3.s3.ap-northeast-2.amazonaws.com\/tip\/\d{8}\/[a-zA-Z0-9\-\.]+/g;
+    const match1 = /<img src="(https:\/\/yorizori-s3-2.s3.ap-northeast-2.amazonaws.com\/tip\/\d{8}\/[a-zA-Z0-9\-\.]+)">/g;
+    const match2 = /https:\/\/yorizori-s3-2.s3.ap-northeast-2.amazonaws.com\/tip\/\d{8}\/[a-zA-Z0-9\-\.]+/g;
 
     const matchesFromMatch1 = str.match(match1) || [];
 
